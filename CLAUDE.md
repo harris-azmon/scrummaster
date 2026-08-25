@@ -11,14 +11,16 @@ The plugin is defined in `plugin.json` and `.claude-plugin/marketplace.json`, an
 ## Architecture
 
 ### Plugin Structure
+
 - `plugin.json` - Plugin manifest (name, description)
 - `.claude-plugin/marketplace.json` - Claude Code plugin marketplace listing
 - `skills/conductor-*/SKILL.md` - Protocol logic for each command, portable across Agent-Skills-compatible clients
 - `rules/` - Platform-specific operational rules (e.g. Antigravity)
 
 ### Commands (in `skills/conductor-*/`)
+
 | Command | Skill | Purpose |
-|---------|------|---------|
+| --------- | ------ | --------- |
 | `/conductor:conductor-setup` | `conductor-setup` | Initialize project with product.md, tech-stack.md, workflow.md, and first track |
 | `/conductor:conductor-new-track` | `conductor-new-track` | Create new feature/bug track with spec.md and plan.md |
 | `/conductor:conductor-implement` | `conductor-implement` | Execute tasks from current track's plan following TDD workflow |
@@ -27,8 +29,10 @@ The plugin is defined in `plugin.json` and `.claude-plugin/marketplace.json`, an
 | `/conductor:conductor-review` | `conductor-review` | Review completed work against guidelines and the plan |
 
 ### Generated Artifacts (in user projects)
+
 When users run Conductor, it creates:
-```
+
+```text
 conductor/
 ├── product.md           # Product vision and goals
 ├── product-guidelines.md # Brand/style guidelines
@@ -45,18 +49,22 @@ conductor/
 ```
 
 ### Templates (in `templates/`)
+
 - `workflow.md` - Default workflow template (TDD, >80% coverage, git notes)
 - `code_styleguides/*.md` - Style guides for Python, TypeScript, JavaScript, Go, HTML/CSS
 
 ## Key Concepts
 
 ### Tracks
+
 A track is a logical unit of work (feature or bug fix). Each track has:
+
 - Unique ID format: `shortname_YYYYMMDD`
 - Status markers: `[ ]` new, `[~]` in progress, `[x]` completed
 - Own directory with spec, plan, and metadata
 
 ### Task Workflow (TDD)
+
 1. Select task from plan.md
 2. Mark `[~]` in progress
 3. Write failing tests (Red)
@@ -68,7 +76,9 @@ A track is a logical unit of work (feature or bug fix). Each track has:
 9. Update plan.md with commit SHA
 
 ### Phase Checkpoints
+
 At phase completion:
+
 - Run test suite
 - Manual verification with user
 - Create checkpoint commit
@@ -79,7 +89,8 @@ At phase completion:
 A Claude Code implementation is available in `.claude/`:
 
 ### Slash Commands (User-Invoked)
-```
+
+```text
 /conductor-setup              # Initialize project
 /conductor-newtrack [desc]    # Create feature/bug track
 /conductor-implement [id]     # Execute track tasks
@@ -88,12 +99,15 @@ A Claude Code implementation is available in `.claude/`:
 ```
 
 ### Skill (Model-Invoked)
+
 The skill in `.claude/skills/conductor/` automatically activates when Claude detects a `conductor/` directory or related context.
 
 ### Installation
+
 Copy `.claude/` to any project to enable Conductor commands, or copy commands to `~/.claude/commands/` for global access.
 
 ### Interoperability
+
 Antigravity and Claude Code both consume the same `conductor/` directory structure. Projects set up with either tool work with both.
 
 ## Development Notes

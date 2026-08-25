@@ -169,7 +169,7 @@ All 5 style guides have been created and are available in `templates/code_styleg
 ## Summary
 
 | Phase | Status | Tasks | Est. Effort |
-|-------|--------|-------|-------------|
+| ------- | -------- | ------- | ------------- |
 | 1 | ✓ Complete | 5/5 | Done |
 | 2 | ⏳ Pending | 3 | 2-3 hrs |
 | 3 | ⏳ Pending | 3 | 3-4 hrs |

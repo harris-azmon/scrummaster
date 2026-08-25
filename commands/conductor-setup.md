@@ -47,6 +47,7 @@ Copy relevant code styleguides from `templates/code_styleguides/` based on tech 
 ## 7. Initialize Tracks File
 
 Create `conductor/tracks.md`:
+
 ```markdown
 # Project Tracks
 

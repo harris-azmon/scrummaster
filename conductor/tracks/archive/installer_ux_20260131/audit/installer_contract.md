@@ -1,6 +1,7 @@
 # Installer UX Contract
 
 ## Summary
+
 Define a consistent installer interface and output format for Conductor across Windows (PowerShell) and cross-platform (Node or Python wrapper).
 
 ## CLI Flags

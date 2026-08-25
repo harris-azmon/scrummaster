@@ -34,7 +34,7 @@ Define and enforce consistent documentation standards across all conductor proje
 ## Deliverables
 
 | Deliverable | Status | Location |
-|-------------|--------|----------|
+| ------------- | -------- | ---------- |
 | Markdown Style Guide | ✓ Complete | `templates/code_styleguides/markdown.md` |
 | Mermaid Style Guide | ✓ Complete | `templates/code_styleguides/mermaid.md` |
 | D3.js Style Guide | ✓ Complete | `templates/code_styleguides/d3js.md` |

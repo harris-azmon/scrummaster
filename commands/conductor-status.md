@@ -8,11 +8,7 @@ Show the current status of this Conductor project.
 
 ## 1. Check Setup
 
-<<<<<<< HEAD
-If `conductor/tracks.md` doesn't exist, tell user to run `/conductor:setup` first.
-=======
 If `conductor/tracks.md` doesn't exist, tell user to run `/conductor-setup` first.
->>>>>>> pr-9
 
 ## 2. Read State
 
@@ -23,6 +19,7 @@ If `conductor/tracks.md` doesn't exist, tell user to run `/conductor-setup` firs
 ## 3. Calculate Progress
 
 For each track:
+
 - Count total tasks (lines with `- [ ]`, `- [~]`, `- [x]`)
 - Count completed `[x]`
 - Count in-progress `[~]`
@@ -33,7 +30,7 @@ For each track:
 
 Format the output like this:
 
-```
+```text
 ## Conductor Status
 
 **Active Track:** [track name] ([completed]/[total] tasks - [percent]%)
@@ -57,12 +54,7 @@ Format the output like this:
 ## 5. Suggestions
 
 Based on status:
-<<<<<<< HEAD
-- If no tracks: "Run `/conductor:newtrack` to create your first track"
-- If track in progress: "Run `/conductor:implement` to continue"
-- If all complete: "All tracks complete! Run `/conductor:newtrack` for new work"
-=======
+
 - If no tracks: "Run `/conductor-newtrack` to create your first track"
 - If track in progress: "Run `/conductor-implement` to continue"
 - If all complete: "All tracks complete! Run `/conductor-newtrack` for new work"
->>>>>>> pr-9

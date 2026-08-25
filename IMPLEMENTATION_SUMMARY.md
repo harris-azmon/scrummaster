@@ -80,8 +80,9 @@ mise run verify           # Verify installation
 - jnorthrup/conductor2 (secondary)
 
 **Trackable Issues (8 identified):**
+
 | Issue | Title | Priority |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | #113 | Auto-create .gitignore on git init | High |
 | #112 | Update workflow with overwrite confirmation | High |
 | #108 | Fix TOML references | Medium |

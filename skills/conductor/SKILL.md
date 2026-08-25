@@ -12,6 +12,7 @@ engine_compatibility: >=0.2.0
 Context-driven development methodology. Understands projects set up with Conductor (via Gemini CLI or Claude Code). Use when working with conductor/ directories, tracks, specs, plans, or when user mentions context-driven development.
 
 ## Triggers
+
 This skill is activated by the following phrases:
 
 - "$conductor-info"
@@ -22,8 +23,8 @@ This skill is activated by the following phrases:
 
 - "@conductor /info"
 
-
 ## Usage
+
 To use this skill, simply type one of the triggers or ask the agent to "conductor".
 
 ## Platform-Specific Commands
@@ -48,10 +49,7 @@ To use this skill, simply type one of the triggers or ask the agent to "conducto
 
 - **Skillshare:** `/conductor-info`
 
-
 ## Capabilities Required
-
-
 
 ## Instructions
 
@@ -63,7 +61,7 @@ compatibility: Works with Claude Code, Gemini CLI, and any Agent Skills compatib
 metadata:
   version: "0.1.0"
   author: "Gemini CLI Extensions"
-  repository: "https://github.com/gemini-cli-extensions/conductor"
+  repository: "<https://github.com/gemini-cli-extensions/conductor>"
   keywords:
     - context-driven-development
     - specs
@@ -80,12 +78,14 @@ Measure twice, code once.
 ## Overview
 
 Conductor enables context-driven development by:
+
 1. Establishing project context (product vision, tech stack, workflow)
 2. Organizing work into "tracks" (features, bugs, improvements)
 3. Creating specs and phased implementation plans
 4. Executing with TDD practices and progress tracking
 
 **Interoperability:** This skill understands conductor projects created by either:
+
 - Gemini CLI extension (`/conductor:setup`, `/conductor:newTrack`, etc.)
 - Claude Code commands (`/conductor-setup`, `/conductor-newtrack`, etc.)
 
@@ -94,6 +94,7 @@ Both tools use the same `conductor/` directory structure.
 ## When to Use This Skill
 
 Automatically engage when:
+
 - Project has a `conductor/` directory
 - User mentions specs, plans, tracks, or context-driven development
 - User asks about project status or implementation progress
@@ -105,7 +106,7 @@ Automatically engage when:
 Users can invoke these commands directly:
 
 | Command | Description |
-|---------|-------------|
+| --------- | ------------- |
 | `/conductor-setup` | Initialize project with product.md, tech-stack.md, workflow.md |
 | `/conductor-newtrack [desc]` | Create new feature/bug track with spec and plan |
 | `/conductor-implement [id]` | Execute tasks from track's plan |
@@ -135,6 +136,7 @@ conductor/
 ## Status Markers
 
 Throughout conductor files:
+
 - `[ ]` - Pending/New
 - `[~]` - In Progress
 - `[x]` - Completed (often followed by 7-char commit SHA)
@@ -165,7 +167,7 @@ Projects set up with Gemini CLI's Conductor extension use identical structure.
 The only differences are command syntax:
 
 | Gemini CLI | Claude Code |
-|------------|-------------|
+| ------------ | ------------- |
 | `/conductor:setup` | `/conductor-setup` |
 | `/conductor:newTrack` | `/conductor-newtrack` |
 | `/conductor:implement` | `/conductor-implement` |
@@ -184,6 +186,7 @@ When you see `conductor/tracks.md` with content like:
 ```
 
 You know:
+
 - This is a Conductor project
 - There's an in-progress track for authentication
 - Spec and plan are in `conductor/tracks/auth_20241215/`

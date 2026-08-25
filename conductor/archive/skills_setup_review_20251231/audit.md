@@ -1,10 +1,12 @@
 # Audit: Skill Abstraction and Tool Setup (Baseline)
 
 ## Source Templates (Authoritative Protocol Content)
+
 - `conductor-core/src/conductor_core/templates/*.j2` (setup/new_track/implement/status/revert)
   - These appear to be the canonical protocol bodies used to generate SKILL.md artifacts.
 
 ## Generated Outputs (Automation)
+
 - `scripts/sync_skills.py` generates command-specific skill artifacts from `*.j2`:
   - Local Agent Skills: `skills/<conductor-*>/SKILL.md`
   - Local Antigravity: `.antigravity/skills/<conductor-*>/SKILL.md`
@@ -17,6 +19,7 @@
     - `~/.config/github-copilot/conductor.md` (consolidated)
 
 ## Manually Maintained Artifacts (Non-Generated)
+
 - Agent Skill (auto-activation):
   - `skills/conductor/SKILL.md` + `skills/conductor/references/workflows.md`
 - Legacy single-skill package:
@@ -32,6 +35,7 @@
   - Claude local install prompts: `.claude/commands/conductor-*.md`
 
 ## Observed Drift/Overlap Risks
+
 - Multiple Markdown command prompt locations exist (`commands/` vs `.claude/commands/`).
 - `skill/SKILL.md` is a separate, single-skill package path, while `skills/` holds per-command skills.
 - `gemini-extension.json` and `qwen-extension.json` do not appear to be generated from the same source as `scripts/sync_skills.py`.

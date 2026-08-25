@@ -13,7 +13,8 @@ The repository has been renamed to `conductor-next` to better reflect its next-g
 
 ### Update Your Installation
 
-#### If installed via pip:
+#### If installed via pip
+
 ```bash
 # Uninstall old version
 pip uninstall conductor
@@ -22,7 +23,8 @@ pip uninstall conductor
 pip install conductor-next
 ```
 
-#### If installed via npm:
+#### If installed via npm
+
 ```bash
 # Uninstall old version
 npm uninstall -g conductor
@@ -31,7 +33,8 @@ npm uninstall -g conductor
 npm install -g conductor-next
 ```
 
-#### If using npx:
+#### If using npx
+
 ```bash
 # Just use the new name - no installation needed
 npx conductor-next <command>
@@ -134,7 +137,7 @@ git remote set-url origin https://github.com/edithatogo/conductor-next.git
 ## Questions?
 
 If you encounter any issues during migration, please open an issue at:
-https://github.com/edithatogo/conductor-next/issues
+<https://github.com/edithatogo/conductor-next/issues>
 
 ---
 *Generated automatically by the Repository Rename Coordinator*

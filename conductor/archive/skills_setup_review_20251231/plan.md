@@ -1,6 +1,7 @@
 # Track Implementation Plan: Skills Abstraction & Tool Setup Review
 
 ## Phase 1: Audit and Baseline [checkpoint: 5de5e94]
+
 - [x] Task: Inventory current skill templates and generated outputs [2e1d688]
   - [x] Sub-task: Map source templates to generated artifacts (`skills/`, `.antigravity/`, CLI manifests)
   - [x] Sub-task: Identify manual vs generated artifacts and drift risks
@@ -14,6 +15,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 1: Audit and Baseline' (Protocol in workflow.md) [02ac280]
 
 ## Phase 2: Manifest and Design [checkpoint: 95d8dbb]
+
 - [x] Task: Define a skills manifest schema as the single source of truth [a8186ef]
   - [x] Sub-task: Include skill metadata fields and tool visibility flags
   - [x] Sub-task: Include command syntax mapping per tool
@@ -28,19 +30,21 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 2: Manifest and Design' (Protocol in workflow.md) [02ac280]
 
 ## Phase 3: Automation and Generation [checkpoint: ca3043d]
+
 - [x] Task: Write failing tests for manifest loading and generated outputs (TDD Phase) [5a8c4f9]
   - [x] Sub-task: Add fixture manifest and expected outputs
   - [x] Sub-task: Add golden-file snapshot tests for generated artifacts
- - [x] Task: Implement manifest-driven generation in `scripts/sync_skills.py` [47c4349]
-  - [x] Sub-task: Load manifest and replace hardcoded metadata
-  - [x] Sub-task: Generate Agent Skills directories and `.antigravity/skills`
- - [x] Task: Extend generator to emit CLI extension manifests [9173dcf]
-  - [x] Sub-task: Update `gemini-extension.json` and `qwen-extension.json` from manifest
-  - [x] Sub-task: Ensure correct command syntax entries where applicable
+- [x] Task: Implement manifest-driven generation in `scripts/sync_skills.py` [47c4349]
+- [x] Sub-task: Load manifest and replace hardcoded metadata
+- [x] Sub-task: Generate Agent Skills directories and `.antigravity/skills`
+- [x] Task: Extend generator to emit CLI extension manifests [9173dcf]
+- [x] Sub-task: Update `gemini-extension.json` and `qwen-extension.json` from manifest
+- [x] Sub-task: Ensure correct command syntax entries where applicable
 - [x] Task: Implement the "no protocol changes" guard in generation or validation [4e8eda3]
 - [x] Task: Conductor - User Manual Verification 'Phase 3: Automation and Generation' (Protocol in workflow.md) [02ac280]
 
 ## Phase 4: Install UX and Validation [checkpoint: e824ff8]
+
 - [x] Task: Write failing tests for installer flags and validation script (TDD Phase) [8ec6e38]
   - [x] Sub-task: Add tests for non-interactive targets and dry-run output
   - [x] Sub-task: Add tests for `--link/--copy` behavior
@@ -55,6 +59,7 @@
 - [x] Task: Conductor - User Manual Verification 'Phase 4: Install UX and Validation' (Protocol in workflow.md) [02ac280]
 
 ## Phase 5: Documentation and Sync Checks [checkpoint: 8c1fba9]
+
 - [x] Task: Update docs with tool-native command syntax and setup steps [5b48ca4]
   - [x] Sub-task: Add table of tools -> command syntax (/, $, @)
   - [x] Sub-task: Clarify which artifacts each tool consumes

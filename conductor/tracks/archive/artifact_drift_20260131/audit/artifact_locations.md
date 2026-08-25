@@ -1,6 +1,7 @@
 # Generated Artifact Locations
 
 ## Repo-local outputs
+
 - skills: `skills/<skill>/SKILL.md`
 - Antigravity local skills (dev): `.antigravity/skills/<skill>/SKILL.md`
 - Antigravity workspace workflows: `.agent/workflows/<skill>.md`
@@ -10,6 +11,7 @@
 - VSIX build: `conductor.vsix`
 
 ## Global user outputs
+
 - Antigravity global workflows: `~/.gemini/antigravity/global_workflows/<skill>.md`
 - Antigravity workflow index: `~/.gemini/antigravity/global_workflows/global-workflow.md`
 - Antigravity global skills (optional): `~/.gemini/antigravity/skills/<skill>/SKILL.md`
@@ -19,5 +21,6 @@
 - Copilot rules: `~/.config/github-copilot/conductor.md`
 
 ## Adapter/command scaffolding
+
 - Gemini/Qwen commands: `commands/conductor/*.toml`
 - Claude commands/plugins: `.claude/commands/*.md` and `.claude-plugin/*`

@@ -14,13 +14,14 @@ If `conductor/tracks.md` doesn't exist, tell user to run `/conductor-setup` firs
 ## 2. Identify Target
 
 **If `$ARGUMENTS` provided:**
+
 - Parse to identify track, phase, or task name
 - Find it in `conductor/tracks.md` or relevant `plan.md`
 
 **If no arguments:**
 Show menu of recent revertible items:
 
-```
+```text
 ## What would you like to revert?
 
 ### In Progress Items
@@ -49,7 +50,7 @@ For the selected item:
 
 ## 4. Present Revert Plan
 
-```
+```text
 ## Revert Plan
 
 **Target:** [Task/Phase/Track] - "[Description]"
@@ -68,11 +69,13 @@ Wait for explicit user confirmation.
 ## 5. Execute Revert
 
 For each commit, newest to oldest:
+
 ```bash
 git revert --no-edit <sha>
 ```
 
 **If conflicts occur:**
+
 1. Stop and inform user
 2. Show conflicting files
 3. Guide through manual resolution or abort
@@ -80,6 +83,7 @@ git revert --no-edit <sha>
 ## 6. Update Plan State
 
 After successful revert:
+
 - Change `[x]` back to `[ ]` for reverted tasks
 - Change `[~]` back to `[ ]` if reverting in-progress items
 - Remove commit SHAs from reverted task lines

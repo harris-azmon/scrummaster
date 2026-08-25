@@ -19,11 +19,13 @@ Conductor detects existing code, scans relevant files, and documents the existin
 ## NewTrack
 
 Example:
+
 ```bash
 /conductor:newTrack "Add billing dashboard"
 ```
 
 Expected artifacts:
+
 - `conductor/tracks/<track_id>/spec.md`
 - `conductor/tracks/<track_id>/plan.md`
 - `conductor/tracks/<track_id>/metadata.json`

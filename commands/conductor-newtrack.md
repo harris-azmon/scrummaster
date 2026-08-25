@@ -10,6 +10,7 @@ Create a new track for: $ARGUMENTS
 ## 1. Verify Setup
 
 Check these files exist:
+
 - `conductor/product.md`
 - `conductor/tech-stack.md`
 - `conductor/workflow.md`
@@ -29,6 +30,7 @@ Ask 3-5 clarifying questions based on track type:
 **Bug**: Steps to reproduce? Expected vs actual behavior? When did it start?
 
 Generate `spec.md` with:
+
 - Overview
 - Functional Requirements
 - Acceptance Criteria
@@ -41,6 +43,7 @@ Present for approval, revise if needed.
 Read `conductor/workflow.md` for task structure (TDD, commit strategy).
 
 Generate `plan.md` with phases, tasks, subtasks:
+
 ```markdown
 # Implementation Plan
 
@@ -68,6 +71,7 @@ Present for approval, revise if needed.
 ## 6. Update Tracks File
 
 Append to `conductor/tracks.md`:
+
 ```markdown
 
 ---

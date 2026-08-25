@@ -1,9 +1,11 @@
 # Track Specification: Google Antigravity/Copilot VS Code Plugin Integration
 
 ## Overview
+
 This track focuses on researching and understanding what needs to be implemented to make the Conductor VS Code plugin work properly in Google Antigravity/Copilot environments. Currently, the plugin appears installed in extensions, but the slash commands don't appear in the agent chat interface.
 
 ## Functional Requirements
+
 1. **Command Integration Research**
    - Research how Antigravity/Copilot integrates with VS Code extensions differently than standard VS Code
    - Document the specific requirements for commands to appear in the agent chat interface
@@ -20,12 +22,14 @@ This track focuses on researching and understanding what needs to be implemented
    - Document any differences in how context is handled between environments
 
 ## Non-Functional Requirements
+
 1. The research should result in a clear technical plan for implementing the necessary changes
 2. The findings should be compatible with the existing Conductor architecture
 3. The solution should maintain consistency with the platform-agnostic approach of Conductor
 4. Research should consider maintainability and avoid platform-specific code where possible
 
 ## Acceptance Criteria
+
 1. A comprehensive report on the differences between VS Code and Antigravity/Copilot extension integration
 2. Clear technical requirements for making Conductor commands available in Antigravity/Copilot
 3. A roadmap for implementing the necessary changes to support Antigravity/Copilot
@@ -35,6 +39,7 @@ This track focuses on researching and understanding what needs to be implemented
 7. Examples or references from other successful Antigravity/Copilot integrations
 
 ## Out of Scope
+
 1. Actually implementing the changes (this will be a separate track)
 2. Modifying core Conductor functionality (unless research indicates it's necessary)
 3. Testing the implementation (this will be part of the implementation track)

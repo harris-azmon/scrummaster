@@ -20,7 +20,7 @@ Create an automated recurring workflow that synchronizes from upstream repositor
 ## Key Issues to Address (from 48 analyzed, 12 relevant)
 
 | Issue | Description | Priority |
-|-------|-------------|----------|
+| ------- | ------------- | ---------- |
 | #113 | Auto-create .gitignore on git init | High |
 | #112 | Update workflow with overwrite confirmation | High |
 | #108 | Fix TOML references | Medium |

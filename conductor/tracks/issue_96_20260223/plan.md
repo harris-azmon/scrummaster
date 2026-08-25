@@ -27,4 +27,4 @@
 
 ## References
 
-- Upstream Issue: https://github.com/gemini-cli-extensions/conductor/issues/96
+- Upstream Issue: <https://github.com/gemini-cli-extensions/conductor/issues/96>

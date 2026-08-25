@@ -52,5 +52,5 @@ This document summarizes key rules, idiomatic standards, and foundational philos
 
 ## Sources
 
-* [Ruby Style Guide](https://rubystyle.guide) & The Ruby Community Philosophy
-* [Wikipedia](https://en.wikipedia.org/wiki/Ruby_(programming_language)). *Often people, especially computer engineers, focus on the machines. But in fact we need to focus on humans, on how humans care about doing programming or operating the application of the machines. (Matz)*
+- [Ruby Style Guide](https://rubystyle.guide) & The Ruby Community Philosophy
+- [Wikipedia](https://en.wikipedia.org/wiki/Ruby_(programming_language)). *Often people, especially computer engineers, focus on the machines. But in fact we need to focus on humans, on how humans care about doing programming or operating the application of the machines. (Matz)*

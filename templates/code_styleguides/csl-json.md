@@ -343,7 +343,7 @@ Every CSL-JSON entry must have:
 ## Field Reference Table
 
 | Field | Description | Example |
-|-------|-------------|---------|
+| ------- | ------------- | --------- |
 | `id` | Unique identifier (citation key) | `"smith2024"` |
 | `type` | Document type | `"article-journal"` |
 | `title` | Title of work | `"Article Title"` |
@@ -595,7 +595,7 @@ suppress-bibliography: false
 ### Common CSL Styles
 
 | Style | File | Use Case |
-|-------|------|----------|
+| ------- | ------ | ---------- |
 | APA 7th | `apa.csl` | Social sciences |
 | MLA 9th | `modern-language-association.csl` | Humanities |
 | Chicago 17th | `chicago-author-date.csl` | History, general |

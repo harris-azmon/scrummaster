@@ -18,12 +18,7 @@
   "MD010": true,
   "MD011": true,
   "MD012": true,
-  "MD013": {
-    "line_length": 120,
-    "heading_line_length": 120,
-    "code_block_line_length": 120,
-    "tables": false
-  },
+  "MD013": false,
   "MD014": true,
   "MD018": true,
   "MD019": true,
@@ -86,7 +81,7 @@
   },
   "MD056": true,
   "ignores": [
-    "node_modules/",
+    "**/node_modules/**",
     ".git/",
     "**/vendor/**",
     "**/*.min.*"

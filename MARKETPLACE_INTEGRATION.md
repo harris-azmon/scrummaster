@@ -93,8 +93,8 @@ class Conductor < Formula
 end
 ```
 
-3. Run audit: `brew audit --new-formula Formula/conductor.rb`
-4. Submit pull request
+1. Run audit: `brew audit --new-formula Formula/conductor.rb`
+2. Submit pull request
 
 ### 5. Chocolatey Package
 
@@ -106,13 +106,13 @@ To publish to Chocolatey:
 choco pack chocolatey/conductor.nuspec
 ```
 
-2. Test locally:
+1. Test locally:
 
 ```powershell
 choco install conductor -s . -fdv
 ```
 
-3. Push to Chocolatey:
+1. Push to Chocolatey:
 
 ```powershell
 choco apikey -k YOUR_API_KEY -source https://push.chocolatey.org/

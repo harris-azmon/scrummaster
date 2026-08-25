@@ -32,6 +32,7 @@ The canonical schema is `skills/manifest.schema.json`, and the data source is `s
 | GitHub Copilot Chat | `~/.config/github-copilot/conductor.md` | `/conductor-setup` |
 
 ## Notes
+
 - The single source of truth for command syntax is `skills/manifest.json`.
 - If a tool behaves differently in your environment, update the manifest and regenerate outputs.
 - The tool matrix above is generated via `scripts/render_command_matrix.py`.

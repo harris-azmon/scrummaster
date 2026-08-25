@@ -57,14 +57,14 @@ If you are a developer or contributor who wants to fork the repository, write
 custom skills, or modify rule configurations, clone the repository locally and
 link it:
 
-1.  Clone the repository:
+1. Clone the repository:
 
     ```bash
     git clone https://github.com/harris-azmon/conductor.git
     cd conductor
     ```
 
-2.  Link globally for Antigravity:
+2. Link globally for Antigravity:
 
     ```bash
     mkdir -p ~/.gemini/config/plugins/ && ln -sfn "$(pwd)" ~/.gemini/config/plugins/conductor
@@ -78,13 +78,13 @@ reinstalling!
 
 If you want to isolate Conductor strictly inside a specific Git project:
 
-1.  Create the local plugins directory in your target project's root:
+1. Create the local plugins directory in your target project's root:
 
     ```bash
     mkdir -p .agents/plugins/
     ```
 
-2.  Link Conductor to your local project:
+2. Link Conductor to your local project:
 
     ```bash
     ln -sfn /absolute/path/to/cloned/conductor .agents/plugins/conductor
@@ -175,28 +175,28 @@ npm install -g @conductor/cli
 
 To safely remove Conductor from your environment:
 
-*   **Antigravity:**
-    *   **CLI Installation:** Run `agy plugins uninstall conductor`
-    *   **Global Link:** Run `rm -f ~/.gemini/config/plugins/conductor`
-    *   **Workspace Link:** Run `rm -f .agents/plugins/conductor`
-*   **Claude Code:** Run `/plugin remove conductor` and `/plugin marketplace
+- **Antigravity:**
+  - **CLI Installation:** Run `agy plugins uninstall conductor`
+  - **Global Link:** Run `rm -f ~/.gemini/config/plugins/conductor`
+  - **Workspace Link:** Run `rm -f .agents/plugins/conductor`
+- **Claude Code:** Run `/plugin remove conductor` and `/plugin marketplace
     remove gemini-cli-extensions/conductor`
 
 --------------------------------------------------------------------------------
 
 ## 🚀 Features
 
--   **Plan before you build**: Create specs and plans that guide the agent for
+- **Plan before you build**: Create specs and plans that guide the agent for
     new and existing codebases.
--   **Maintain context**: Ensure AI follows style guides, tech stack choices,
+- **Maintain context**: Ensure AI follows style guides, tech stack choices,
     and product goals.
--   **Iterate safely**: Review plans before code is written, keeping you firmly
+- **Iterate safely**: Review plans before code is written, keeping you firmly
     in the loop.
--   **Work as a team**: Set project-level context for your product, tech stack,
+- **Work as a team**: Set project-level context for your product, tech stack,
     and workflow preferences that become a shared foundation for your team.
--   **Build on existing projects**: Intelligent initialization for both new
+- **Build on existing projects**: Intelligent initialization for both new
     (Greenfield) and existing (Brownfield) projects.
--   **Smart revert**: A git-aware revert command that understands logical units
+- **Smart revert**: A git-aware revert command that understands logical units
     of work (tracks, phases, tasks) rather than just commit hashes.
 
 --------------------------------------------------------------------------------
@@ -209,12 +209,12 @@ console, or web editor).
 
 This is powered by the integrated **View Layer UX Adapter**:
 
-*   **Interactive GUI Modals:** If your host editor supports visual interactive
+- **Interactive GUI Modals:** If your host editor supports visual interactive
     dialog elements, Conductor will automatically capture selections, decision
     interviews, and track options as native graphical modal dialog windows.
-    *   `rules/`: Custom adapter rules tailored for visual IDE environments
+  - `rules/`: Custom adapter rules tailored for visual IDE environments
         (like Antigravity).
-*   **Graceful CLI Fallback:** If you are operating in a plain text terminal
+- **Graceful CLI Fallback:** If you are operating in a plain text terminal
     console (such as Claude Code), Conductor automatically detects the console
     environment and adapts all interactive steps into clean, structured
     text-based choice menus with bracketed numbers (e.g., `[1] Option A, [2]
@@ -244,23 +244,23 @@ When you run `/conductor:conductor-setup`, Conductor helps you define the core
 components of your project context. This context is then used for building new
 components or features by you or anyone on your team.
 
--   **Product**: Define project context (e.g. users, product goals, high-level
+- **Product**: Define project context (e.g. users, product goals, high-level
     features).
--   **Product guidelines**: Define standards (e.g. prose style, brand messaging,
+- **Product guidelines**: Define standards (e.g. prose style, brand messaging,
     visual identity).
--   **Tech stack**: Configure technical preferences (e.g. language, database,
+- **Tech stack**: Configure technical preferences (e.g. language, database,
     frameworks).
--   **Workflow**: Set team preferences (e.g. TDD, commit strategy). Uses
+- **Workflow**: Set team preferences (e.g. TDD, commit strategy). Uses
     `workflow.md` as a customizable template.
 
 **Generated Artifacts:**
 
--   `conductor/product.md`
--   `conductor/product-guidelines.md`
--   `conductor/tech-stack.md`
--   `conductor/workflow.md`
--   `conductor/code_styleguides/`
--   `conductor/tracks.md`
+- `conductor/product.md`
+- `conductor/product-guidelines.md`
+- `conductor/tech-stack.md`
+- `conductor/workflow.md`
+- `conductor/code_styleguides/`
+- `conductor/tracks.md`
 
 ```bash
 /conductor:conductor-setup
@@ -274,15 +274,15 @@ When you’re ready to take on a new feature or bug fix, run
 `/conductor:conductor-new-track`. This initializes a **track** — a high-level
 unit of work. Conductor helps you generate two critical artifacts:
 
--   **Specs**: The detailed requirements for the specific job. What are we
+- **Specs**: The detailed requirements for the specific job. What are we
     building and why?
--   **Plan**: An actionable to-do list containing phases, tasks, and sub-tasks.
+- **Plan**: An actionable to-do list containing phases, tasks, and sub-tasks.
 
 **Generated Artifacts:**
 
--   `conductor/tracks/<track_id>/spec.md`
--   `conductor/tracks/<track_id>/plan.md`
--   `conductor/tracks/<track_id>/metadata.json`
+- `conductor/tracks/<track_id>/spec.md`
+- `conductor/tracks/<track_id>/plan.md`
+- `conductor/tracks/<track_id>/metadata.json`
 
 ```bash
 /conductor:conductor-new-track
@@ -298,9 +298,9 @@ them.
 
 **Updated Artifacts:**
 
--   `conductor/tracks.md` (Status updates)
--   `conductor/tracks/<track_id>/plan.md` (Status updates)
--   Project context files (Synchronized on completion)
+- `conductor/tracks.md` (Status updates)
+- `conductor/tracks/<track_id>/plan.md` (Status updates)
+- Project context files (Synchronized on completion)
 
 ```bash
 /conductor:conductor-implement
@@ -309,19 +309,19 @@ them.
 During implementation, you can also monitor, revert, or review work using the
 following commands:
 
-*   **Check status**: Get a high-level overview of your project's progress.
+- **Check status**: Get a high-level overview of your project's progress.
 
     ```bash
     /conductor:conductor-status
     ```
 
-*   **Revert work**: Safely undo a feature, phase, or a specific task.
+- **Revert work**: Safely undo a feature, phase, or a specific task.
 
     ```bash
     /conductor:conductor-revert
     ```
 
-*   **Review work**: Review completed work against guidelines and the plan.
+- **Review work**: Review completed work against guidelines and the plan.
 
     ```bash
     /conductor:conductor-review
@@ -356,15 +356,15 @@ Command                          | Description                                  
 When a task or phase in your Conductor project wasn't completed correctly, you
 have three native recovery flows:
 
-1.  **Agile In-Flight Corrections**: If you notice an implementation gap while
+1. **Agile In-Flight Corrections**: If you notice an implementation gap while
     the agent is actively coding, specify the fix directly in the chat. The
     agent will natively adapt its coding loop and verify the fix before
     finalizing the task.
-2.  **Review Corrections (`/conductor:conductor-review`)**: If issues are caught
+2. **Review Corrections (`/conductor:conductor-review`)**: If issues are caught
     after a task/phase is marked completed, run the review command. The review
     agent will audit changes, verify style guides, execute tests, and append a
     `Review Fixes` tracking phase to `plan.md` to resolve them.
-3.  **Safe State Reversions (`/conductor:conductor-revert`)**: If a task
+3. **Safe State Reversions (`/conductor:conductor-revert`)**: If a task
     implementation is fundamentally flawed and needs a complete reset, run the
     revert command. This rolls back specific Git commits safely and resets the
     task state back to pending `[ ]` so you can prompt a fresh approach.
@@ -378,26 +378,26 @@ slash commands. You can interact with Conductor natively using natural language.
 Your active agent will dynamically recognize your intent and execute the
 corresponding Conductor protocol in the background:
 
--   **To Scaffold a Project**: > *"Let's create a new Conductor project"* or
+- **To Scaffold a Project**: > *"Let's create a new Conductor project"* or
     *"Run setup for Conductor"*
--   **To Plan a Feature**: > *"Let's start a new track to add a login screen"*
+- **To Plan a Feature**: > *"Let's start a new track to add a login screen"*
     or *"Create a plan for the dark mode track"*
--   **To Execute the Plan**: > *"Start implementing the active plan"* or
+- **To Execute the Plan**: > *"Start implementing the active plan"* or
     *"Proceed with the implementation"*
--   **To Check Progress**: > *"How is our track progress going?"* or *"Show the
+- **To Check Progress**: > *"How is our track progress going?"* or *"Show the
     current project status"*
--   **To Revert or Fix a Task**: > *"Revert the last completed task"* or *"Let's
+- **To Revert or Fix a Task**: > *"Revert the last completed task"* or *"Let's
     review the completed phase"*
 
 --------------------------------------------------------------------------------
 
 ## 📂 Repository Structure
 
--   `/skills`: The protocol logic (`SKILL.md`) for each command.
--   `/rules`: Platform-specific operational rules files.
--   `/conductor-core`, `/conductor-gemini`, `/conductor-vscode`: Platform
+- `/skills`: The protocol logic (`SKILL.md`) for each command.
+- `/rules`: Platform-specific operational rules files.
+- `/conductor-core`, `/conductor-gemini`, `/conductor-vscode`: Platform
     adapter packages built on the core library.
--   `/mcp`, `/mcp-server`: MCP servers used by Conductor's tooling integrations.
+- `/mcp`, `/mcp-server`: MCP servers used by Conductor's tooling integrations.
 
 --------------------------------------------------------------------------------
 
@@ -473,13 +473,13 @@ python3 scripts/render_command_matrix.py
 
 ## 🎓 Resources
 
--   [Antigravity Plugins Documentation](https://antigravity.google/docs/plugins):
+- [Antigravity Plugins Documentation](https://antigravity.google/docs/plugins):
     Official guidelines for using plugins in Antigravity.
--   [Claude Code Plugins Documentation](https://code.claude.com/docs/en/discover-plugins):
+- [Claude Code Plugins Documentation](https://code.claude.com/docs/en/discover-plugins):
     Guidelines for managing plugins in Claude Code.
--   [GitHub Issues](https://github.com/harris-azmon/conductor/issues):
+- [GitHub Issues](https://github.com/harris-azmon/conductor/issues):
     Report bugs or request features.
--   The team gratefully acknowledges Keith Ballinger's original
+- The team gratefully acknowledges Keith Ballinger's original
     [.conductor](https://github.com/keithballinger/.conductor) project as the
     groundwork for this repository.
 
@@ -487,4 +487,4 @@ python3 scripts/render_command_matrix.py
 
 ## ⚖ License
 
--   License: [Apache License 2.0](LICENSE)
+- License: [Apache License 2.0](LICENSE)

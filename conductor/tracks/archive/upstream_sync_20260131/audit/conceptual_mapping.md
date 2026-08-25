@@ -23,18 +23,21 @@ IDEs provide significantly richer context than the CLI. Conductor adapters shoul
 ## 3. Skill Execution Model
 
 ### CLI Model
+
 1. User enters command.
 2. Extension parses arguments.
 3. Extension executes protocol (TOML/Jinja2).
 4. Extension interacts via stdin/stdout.
 
 ### IDE Model
+
 1. User mentions `@conductor` with a command.
 2. Participant receives the request and context.
 3. Participant calls `conductor-core` to resolve the protocol.
 4. Participant handles the interaction loop via the chat interface (using `ask_user` tool).
 
 ## 4. Key Conventions Adoption
+
 - **Protocol-First:** Both models MUST share the same underlying protocol defined in `conductor-core`.
 - **Markdown-Primary:** All structured output should be Markdown-first for consistency across CLI and IDE.
 - **TDD Enforcement:** The TDD workflow must be identically enforced, regardless of the triggering interface.

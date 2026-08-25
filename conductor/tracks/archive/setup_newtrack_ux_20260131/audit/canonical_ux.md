@@ -5,9 +5,11 @@ This document defines canonical user-facing messages and metadata fields to alig
 ## Canonical Setup Messages
 
 ### Start
+
 - "Welcome to Conductor. I will guide you through the following steps to set up your project: ..."
 
 ### Resume (setup_state.json)
+
 - "Resuming setup: The Product Guide (`product.md`) is already complete. Next, we will create the Product Guidelines."
 - "Resuming setup: The Product Guide and Product Guidelines are complete. Next, we will define the Technology Stack."
 - "Resuming setup: The Product Guide, Guidelines, and Tech Stack are defined. Next, we will select Code Styleguides."
@@ -16,6 +18,7 @@ This document defines canonical user-facing messages and metadata fields to alig
 - When complete: "The project has already been initialized. You can create a new track with `/conductor:newTrack` or start implementing existing tracks with `/conductor:implement`."
 
 ### Brownfield Warning
+
 - "WARNING: You have uncommitted changes in your Git repository. Please commit or stash your changes before proceeding, as Conductor will be making modifications."
 
 ## Canonical NewTrack Messages
@@ -27,6 +30,7 @@ This document defines canonical user-facing messages and metadata fields to alig
 ## Metadata Fields (metadata.json)
 
 Required:
+
 - `track_id` (string)
 - `description` (string)
 - `type` ("feature" | "bug")
@@ -35,9 +39,11 @@ Required:
 - `updated_at` (ISO 8601)
 
 Optional:
+
 - `vcs` (object) when Git integration is enabled:
   - `enabled`, `provider`, `mode`, `base_branch`, `branch`, `worktree_path`, `created_at`
 
 ## Notes
+
 - All adapters should emit the same high-level messages even if their command syntax differs.
 - Track ID formatting should be consistent with the canonical template guidance to avoid UX drift.
