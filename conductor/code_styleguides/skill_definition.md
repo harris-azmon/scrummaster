@@ -6,7 +6,7 @@ This guide defines the standards for creating and maintaining Conductor skills.
 
 Skills should be defined in `conductor-core` and synchronized to platform adapters.
 
-```
+```text
 skills/
 └── <skill_id>/
     ├── SKILL.md          # User-facing documentation and triggers

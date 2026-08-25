@@ -18,7 +18,7 @@ Conductor is a Context-Driven Development (CDD) framework that transforms AI age
 
 When initialized, Conductor creates this structure in the project:
 
-```
+```text
 conductor/
 ├── product.md              # Product vision and goals
 ├── product-guidelines.md   # UX/brand guidelines

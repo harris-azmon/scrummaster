@@ -287,7 +287,7 @@ Before requesting review:
 
 ### Message Format
 
-```
+```text
 <type>(<scope>): <description>
 
 [optional body]

@@ -95,7 +95,7 @@ def hello_world():
 console.log('Hello, World!');
 ```
 
-```
+```text
 
 ## Links
 
@@ -232,7 +232,7 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 [MIT](./LICENSE)
 
-```
+```text
 
 ### API Documentation Template
 ```markdown
@@ -260,7 +260,7 @@ Returns list of resources.
 }
 ```
 
-```
+```text
 
 ## Best Practices
 

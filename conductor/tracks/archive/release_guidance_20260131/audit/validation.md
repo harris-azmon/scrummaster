@@ -2,7 +2,7 @@
 
 Command:
 
-```
+```text
 python scripts/validate_artifacts.py
 ```
 

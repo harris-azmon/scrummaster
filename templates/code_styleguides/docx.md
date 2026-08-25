@@ -57,7 +57,7 @@ doc.save('generated.docx')
 
 ### Standard Document Outline
 
-```
+```text
 1. Title Page
    - Document title
    - Subtitle (if any)

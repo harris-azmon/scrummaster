@@ -116,6 +116,7 @@ Before starting the review process, you MUST locate and read the project's found
 
 **Format your output strictly as follows:**
 
+````markdown
 # Review Report: [Track Name / Context]
 
 ## Summary
@@ -144,6 +145,7 @@ Before starting the review process, you MUST locate and read the project's found
 - old_code
 + new_code
 ```
+````
 
 ---
 

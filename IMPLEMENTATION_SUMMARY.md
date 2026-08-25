@@ -118,7 +118,7 @@ mise run verify           # Verify installation
 
 ### Configuration Files
 
-```
+```text
 .mise.toml                           # Mise configuration
 .markdownlint.json                   # Markdown linting rules
 .pre-commit-config.yaml              # Pre-commit hooks
@@ -126,14 +126,14 @@ mise run verify           # Verify installation
 
 ### GitHub Workflows
 
-```
+```text
 .github/workflows/docs-lint.yml      # Documentation validation CI
 .github/workflows/sync-upstream.yml  # Upstream sync automation
 ```
 
 ### Issue Templates
 
-```
+```text
 .github/ISSUE_TEMPLATE/bug_report.yml
 .github/ISSUE_TEMPLATE/feature_request.yml
 .github/ISSUE_TEMPLATE/upstream_sync.yml
@@ -141,14 +141,14 @@ mise run verify           # Verify installation
 
 ### Installation Scripts
 
-```
+```text
 install.sh                           # Unix/macOS installer
 install.ps1                          # Windows installer
 ```
 
 ### Python Scripts
 
-```
+```text
 scripts/conductor_install.py         # Universal installer
 scripts/conductor_update.py          # Update checker
 scripts/verify_installation.py       # Verification tool
@@ -160,7 +160,7 @@ scripts/validate_docs.py             # Doc validation
 
 ### Style Guides
 
-```
+```text
 templates/code_styleguides/markdown.md
 templates/code_styleguides/mermaid.md
 templates/code_styleguides/d3js.md
@@ -170,7 +170,7 @@ templates/code_styleguides/csl-json.md
 
 ### Updated Files
 
-```
+```text
 conductor/workflow.md                # Added Documentation Standards section
 conductor/tracks.md                  # Added 3 new tracks
 ```

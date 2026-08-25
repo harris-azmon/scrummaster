@@ -8,7 +8,7 @@ This file defines the specific shell commands and their expected behaviors for C
 
 ### initialize_repository
 
-# Purpose: Initializes a new, empty Git repository in the current directory
+**Purpose:** Initializes a new, empty Git repository in the current directory
 
 command: git init
 success_code: 0
@@ -20,9 +20,9 @@ error_handlers:
 
 ### get_repository_status
 
-# Purpose: Checks the status of the working tree to detect uncommitted changes
+**Purpose:** Checks the status of the working tree to detect uncommitted changes
 
-# Expected Output: A list of modified/untracked files (one per line). Empty if clean
+**Expected Output:** A list of modified/untracked files (one per line). Empty if clean
 
 command: git status --porcelain
 success_code: 0
@@ -30,9 +30,9 @@ error_handlers: []
 
 ### list_relevant_files
 
-# Purpose: Lists all files tracked by Git, plus any other non-ignored files
+**Purpose:** Lists all files tracked by Git, plus any other non-ignored files
 
-# Expected Output: A list of file paths (one per line)
+**Expected Output:** A list of file paths (one per line)
 
 command: git ls-files --exclude-standard -co
 success_code: 0
@@ -40,9 +40,9 @@ error_handlers: []
 
 ### get_latest_commit_hash
 
-# Purpose: Retrieves the full SHA hash of the most recent commit (HEAD)
+**Purpose:** Retrieves the full SHA hash of the most recent commit (HEAD)
 
-# Expected Output: A single 40-character commit SHA
+**Expected Output:** A single 40-character commit SHA
 
 command: git log -1 --format="%H"
 success_code: 0
@@ -54,13 +54,13 @@ error_handlers:
 
 ### get_changed_files_since
 
-# Purpose: Lists all files that have been changed between a specified commit and HEAD
+**Purpose:** Lists all files that have been changed between a specified commit and HEAD
 
-# Placeholders
+**Placeholders:**
 
-# - {{hash}}: The starting commit hash to compare against
+- {{hash}}: The starting commit hash to compare against
 
-# Expected Output: A list of file paths that have changed (one per line)
+**Expected Output:** A list of file paths that have changed (one per line)
 
 command: git diff --name-only {{hash}} HEAD
 success_code: 0
@@ -72,13 +72,13 @@ error_handlers:
 
 ### store_commit_metadata
 
-# Purpose: Appends a JSON object containing metadata about a commit to the project's metadata log
+**Purpose:** Appends a JSON object containing metadata about a commit to the project's metadata log
 
-# Placeholders
+**Placeholders:**
 
-# - {{hash}}: The hash of the commit to log
+- {{hash}}: The hash of the commit to log
 
-# - {{message}}: The detailed summary/message to associate with the commit
+- {{message}}: The detailed summary/message to associate with the commit
 
 command: echo "{\"hash\": \"{{hash}}\", \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%SZ)\", \"message\": \"{{message}}\"}" >> conductor/metadata.json
 success_code: 0
@@ -89,13 +89,13 @@ error_handlers:
 
 ### get_commit_metadata
 
-# Purpose: Searches the metadata log and retrieves the full JSON line for a specific commit hash
+**Purpose:** Searches the metadata log and retrieves the full JSON line for a specific commit hash
 
-# Placeholders
+**Placeholders:**
 
-# - {{hash}}: The commit hash to search for
+- {{hash}}: The commit hash to search for
 
-# Expected Output: The full JSON string corresponding to the commit if found, otherwise empty
+**Expected Output:** The full JSON string corresponding to the commit if found, otherwise empty
 
 command: grep ""hash": "{{hash}}"" conductor/metadata.json
 success_code: 0
@@ -106,11 +106,11 @@ error_handlers:
 
 ### revert_commit
 
-# Purpose: Creates a new commit that reverts the changes from a specified commit
+**Purpose:** Creates a new commit that reverts the changes from a specified commit
 
-# Placeholders
+**Placeholders:**
 
-# - {{hash}}: The hash of the commit to revert
+- {{hash}}: The hash of the commit to revert
 
 command: git revert --no-edit {{hash}}
 success_code: 0
@@ -128,13 +128,13 @@ error_handlers:
 
 ### get_commit_history_for_file
 
-# Purpose: Retrieves the commit history for a specific file
+**Purpose:** Retrieves the commit history for a specific file
 
-# Placeholders
+**Placeholders:**
 
-# - {{file}}: The path to the file to get the history for
+- {{file}}: The path to the file to get the history for
 
-# Expected Output: The standard `git log` output for the specified file
+**Expected Output:** The standard `git log` output for the specified file
 
 command: git log -- {{file}}
 success_code: 0
@@ -146,13 +146,13 @@ error_handlers:
 
 ### search_commit_history
 
-# Purpose: Searches the entire commit history for commits whose messages match a specific pattern
+**Purpose:** Searches the entire commit history for commits whose messages match a specific pattern
 
-# Placeholders
+**Placeholders:**
 
-# - {{pattern}}: The regex pattern to search for in commit messages
+- {{pattern}}: The regex pattern to search for in commit messages
 
-# Expected Output: The standard `git log` output for any matching commits
+**Expected Output:** The standard `git log` output for any matching commits
 
 command: git log --grep="{{pattern}}"
 success_code: 0

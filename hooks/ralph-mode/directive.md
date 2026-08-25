@@ -1,4 +1,4 @@
-## 🔴 RALPH MODE ACTIVE: TASK EXECUTION OVERRIDE
+# 🔴 RALPH MODE ACTIVE: TASK EXECUTION OVERRIDE
 
 **ATTENTION:** Announce verbatim
     > 🔁 Operating in **RALPH MODE** autonomous loop.

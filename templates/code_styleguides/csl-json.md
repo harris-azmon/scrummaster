@@ -17,7 +17,7 @@ It provides a unified format that can be formatted into any citation style (APA,
 
 ### File Naming
 
-```
+```text
 references.json          # Default name for single file
 bibliography.json        # Alternative name
 refs-2026-02.json       # With date suffix

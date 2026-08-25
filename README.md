@@ -15,7 +15,7 @@ context as a managed artifact alongside your code, you transform your repository
 into a single source of truth that drives every agent interaction with deep,
 persistent project awareness.
 
---------------------------------------------------------------------------------
+---
 
 ## Architecture
 
@@ -34,7 +34,7 @@ This repository is organized as a modular monorepo:
 For tool-native command syntax and the artifacts each client consumes, see
 `docs/skill-command-syntax.md`.
 
---------------------------------------------------------------------------------
+---
 
 ## 🛠 Installation Guide
 
@@ -90,7 +90,7 @@ If you want to isolate Conductor strictly inside a specific Git project:
     ln -sfn /absolute/path/to/cloned/conductor .agents/plugins/conductor
     ```
 
---------------------------------------------------------------------------------
+---
 
 ### 2. Claude Code
 
@@ -104,7 +104,7 @@ your Claude Code session:
 /plugin install conductor
 ```
 
---------------------------------------------------------------------------------
+---
 
 ### 3. VS Code
 
@@ -112,7 +112,7 @@ Download the `conductor.vsix` from the
 [Releases](https://github.com/harris-azmon/conductor/releases) page and
 install it in VS Code.
 
---------------------------------------------------------------------------------
+---
 
 ### 4. Agent Skills (Claude CLI / OpenCode / Codex)
 
@@ -142,7 +142,7 @@ You can also use flags:
 The skill is installed with symlinks to this repository, so running `git pull`
 will automatically update the skill.
 
---------------------------------------------------------------------------------
+---
 
 ### 5. Alternative Installation Methods
 
@@ -169,7 +169,7 @@ pip install conductor-core conductor-gemini
 npm install -g @conductor/cli
 ```
 
---------------------------------------------------------------------------------
+---
 
 ## 🔄 Uninstallation
 
@@ -182,7 +182,7 @@ To safely remove Conductor from your environment:
 - **Claude Code:** Run `/plugin remove conductor` and `/plugin marketplace
     remove gemini-cli-extensions/conductor`
 
---------------------------------------------------------------------------------
+---
 
 ## 🚀 Features
 
@@ -199,7 +199,7 @@ To safely remove Conductor from your environment:
 - **Smart revert**: A git-aware revert command that understands logical units
     of work (tracks, phases, tasks) rather than just commit hashes.
 
---------------------------------------------------------------------------------
+---
 
 ## 🎨 Adaptive User Experience (UX Layer)
 
@@ -224,7 +224,7 @@ This dynamic, semantic adaptation occurs natively behind the scenes with **zero
 configuration required**, ensuring the optimal developer experience regardless
 of your chosen workflow environment.
 
---------------------------------------------------------------------------------
+---
 
 ## 📖 Usage & Lifecycle
 
@@ -336,20 +336,20 @@ guidance. To report context size:
 python scripts/context_report.py
 ```
 
---------------------------------------------------------------------------------
+---
 
 ## 📋 Commands Reference
 
-Command                          | Description                                                                             | Generated Artifacts
-:------------------------------- | :-------------------------------------------------------------------------------------- | :------------------
-`/conductor:conductor-setup`     | Scaffolds the project and sets up the Conductor environment. Run this once per project. | `conductor/product.md`<br>`conductor/product-guidelines.md`<br>`conductor/tech-stack.md`<br>`conductor/workflow.md`<br>`conductor/tracks.md`
-`/conductor:conductor-new-track` | Starts a new feature or bug track. Generates `spec.md` and `plan.md`.                   | `conductor/tracks/<id>/spec.md`<br>`conductor/tracks/<id>/plan.md`<br>`conductor/tracks.md`
-`/conductor:conductor-implement` | Executes the tasks defined in the current track's plan.                                 | `conductor/tracks.md`<br>`conductor/tracks/<id>/plan.md`
-`/conductor:conductor-status`    | Displays the current progress of the tracks file and active tracks.                     | Reads `conductor/tracks.md`
-`/conductor:conductor-revert`    | Reverts a track, phase, or task by analyzing git history.                               | Reverts git history
-`/conductor:conductor-review`    | Reviews completed work against guidelines and the plan.                                 | Reads `plan.md`, `product-guidelines.md`
+| Command                          | Description                                                                             | Generated Artifacts |
+| :------------------------------- | :-------------------------------------------------------------------------------------- | :------------------ |
+| `/conductor:conductor-setup`     | Scaffolds the project and sets up the Conductor environment. Run this once per project. | `conductor/product.md`<br>`conductor/product-guidelines.md`<br>`conductor/tech-stack.md`<br>`conductor/workflow.md`<br>`conductor/tracks.md` |
+| `/conductor:conductor-new-track` | Starts a new feature or bug track. Generates `spec.md` and `plan.md`.                   | `conductor/tracks/<id>/spec.md`<br>`conductor/tracks/<id>/plan.md`<br>`conductor/tracks.md` |
+| `/conductor:conductor-implement` | Executes the tasks defined in the current track's plan.                                 | `conductor/tracks.md`<br>`conductor/tracks/<id>/plan.md` |
+| `/conductor:conductor-status`    | Displays the current progress of the tracks file and active tracks.                     | Reads `conductor/tracks.md` |
+| `/conductor:conductor-revert`    | Reverts a track, phase, or task by analyzing git history.                               | Reverts git history |
+| `/conductor:conductor-review`    | Reviews completed work against guidelines and the plan.                                 | Reads `plan.md`, `product-guidelines.md` |
 
---------------------------------------------------------------------------------
+---
 
 ## 💡 Best Practices for Task Corrections
 
@@ -369,7 +369,7 @@ have three native recovery flows:
     revert command. This rolls back specific Git commits safely and resets the
     task state back to pending `[ ]` so you can prompt a fresh approach.
 
---------------------------------------------------------------------------------
+---
 
 ## 🚂 Getting Started (Natural Language Triggering)
 
@@ -389,7 +389,7 @@ corresponding Conductor protocol in the background:
 - **To Revert or Fix a Task**: > *"Revert the last completed task"* or *"Let's
     review the completed phase"*
 
---------------------------------------------------------------------------------
+---
 
 ## 📂 Repository Structure
 
@@ -399,7 +399,7 @@ corresponding Conductor protocol in the background:
     adapter packages built on the core library.
 - `/mcp`, `/mcp-server`: MCP servers used by Conductor's tooling integrations.
 
---------------------------------------------------------------------------------
+---
 
 ## Development
 
@@ -469,7 +469,7 @@ regenerate the tool matrix in `docs/skill-command-syntax.md`, run:
 python3 scripts/render_command_matrix.py
 ```
 
---------------------------------------------------------------------------------
+---
 
 ## 🎓 Resources
 
@@ -483,7 +483,7 @@ python3 scripts/render_command_matrix.py
     [.conductor](https://github.com/keithballinger/.conductor) project as the
     groundwork for this repository.
 
---------------------------------------------------------------------------------
+---
 
 ## ⚖ License
 

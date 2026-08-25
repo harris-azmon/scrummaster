@@ -4,7 +4,7 @@ Context-Driven Development for Claude Code. Measure twice, code once.
 
 ## Usage
 
-```
+```text
 /conductor [command] [args]
 ```
 
@@ -274,7 +274,7 @@ For each track:
 
 ### 3. Present Summary
 
-```
+```text
 ## Conductor Status
 
 **Current Track:** [name] ([x]/[total] tasks)
@@ -318,7 +318,7 @@ For the selected item:
 
 ### 3. Present Plan
 
-```
+```text
 ## Revert Plan
 
 **Target:** [Task/Phase/Track] - "[Description]"

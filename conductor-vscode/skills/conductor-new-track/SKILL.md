@@ -12,6 +12,7 @@ engine_compatibility: >=0.2.0
 Plans a new track (feature or bug fix), generates spec/plan documents, and updates the registry.
 
 ## Triggers
+
 This skill is activated by the following phrases:
 
 - "$conductor-new-track"
@@ -22,8 +23,8 @@ This skill is activated by the following phrases:
 
 - "@conductor /new-track"
 
-
 ## Usage
+
 To use this skill, simply type one of the triggers or ask the agent to "new_track".
 
 ## Platform-Specific Commands
@@ -48,6 +49,4 @@ To use this skill, simply type one of the triggers or ask the agent to "new_trac
 
 - **Skillshare:** `/conductor-new-track`
 
-
 ## Capabilities Required
-

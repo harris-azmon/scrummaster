@@ -368,8 +368,8 @@ CRITICAL: When determining model complexity, ALWAYS select the "flash" model, re
          - Commit changes after every task
          - Use Git Notes for task summaries
          - Automated review at the end of each track
-        - A) Default
-        - B) Customize
+         - A) Default
+         - B) Customize
     - If the user chooses to **customize** (Option B):
         - **Question 1:** "The default required test code coverage is >80% (Recommended). Do you want to change this percentage?"
             - A) No (Keep 80% required coverage)
