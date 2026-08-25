@@ -1,15 +1,15 @@
 #!/bin/bash
-# Install Conductor skill for Claude CLI / OpenCode / Codex
+# Install Scrummaster skill for Claude CLI / OpenCode / Codex
 # Usage: ./install.sh [--target <claude|opencode|codex|all>] [--list] [--dry-run] [--force] [--link|--copy]
 #
-# This script creates a skill directory with symlinks or copies to the Conductor repository,
+# This script creates a skill directory with symlinks or copies to the Scrummaster repository,
 # so updates to the repo are automatically reflected when using --link.
 
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 SKILL_DIR="$(dirname "$SCRIPT_DIR")"
-CONDUCTOR_ROOT="$(dirname "$SKILL_DIR")"
+SCRUMMASTER_ROOT="$(dirname "$SKILL_DIR")"
 
 MODE="link"
 TARGET=""
@@ -37,7 +37,7 @@ detect_environments() {
 }
 
 usage() {
-    echo "Conductor Skill Installer"
+    echo "Scrummaster Skill Installer"
     echo "========================="
     echo ""
     echo "Usage:"
@@ -89,23 +89,23 @@ if [ "$LIST_ONLY" = "true" ]; then
     exit 0
 fi
 
-echo "Conductor Skill Installer"
+echo "Scrummaster Skill Installer"
 echo "========================="
 echo ""
 
-# Check if we're running from within a conductor repo
-if [ ! -f "$CONDUCTOR_ROOT/commands/conductor/setup.toml" ]; then
-    echo "Error: This script must be run from within the Conductor repository."
-    echo "Expected to find: $CONDUCTOR_ROOT/commands/conductor/setup.toml"
+# Check if we're running from within a scrummaster repo
+if [ ! -f "$SCRUMMASTER_ROOT/commands/scrummaster/setup.toml" ]; then
+    echo "Error: This script must be run from within the Scrummaster repository."
+    echo "Expected to find: $SCRUMMASTER_ROOT/commands/scrummaster/setup.toml"
     echo ""
     echo "Please clone the repository first:"
-    echo "  git clone https://github.com/gemini-cli-extensions/conductor.git"
-    echo "  cd conductor"
+    echo "  git clone https://github.com/gemini-cli-extensions/scrummaster.git"
+    echo "  cd scrummaster"
     echo "  ./skill/scripts/install.sh"
     exit 1
 fi
 
-echo "Conductor repository found at: $CONDUCTOR_ROOT"
+echo "Scrummaster repository found at: $SCRUMMASTER_ROOT"
 
 if [ -z "$TARGET" ]; then
     if [ "$FORCE" = "true" ]; then
@@ -116,9 +116,9 @@ if [ -z "$TARGET" ]; then
     echo ""
     echo "Where do you want to install the skill?"
     echo ""
-    echo "  1) OpenCode global    (~/.opencode/skill/conductor/)"
-    echo "  2) Claude CLI global  (~/.claude/skills/conductor/)"
-    echo "  3) Codex global       (~/.codex/skills/conductor/)"
+    echo "  1) OpenCode global    (~/.opencode/skill/scrummaster/)"
+    echo "  2) Claude CLI global  (~/.claude/skills/scrummaster/)"
+    echo "  3) Codex global       (~/.codex/skills/scrummaster/)"
     echo "  4) All of the above"
     echo ""
     read -p "Choose [1/2/3/4]: " choice
@@ -145,16 +145,16 @@ fi
 
 case "$TARGET" in
     opencode)
-        TARGETS=("$HOME/.opencode/skill/conductor")
+        TARGETS=("$HOME/.opencode/skill/scrummaster")
         ;;
     claude)
-        TARGETS=("$HOME/.claude/skills/conductor")
+        TARGETS=("$HOME/.claude/skills/scrummaster")
         ;;
     codex)
-        TARGETS=("$HOME/.codex/skills/conductor")
+        TARGETS=("$HOME/.codex/skills/scrummaster")
         ;;
     all)
-        TARGETS=("$HOME/.opencode/skill/conductor" "$HOME/.claude/skills/conductor" "$HOME/.codex/skills/conductor")
+        TARGETS=("$HOME/.opencode/skill/scrummaster" "$HOME/.claude/skills/scrummaster" "$HOME/.codex/skills/scrummaster")
         ;;
     *)
         echo "Invalid target: $TARGET"
@@ -171,8 +171,8 @@ for TARGET_DIR in "${TARGETS[@]}"; do
         echo "  [dry-run] rm -rf $TARGET_DIR"
         echo "  [dry-run] mkdir -p $TARGET_DIR"
         echo "  [dry-run] cp $SKILL_DIR/SKILL.md $TARGET_DIR/"
-        echo "  [dry-run] $MODE $CONDUCTOR_ROOT/commands -> $TARGET_DIR/commands"
-        echo "  [dry-run] $MODE $CONDUCTOR_ROOT/templates -> $TARGET_DIR/templates"
+        echo "  [dry-run] $MODE $SCRUMMASTER_ROOT/commands -> $TARGET_DIR/commands"
+        echo "  [dry-run] $MODE $SCRUMMASTER_ROOT/templates -> $TARGET_DIR/templates"
         continue
     fi
 
@@ -186,16 +186,16 @@ for TARGET_DIR in "${TARGETS[@]}"; do
     cp "$SKILL_DIR/SKILL.md" "$TARGET_DIR/"
 
     if [ "$MODE" = "copy" ]; then
-        cp -R "$CONDUCTOR_ROOT/commands" "$TARGET_DIR/commands"
-        cp -R "$CONDUCTOR_ROOT/templates" "$TARGET_DIR/templates"
+        cp -R "$SCRUMMASTER_ROOT/commands" "$TARGET_DIR/commands"
+        cp -R "$SCRUMMASTER_ROOT/templates" "$TARGET_DIR/templates"
     else
-        ln -s "$CONDUCTOR_ROOT/commands" "$TARGET_DIR/commands"
-        ln -s "$CONDUCTOR_ROOT/templates" "$TARGET_DIR/templates"
+        ln -s "$SCRUMMASTER_ROOT/commands" "$TARGET_DIR/commands"
+        ln -s "$SCRUMMASTER_ROOT/templates" "$TARGET_DIR/templates"
     fi
 
     echo "  Created: $TARGET_DIR/SKILL.md"
-    echo "  $MODE: $TARGET_DIR/commands -> $CONDUCTOR_ROOT/commands"
-    echo "  $MODE: $TARGET_DIR/templates -> $CONDUCTOR_ROOT/templates"
+    echo "  $MODE: $TARGET_DIR/commands -> $SCRUMMASTER_ROOT/commands"
+    echo "  $MODE: $TARGET_DIR/templates -> $SCRUMMASTER_ROOT/templates"
 done
 
 if [ "$DRY_RUN" = "true" ]; then
@@ -205,14 +205,14 @@ if [ "$DRY_RUN" = "true" ]; then
 fi
 
 echo ""
-echo "Conductor skill installed successfully!"
+echo "Scrummaster skill installed successfully!"
 echo ""
 echo "Structure:"
 for TARGET_DIR in "${TARGETS[@]}"; do
     ls -la "$TARGET_DIR" 2>/dev/null || true
 done
 echo ""
-echo "The skill references the Conductor repo at: $CONDUCTOR_ROOT"
+echo "The skill references the Scrummaster repo at: $SCRUMMASTER_ROOT"
 if [ "$MODE" = "link" ]; then
     echo "Updates to the repo (git pull) will be reflected automatically."
 fi

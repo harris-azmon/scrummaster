@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://gemini-cli-extensions.github.io/conductor/skills/manifest.schema.json",
-  "title": "Conductor Skills Manifest",
+  "$id": "https://gemini-cli-extensions.github.io/scrummaster/skills/manifest.schema.json",
+  "title": "Scrummaster Skills Manifest",
   "type": "object",
   "required": ["manifest_version", "tools", "skills"],
   "properties": {

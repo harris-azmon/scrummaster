@@ -1,13 +1,13 @@
 {
-  "name": "conductor",
+  "name": "scrummaster",
   "owner": {
-    "name": "Conductor"
+    "name": "Scrummaster"
   },
   "plugins": [
     {
-      "name": "conductor",
+      "name": "scrummaster",
       "source": "./",
-      "description": "Conductor is a set of modular AI agent skills for Claude Code that enables Spec-Driven Development."
+      "description": "Scrummaster is a set of modular AI agent skills for Claude Code that enables Spec-Driven Development."
     }
   ]
 }
