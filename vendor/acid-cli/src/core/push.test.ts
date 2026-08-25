@@ -201,6 +201,24 @@ describe("push.SCAN.6 push.SCAN.6-1 push.SCAN.6-2", () => {
 		});
 	});
 
+	test("parseScrummasterSpecDocument recognizes ACIDs whose story name follows the shortname_YYYYMMDD convention", () => {
+		// commands/scrummaster-newstory.md generates story IDs as
+		// `shortname_YYYYMMDD` - the story-name segment must allow
+		// underscores, not just hyphens.
+		const raw = "## AUTH\n- `login_flow_20260101.AUTH.1` — a user can log in\n";
+		const parsed = parseScrummasterSpecDocument(
+			raw,
+			"scrummaster/epics/epic-1/stories/login_flow_20260101/spec.md",
+			"example-product",
+		);
+		expect(parsed.spec.requirements).toEqual({
+			"login_flow_20260101.AUTH.1": {
+				requirement: "a user can log in",
+				deprecated: false,
+			},
+		});
+	});
+
 	test("parseScrummasterSpecDocument ignores non-ACID prose lines and returns no requirements when there are none", () => {
 		const raw = "## Overview\nJust some prose, no ACIDs here.\n- A plain bullet with no ACID.\n";
 		const parsed = parseScrummasterSpecDocument(

@@ -106,6 +106,20 @@ function escapeSqlString(value: string): string {
 	return value.replace(/'/g, "''");
 }
 
+// acai_status carries the richer set-status vocabulary
+// (assigned/blocked/incomplete/completed/rejected/accepted); fossil's own
+// built-in status (Open/Closed, set directly by e.g. `/scrummaster-implement`'s
+// `fossil ticket change ... status Closed`) is a second, independent way a
+// ticket ends up "done". Without this fallback, a ticket closed only via
+// fossil's own status field would show `acid feature`'s per-ACID status as
+// null while `acid features`' completed_count (which already checks
+// `status === "Closed"` directly) counted it as done - an internal
+// inconsistency between acid-cli's own two read commands.
+function resolveAcaiStatus(row: TicketRow): string | null {
+	if (row.acai_status) return row.acai_status;
+	return row.status === "Closed" ? "completed" : null;
+}
+
 async function listImplementations(
 	runtime: RuntimeCompat,
 	cwd: string,
@@ -186,9 +200,10 @@ async function listImplementationFeatures(
 	const features = [...byStory.entries()]
 		.filter(([, ticketRows]) =>
 			statusFilter
-				? ticketRows.some(
-						(row) => row.acai_status && statusFilter.has(row.acai_status),
-					)
+				? ticketRows.some((row) => {
+						const status = resolveAcaiStatus(row);
+						return status !== null && statusFilter.has(status);
+					})
 				: true,
 		)
 		.map(([featureName, ticketRows]) => {
@@ -202,7 +217,7 @@ async function listImplementationFeatures(
 				refs_count: refsCount,
 				test_refs_count: 0,
 				has_local_spec: true,
-				has_local_states: ticketRows.some((row) => row.acai_status !== null),
+				has_local_states: ticketRows.some((row) => resolveAcaiStatus(row) !== null),
 				states_inherited: false,
 				spec_last_seen_commit: ticketRows[0]?.last_seen_commit ?? "",
 			};
@@ -239,18 +254,21 @@ async function getFeatureContext(
 		? new Set(input.statuses)
 		: undefined;
 	const filtered = statusFilter
-		? rows.filter((row) => row.acai_status && statusFilter.has(row.acai_status))
+		? rows.filter((row) => {
+				const status = resolveAcaiStatus(row);
+				return status !== null && statusFilter.has(status);
+			})
 		: rows;
 
 	const statusCounts: Record<string, number> = {};
 	for (const row of filtered) {
-		const key = row.acai_status ?? "null";
+		const key = resolveAcaiStatus(row) ?? "null";
 		statusCounts[key] = (statusCounts[key] ?? 0) + 1;
 	}
 
 	const acids = filtered.map((row) => ({
 		acid: row.acid ?? "",
-		state: { status: row.acai_status },
+		state: { status: resolveAcaiStatus(row) },
 		refs_count: 0,
 		test_refs_count: 0,
 		requirement: row.title ?? "",

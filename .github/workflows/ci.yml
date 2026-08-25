@@ -30,6 +30,15 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install acid CLI dependencies
+        # scripts/e2e_smoke_test.py (run by `scrummaster_dev.py verify` below)
+        # shells out to `bun vendor/acid-cli/src/index.ts`, which needs its
+        # dependencies installed to resolve.
+        run: cd vendor/acid-cli && bun install --frozen-lockfile
+
       - name: Run Core Tests
         shell: bash -l {0}
         run: |

@@ -31,6 +31,8 @@ components:
                 requirement: When refs are requested, the command relays per-ACID refs returned by the backend response
                 deprecated: true
             3-note: The fossil backend does not persist per-reference storage; `--include-refs` currently returns an empty refs array per ACID (see fossil-client.ts's `getFeatureContext`). Use `acid push --all` against a fresh scan to recompute refs locally instead.
+            4: An ACID's resolved state falls back to `completed` when its ticket has no `set-status`-written status but was closed directly (e.g. by `/scrummaster-implement`'s own `fossil ticket change ... status Closed`)
+            4-note: Without this fallback a ticket closed only via fossil's built-in status field showed `null` here while `acid features`' completion counts (which already checked the built-in status directly) counted it as done - an inconsistency between acid-cli's own two read commands, not just against the skill's raw fossil commands. See `resolveAcaiStatus` in fossil-client.ts.
 
 constraints:
     UX:

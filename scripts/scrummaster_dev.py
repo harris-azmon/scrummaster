@@ -35,6 +35,7 @@ def verify() -> None:
         [python, "scripts/validate_platforms.py"],
         [python, "scripts/validate_antigravity.py"],
         [python, "scripts/check_skills_sync.py"],
+        [python, "scripts/e2e_smoke_test.py"],
     ]
 
     all_passed = True

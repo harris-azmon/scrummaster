@@ -121,8 +121,11 @@ const SCRUMMASTER_SPEC_PATH_PATTERN =
 	/^scrummaster\/epics\/([^/]+)\/stories\/([^/]+)\/spec\.md$/;
 // - `<acid>` — <requirement text>, e.g. `- \`login-flow.AUTH.1\` — a user can log in`.
 // Accepts either an em-dash or a plain hyphen as the description separator.
+// The story-name segment allows underscores (not just hyphens) because
+// commands/scrummaster-newstory.md's own story-ID convention is
+// `shortname_YYYYMMDD` - matches FULL_ACID_PATTERN's character class above.
 const SCRUMMASTER_ACID_BULLET_PATTERN =
-	/^-\s*`([a-z0-9-]+\.[A-Z][A-Z0-9_-]*\.[0-9]+(?:-[0-9]+)?)`\s*[-—]\s*(.+)$/;
+	/^-\s*`([A-Za-z0-9_-]+\.[A-Z][A-Z0-9_-]*\.[0-9]+(?:-[0-9]+)?)`\s*[-—]\s*(.+)$/;
 // Trailing `[deprecated]` or `[deprecated: <reason>]` marks a scrummaster
 // spec.md requirement deprecated, mirroring `.feature.yaml`'s `deprecated:
 // true` + note fields (see push.SCAN.6-note).

@@ -355,6 +355,59 @@ describe("feature API and formatting", () => {
 		expect(sqlCall?.input).toContain("story_id = 'feature'");
 	});
 
+	test("feature.API.4 falls back to a completed state for a fossil-Closed ticket with no acai_status set", async () => {
+		const { runtime } = createFakeFossilRuntime([
+			{
+				tkt_uuid: "uuid-1",
+				epic_id: null,
+				story_id: "feature",
+				acid: "feature.MAIN.1",
+				component: "MAIN",
+				status: "Closed",
+				acai_status: null,
+				acai_comment: null,
+				title: "Expose the command",
+				deprecated: 0,
+				last_seen_commit: "abc123",
+			},
+			{
+				tkt_uuid: "uuid-2",
+				epic_id: null,
+				story_id: "feature",
+				acid: "feature.MAIN.2",
+				component: "MAIN",
+				status: "Open",
+				acai_status: null,
+				acai_comment: null,
+				title: "Still open",
+				deprecated: 0,
+				last_seen_commit: "abc123",
+			},
+		]);
+		const client = createFossilClient({ cwd: "/repo", runtime });
+
+		const response = await client.getFeatureContext({
+			productName: "example-product",
+			featureName: "feature",
+			implementationName: "trunk",
+		});
+
+		expect(response.data.summary.status_counts).toEqual({
+			completed: 1,
+			null: 1,
+		});
+		const acidsByAcid = Object.fromEntries(
+			response.data.acids.map((entry: { acid: string; state: { status: string | null } }) => [
+				entry.acid,
+				entry.state.status,
+			]),
+		);
+		expect(acidsByAcid).toEqual({
+			"feature.MAIN.1": "completed",
+			"feature.MAIN.2": null,
+		});
+	});
+
 	test("feature.API.2 feature.API.3 and feature.UX.1 format summary, acids, refs, and warnings in API order", () => {
 		const payload = buildFeatureContextResponse({
 			data: {
