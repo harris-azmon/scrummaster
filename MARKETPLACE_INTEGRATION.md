@@ -4,8 +4,8 @@ This document outlines the process for publishing Conductor to various marketpla
 
 ## Current Status
 
-✅ **mise Integration**: Complete - Available via `mise install edithatogo/conductor-next`
-✅ **install.cat Integration**: Complete - Available via `curl install.cat/edithatogo/conductor-next | sh`
+✅ **mise Integration**: Complete - Available via `mise install harris-azmon/conductor`
+✅ **install.cat Integration**: Complete - Available via `curl install.cat/harris-azmon/conductor | sh`
 ✅ **Smithery Manifest**: Complete - Ready for Smithery publication
 ✅ **PyPI Preparation**: Complete - setup.cfg ready for publication
 ✅ **npm Preparation**: Complete - package.json ready for publication
@@ -73,8 +73,8 @@ To submit to Homebrew:
 ```ruby
 class Conductor < Formula
   desc "Context-Driven Development tool for AI-assisted workflows"
-  homepage "https://github.com/edithatogo/conductor-next-next"
-  url "https://github.com/edithatogo/conductor-next-next/archive/v0.2.0.tar.gz"
+  homepage "https://github.com/harris-azmon/conductor"
+  url "https://github.com/harris-azmon/conductor/archive/v0.2.0.tar.gz"
   sha256 "REPLACE_WITH_ACTUAL_SHA256"
   license "MIT"
 

@@ -59,7 +59,7 @@ mise run verify           # Verify installation
 
 **Installation Methods:**
 
-- One-liner: `curl install.cat/edithatogo/conductor-next | sh`
+- One-liner: `curl install.cat/harris-azmon/conductor | sh`
 - Manual: Clone repo and run `mise run install-all`
 - Component-specific: Use `--core`, `--gemini`, `--vscode`, `--claude` flags
 
@@ -180,10 +180,10 @@ conductor/tracks.md                  # Added 3 new tracks
 
 ```bash
 # One-liner install
-curl -fsSL install.cat/edithatogo/conductor-next | sh
+curl -fsSL install.cat/harris-azmon/conductor | sh
 
 # Or with PowerShell (Windows)
-irm install.cat/edithatogo/conductor-next | iex
+irm install.cat/harris-azmon/conductor | iex
 ```
 
 ### Development Tasks
@@ -246,7 +246,7 @@ git push origin main
 # Change: conductor → conductor-next
 
 # 5. Update your local clone
-git remote set-url origin https://github.com/edithatogo/conductor-next-next.git
+git remote set-url origin https://github.com/harris-azmon/conductor.git
 ```
 
 ## Support

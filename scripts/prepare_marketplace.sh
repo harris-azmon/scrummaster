@@ -32,7 +32,7 @@ log_error() {
 # Configuration
 VERSION="0.2.0"
 PROJECT_NAME="conductor"
-REPO_URL="https://github.com/edithatogo/conductor-next-next"
+REPO_URL="https://github.com/harris-azmon/conductor"
 
 # Check if command exists
 command_exists() {

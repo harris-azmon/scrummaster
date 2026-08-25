@@ -57,10 +57,10 @@ The easiest way to install Conductor is using the universal installer, which wor
 
 ```bash
 # Unix/macOS
-curl -fsSL install.cat/edithatogo/conductor-next | sh
+curl -fsSL install.cat/harris-azmon/conductor | sh
 
 # Windows (PowerShell)
-irm install.cat/edithatogo/conductor-next | iex
+irm install.cat/harris-azmon/conductor | iex
 ```
 
 This installer uses [mise](https://mise.jdx.dev/) to manage dependencies and provides the most consistent experience across platforms.
@@ -73,7 +73,7 @@ Conductor is available through multiple package managers:
 
 ```bash
 # Install via mise
-mise install edithatogo/conductor-next
+mise install harris-azmon/conductor
 ```
 
 #### Smithery (Coming Soon)
@@ -87,13 +87,13 @@ smithery install conductor
 
 ```bash
 # Coming soon
-brew install edithatogo/tap/conductor
+brew install harris-azmon/tap/conductor
 ```
 
 #### pip (Python)
 
 ```bash
-pip install conductor-next-core conductor-gemini
+pip install conductor-core conductor-gemini
 ```
 
 #### npm (Node.js)

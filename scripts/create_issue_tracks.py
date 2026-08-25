@@ -124,7 +124,7 @@ This track implements the feature/fix requested in the upstream issue.
 ## References
 
 - Upstream Issue: https://github.com/gemini-cli-extensions/conductor/issues/{issue_number}
-- Conductor Next: https://github.com/edithatogo/conductor-next
+- Conductor Next: https://github.com/harris-azmon/conductor
 """
 
     with open(track_dir / "spec.md", "w") as f:

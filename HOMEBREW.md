@@ -4,7 +4,7 @@
 
 ```bash
 # Add the tap
-brew tap edithatogo/conductor
+brew tap harris-azmon/conductor
 
 # Install conductor
 brew install conductor
@@ -17,8 +17,8 @@ To create the Homebrew formula for Conductor, create a file named `conductor.rb`
 ```ruby
 class Conductor < Formula
   desc "Context-Driven Development tool for AI-assisted workflows"
-  homepage "https://github.com/edithatogo/conductor-next-next"
-  url "https://github.com/edithatogo/conductor-next-next/archive/v0.2.0.tar.gz"
+  homepage "https://github.com/harris-azmon/conductor"
+  url "https://github.com/harris-azmon/conductor/archive/v0.2.0.tar.gz"
   sha256 "TODO_REPLACE_WITH_ACTUAL_SHA256"
   license "MIT"
 
@@ -62,9 +62,9 @@ For faster iteration, you can create a personal tap:
 
 ```bash
 # Create your tap repository
-mkdir -p ~/tap/edithatogo/conductor/Formula
-cp conductor.rb ~/tap/edithatogo/conductor/Formula/
-cd ~/tap/edithatogo/conductor
+mkdir -p ~/tap/harris-azmon/conductor/Formula
+cp conductor.rb ~/tap/harris-azmon/conductor/Formula/
+cd ~/tap/harris-azmon/conductor
 git init
 git add .
 git commit -m "Add conductor formula"
@@ -72,6 +72,6 @@ git remote add origin https://github.com/YOUR_USERNAME/homebrew-conductor.git
 git push -u origin main
 
 # Users can then install with:
-brew tap edithatogo/conductor
+brew tap harris-azmon/conductor
 brew install conductor
 ```

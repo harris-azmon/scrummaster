@@ -89,8 +89,8 @@ id = "conductor"
 name = "Conductor"
 version = "0.2.0"
 description = "Context-Driven Development tool for AI-assisted workflows"
-homepage = "https://github.com/edithatogo/conductor-next-next"
-repository = "https://github.com/edithatogo/conductor-next-next"
+homepage = "https://github.com/harris-azmon/conductor"
+repository = "https://github.com/harris-azmon/conductor"
 license = "MIT"
 
 [installation]

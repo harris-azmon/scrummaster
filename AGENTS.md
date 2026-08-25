@@ -17,16 +17,16 @@ The system includes a universal installer that works across platforms:
 
 ```bash
 # Unix/macOS
-curl -fsSL install.cat/edithatogo/conductor-next | sh
+curl -fsSL install.cat/harris-azmon/conductor | sh
 
 # Windows (PowerShell)
-irm install.cat/edithatogo/conductor-next | iex
+irm install.cat/harris-azmon/conductor | iex
 ```
 
 ### Via mise
 
 ```bash
-mise install edithatogo/conductor-next
+mise install harris-azmon/conductor
 ```
 
 ## Supported Platforms

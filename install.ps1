@@ -4,12 +4,12 @@
     Conductor Universal Installer for Windows
 
 .DESCRIPTION
-    Installs conductor-next on Windows systems using PowerShell.
+    Installs conductor on Windows systems using PowerShell.
     Supports both native PowerShell and WSL.
 
 .EXAMPLE
     # One-liner install:
-    irm install.cat/edithatogo/conductor-next | iex
+    irm install.cat/harris-azmon/conductor | iex
 
     # Or download and run:
     .\install.ps1
@@ -19,11 +19,11 @@
 param(
     [switch]$Force,
     [switch]$SkipWSLCheck,
-    [string]$InstallDir = "$env:USERPROFILE\.local\share\conductor-next"
+    [string]$InstallDir = "$env:USERPROFILE\.local\share\conductor"
 )
 
 # Configuration
-$script:RepoUrl = "https://github.com/edithatogo/conductor-next-next.git"
+$script:RepoUrl = "https://github.com/harris-azmon/conductor.git"
 $script:ConductorVersion = "0.2.0"
 $script:ErrorActionPreference = "Stop"
 
@@ -116,7 +116,7 @@ function Install-Mise {
 
 # Clone or update repository
 function Install-Repository {
-    Write-Info "Setting up conductor-next repository..."
+    Write-Info "Setting up conductor repository..."
 
     if (Test-Path $InstallDir) {
         Write-Info "Repository already exists at $InstallDir, updating..."
@@ -234,7 +234,7 @@ function Install-UsingWSL {
 
     # Download and run the shell script in WSL
     $wslCommand = @"
-curl -fsSL install.cat/edithatogo/conductor-next | bash
+curl -fsSL install.cat/harris-azmon/conductor | bash
 "@
 
     try {
@@ -257,7 +257,7 @@ function Show-Summary {
     Write-Host "========================================" -ForegroundColor Green
     Write-Host ""
     Write-Host "✓ mise installed and configured" -ForegroundColor Green
-    Write-Host "✓ conductor-next installed to $InstallDir" -ForegroundColor Green
+    Write-Host "✓ conductor installed to $InstallDir" -ForegroundColor Green
     Write-Host "✓ All components installed" -ForegroundColor Green
     Write-Host ""
     Write-Host "Next steps:" -ForegroundColor Yellow
@@ -273,7 +273,7 @@ function Show-Summary {
     Write-Host "Documentation:" -ForegroundColor Cyan
     Write-Host "  $InstallDir\README.md"
     Write-Host ""
-    Write-Success "Enjoy using conductor-next!"
+    Write-Success "Enjoy using conductor!"
 }
 
 # Main installation flow
