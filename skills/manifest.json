@@ -139,7 +139,7 @@
       "id": "new_epic",
       "template": "new_epic",
       "name": "scrummaster-new-epic",
-      "description": "Creates a new epic to group related stories. Use this whenever the user wants to plan a broader area of work before breaking it into individual stories.",
+      "description": "Creates a new epic to group related stories. Use this whenever the user wants to plan a broader area of work before breaking it into individual stories, or when scrummaster-new-story finds no existing epic to attach a story to.",
       "commands": {
         "gemini": "/scrummaster:newepic",
         "qwen": "/scrummaster:newepic",
@@ -229,7 +229,7 @@
       "id": "status",
       "template": "status",
       "name": "scrummaster-status",
-      "description": "Displays the current progress of the project by parsing the Stories Registry and individual story plans.",
+      "description": "Displays the current progress of the project by parsing the Epics Index, fossil ACID ticket state, and individual story plans.",
       "commands": {
         "gemini": "/scrummaster:status",
         "qwen": "/scrummaster:status",
@@ -259,7 +259,7 @@
       "id": "revert",
       "template": "revert",
       "name": "scrummaster-revert",
-      "description": "Reverts previous work (stories, phases, or tasks) by identifying associated commits and performing fossil-aware forward reverts (inverse-patch commits).",
+      "description": "Reverts previous work (stories, phases, or tasks) by identifying associated commits and performing fossil-aware reverts (forward inverse-patch commits).",
       "commands": {
         "gemini": "/scrummaster:revert",
         "qwen": "/scrummaster:revert",
