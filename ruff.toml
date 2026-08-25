@@ -24,7 +24,7 @@ ignore = [
     "PLR2004", # Magic value comparison (mostly small literal thresholds; low bug-finding value here)
     "ANN001", "ANN201", "ANN401",  # Missing/loose type annotations (mypy --strict already covers the source tree)
     "ARG001", "ARG002", "ARG005", # Unused arguments (often required by callback/interface signatures)
-    "C901", "PLR0912", "PLR0913", "PLR0915",  # Complexity (real refactors, out of scope for this pass)
+    "C901", "PLR0912", "PLR0913", "PLR0915", "PLR0917",  # Complexity (real refactors, out of scope for this pass)
     "ERA001",  # Commented-out code (frequent false positives on doc-style comments)
     "TRY002", "TRY300",  # Exception style preferences (not correctness issues)
     "PERF203",  # try/except in loop (micro-optimization, not worth the churn here)
