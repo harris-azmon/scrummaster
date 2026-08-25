@@ -9,7 +9,7 @@ from scripts.sync_skills import sync_skills
 from scripts.validate_platforms import sync_platforms
 
 
-def main():
+def main() -> int:
     print("--- Phase 1: Synchronizing Global & Platform Skills ---")
     try:
         sync_skills()

@@ -181,9 +181,8 @@ class DocumentationValidator:
                     self.errors.append((file_path, f"Reference {i}: Missing 'type' field"))
 
                 # Check ID format (alphanumeric + hyphens)
-                if "id" in ref:
-                    if not re.match(r"^[a-zA-Z0-9-]+$", ref["id"]):
-                        self.warnings.append((file_path, f"Reference {i}: ID should be alphanumeric with hyphens only"))
+                if "id" in ref and not re.match(r"^[a-zA-Z0-9-]+$", ref["id"]):
+                    self.warnings.append((file_path, f"Reference {i}: ID should be alphanumeric with hyphens only"))
 
                 # Check date format
                 if "issued" in ref:

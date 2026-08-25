@@ -4,6 +4,7 @@
 This script fetches issues from upstream repositories, classifies them,
 and can automatically create tracks for high-priority issues.
 """
+from __future__ import annotations
 
 import json
 import os
@@ -11,7 +12,6 @@ import sys
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
 
 import requests
 from github import Auth, Github
@@ -40,7 +40,7 @@ class IssueClassifier:
         "help-wanted": 15,
     }
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize the classifier."""
 
     def classify_type(self, title: str, body: str, labels: list) -> str:
@@ -146,7 +146,7 @@ class IssueClassifier:
 class IssueTriageBot:
     """Main triage bot orchestrator."""
 
-    def __init__(self, token: Optional[str] = None):
+    def __init__(self, token: str | None = None) -> None:
         """Initialize triage bot.
 
         Args:
@@ -378,7 +378,7 @@ class IssueTriageBot:
         return results
 
 
-def main():
+def main() -> int | None:
     """Main entry point."""
     import argparse
 

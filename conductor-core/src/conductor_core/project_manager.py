@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
 import os
@@ -93,10 +94,8 @@ class ProjectManager:
                 except Exception:
                     os.close(fd)
                     # Clean up the file if write failed
-                    try:
+                    with contextlib.suppress(OSError):
                         os.unlink(lock_file)
-                    except OSError:
-                        pass
                     return False
             except OSError:
                 # Lock file already exists, wait and retry

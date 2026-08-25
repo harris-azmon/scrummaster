@@ -7,13 +7,13 @@ This script fetches changes from upstream repositories:
 
 It detects merge conflicts and creates draft PRs when needed.
 """
+from __future__ import annotations
 
 import json
 import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
 
 import requests
 from github import Auth, Github
@@ -26,7 +26,7 @@ class UpstreamSyncError(Exception):
 class GitHubClient:
     """GitHub API client for repository operations."""
 
-    def __init__(self, token: Optional[str] = None):
+    def __init__(self, token: str | None = None) -> None:
         """Initialize GitHub client.
 
         Args:
@@ -132,7 +132,7 @@ class GitHubClient:
 class SyncState:
     """Track sync state and history."""
 
-    def __init__(self, state_file: Path):
+    def __init__(self, state_file: Path) -> None:
         """Initialize sync state tracker.
 
         Args:
@@ -152,13 +152,13 @@ class SyncState:
             "sync_log": [],
         }
 
-    def save(self):
+    def save(self) -> None:
         """Save state to file."""
         self.state_file.parent.mkdir(parents=True, exist_ok=True)
         with open(self.state_file, "w") as f:
             json.dump(self.state, f, indent=2)
 
-    def update_sync(self, upstream: str, commit_sha: str, status: str):
+    def update_sync(self, upstream: str, commit_sha: str, status: str) -> None:
         """Update sync state for an upstream.
 
         Args:
@@ -187,7 +187,7 @@ class SyncState:
 class UpstreamSyncBot:
     """Main sync bot orchestrator."""
 
-    def __init__(self, target_repo: str, upstreams: list[str], state_file: Path):
+    def __init__(self, target_repo: str, upstreams: list[str], state_file: Path) -> None:
         """Initialize sync bot.
 
         Args:
@@ -236,7 +236,7 @@ class UpstreamSyncBot:
             print(f"[WARN] Could not compare branches: {e}")
             return True
 
-    def create_sync_pr(self, upstream: str, upstream_sha: str, target_branch: str = "main") -> Optional[dict]:
+    def create_sync_pr(self, upstream: str, upstream_sha: str, target_branch: str = "main") -> dict | None:
         """Create a PR for upstream changes.
 
         Args:
@@ -258,7 +258,7 @@ class UpstreamSyncBot:
         # 3. Create PR
 
         title = f"Sync from {upstream}"
-        body = f"""## Upstream Sync
+        f"""## Upstream Sync
 
 Automated sync from [{upstream}](https://github.com/{upstream})
 
@@ -356,7 +356,7 @@ Automated sync from [{upstream}](https://github.com/{upstream})
         return results
 
 
-def main():
+def main() -> int | None:
     """Main entry point."""
     import argparse
 

@@ -26,7 +26,7 @@ class ConductorConfig(BaseModel):
 class ConfigManager:
     """Manages conductor configuration."""
 
-    def __init__(self, base_path: str | Path = "."):
+    def __init__(self, base_path: str | Path = ".") -> None:
         self.base_path = Path(base_path)
         self.conductor_path = self.base_path / "conductor"
         self.config_file = self.conductor_path / "config.json"

@@ -11,12 +11,12 @@ sys.path.insert(0, str(ROOT / "conductor-core" / "src"))
 
 
 @click.group()
-def cli():
+def cli() -> None:
     """Conductor Developer CLI."""
 
 
 @cli.command()
-def sync():
+def sync() -> None:
     """Synchronize all platform artifacts and skills."""
     from scripts.sync_all import main as sync_main
 
@@ -25,7 +25,7 @@ def sync():
 
 @cli.command()
 @click.option("--require-vsix", is_flag=True, help="Fail if VSIX is missing.")
-def verify(require_vsix):
+def verify(require_vsix) -> None:
     """Run all validation and verification scripts."""
     print("--- Running Platform Validations ---")
     python = sys.executable
@@ -57,7 +57,7 @@ def verify(require_vsix):
 
 
 @cli.command()
-def build():
+def build() -> None:
     """Build core and VS Code extension."""
     print("--- Building Conductor ---")
 
@@ -76,7 +76,7 @@ def build():
 
 
 @cli.command()
-def doctor():
+def doctor() -> None:
     """Check local environment for health and consistency."""
     print("--- Conductor Doctor ---")
 
@@ -115,7 +115,7 @@ def doctor():
 
 
 @cli.command()
-def version():
+def version() -> None:
     """Show Conductor version."""
     # Unified versioning (hardcoded for now, should read from pyproject.toml)
     print("Conductor Suite v0.2.0")

@@ -121,7 +121,7 @@ def find_tracks(base_dir: Path) -> list[Path]:
     return tracks
 
 
-def main():
+def main() -> int:
     """Main entry point."""
     import argparse
 

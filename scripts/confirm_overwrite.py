@@ -7,10 +7,9 @@ during conductor operations like track creation, sync, etc.
 
 import sys
 from pathlib import Path
-from typing import List
 
 
-def confirm_overwrite(files: List[Path], dry_run: bool = False) -> bool:
+def confirm_overwrite(files: list[Path], dry_run: bool = False) -> bool:
     """Ask for confirmation before overwriting files.
 
     Args:
@@ -38,7 +37,7 @@ def confirm_overwrite(files: List[Path], dry_run: bool = False) -> bool:
     return response in ("y", "yes")
 
 
-def find_files_to_create(track_dir: Path, force: bool = False) -> List[Path]:
+def find_files_to_create(track_dir: Path, force: bool = False) -> list[Path]:
     """Find files that would be overwritten during track creation.
 
     Args:
@@ -59,7 +58,7 @@ def find_files_to_create(track_dir: Path, force: bool = False) -> List[Path]:
     return existing
 
 
-def main():
+def main() -> int:
     """Main entry point."""
     import argparse
 

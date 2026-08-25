@@ -7,13 +7,13 @@ This script helps coordinate the repository rename by:
 3. Implementing URL replacement logic
 4. Creating migration guide for users
 """
+from __future__ import annotations
 
 import json
 import re
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
 
 
 class RenameCoordinator:
@@ -24,8 +24,8 @@ class RenameCoordinator:
         old_name: str = "conductor",
         new_name: str = "conductor-next",
         old_owner: str = "edithatogo",
-        exclude_patterns: Optional[List[str]] = None,
-    ):
+        exclude_patterns: list[str] | None = None,
+    ) -> None:
         """Initialize rename coordinator.
 
         Args:
@@ -71,7 +71,7 @@ class RenameCoordinator:
                 return True
         return False
 
-    def scan_for_references(self) -> Dict[str, List[Tuple[int, str]]]:
+    def scan_for_references(self) -> dict[str, list[tuple[int, str]]]:
         """Scan codebase for old repository references.
 
         Returns:
@@ -134,7 +134,7 @@ class RenameCoordinator:
 
         return results
 
-    def generate_replacement_map(self) -> Dict[str, str]:
+    def generate_replacement_map(self) -> dict[str, str]:
         """Generate map of old strings to new strings.
 
         Returns:
@@ -175,7 +175,6 @@ class RenameCoordinator:
             print(f"[WARN] Could not read {file_path}: {e}")
             return 0
 
-        original_content = content
         replacements = 0
 
         for old_str, new_str in replacement_map.items():
@@ -196,7 +195,7 @@ class RenameCoordinator:
 
         return replacements
 
-    def update_all_files(self, dry_run: bool = True) -> Dict[str, int]:
+    def update_all_files(self, dry_run: bool = True) -> dict[str, int]:
         """Update all files with new repository references.
 
         Args:
@@ -437,7 +436,7 @@ Thank you for your continued support!
 """
 
 
-def main():
+def main() -> int:
     """Main entry point."""
     import argparse
 

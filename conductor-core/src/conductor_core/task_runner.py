@@ -39,7 +39,7 @@ class TaskRunner:
         return self.vcs
 
     @git.setter
-    def git(self, value):
+    def git(self, value) -> None:
         """Backward compatibility setter for git attribute."""
         self.vcs = value
 

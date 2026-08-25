@@ -39,7 +39,7 @@ class VCSService(Protocol):
 
 
 class GitService:
-    def __init__(self, repo_path: str):
+    def __init__(self, repo_path: str) -> None:
         try:
             self.repo = Repo(repo_path, search_parent_directories=True)
             self.path = repo_path

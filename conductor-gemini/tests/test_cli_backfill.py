@@ -96,8 +96,15 @@ def test_main_invocation_help():
 
 
 def test_cli_run_main_block(repo_dir):
-    # Using runpy to execute the file as __main__
-    cli_path = os.path.join("conductor-gemini", "src", "conductor_gemini", "cli.py")
+    # Using runpy to execute the file as __main__. Resolve relative to this
+    # test file rather than assuming a cwd, since CI runs pytest from within
+    # the conductor-gemini/ directory while other invocations may not.
+    cli_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "src",
+        "conductor_gemini",
+        "cli.py",
+    )
     with patch("sys.argv", ["conductor", "--help"]):
         with pytest.raises(SystemExit) as e:
             runpy.run_path(cli_path, run_name="__main__")

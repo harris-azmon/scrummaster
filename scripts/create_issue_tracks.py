@@ -210,7 +210,7 @@ This track implements the feature/fix requested in the upstream issue.
     return track_dir
 
 
-def update_tracks_md(tracks_dir: Path, issues: dict):
+def update_tracks_md(tracks_dir: Path, issues: dict) -> None:
     """Update tracks.md with new track entries.
 
     Args:
@@ -221,7 +221,7 @@ def update_tracks_md(tracks_dir: Path, issues: dict):
 
     # Read existing content
     with open(tracks_md) as f:
-        content = f.read()
+        f.read()
 
     # Find the position to insert new tracks (before "## Phase 5" or at end of active tracks)
     # For now, we'll just print what needs to be added
@@ -241,7 +241,7 @@ def update_tracks_md(tracks_dir: Path, issues: dict):
     print("[INFO] Manual update required for tracks.md")
 
 
-def main():
+def main() -> int:
     """Main entry point."""
     import argparse
 

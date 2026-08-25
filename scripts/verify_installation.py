@@ -89,7 +89,7 @@ class InstallationVerifier:
             self.check_fail("Git: Not found")
 
         # Check Node.js (optional)
-        code, stdout, stderr = self.run_command(["node", "--version"])
+        code, stdout, _stderr = self.run_command(["node", "--version"])
         if code == 0:
             self.check_pass(f"Node.js: {stdout.strip()}")
         else:
@@ -125,7 +125,7 @@ class InstallationVerifier:
                 self.log(f"    Error: {stderr}")
 
         # Check CLI entry point
-        code, stdout, stderr = self.run_command(["conductor-gemini", "--help"], check=False)
+        code, _stdout, stderr = self.run_command(["conductor-gemini", "--help"], check=False)
         if code == 0:
             self.check_pass("conductor-gemini CLI: Available")
         else:
@@ -144,7 +144,7 @@ class InstallationVerifier:
         self.check_pass("VS Code: Installed")
 
         # Check if extension is installed
-        code, stdout, stderr = self.run_command(["code", "--list-extensions"], check=False)
+        code, stdout, _stderr = self.run_command(["code", "--list-extensions"], check=False)
         if code == 0:
             extensions = stdout.lower()
             if "conductor" in extensions:
@@ -201,7 +201,7 @@ class InstallationVerifier:
             self.check_warn("mise.toml: Not found in current directory")
 
         # Check mise tasks
-        code, stdout, stderr = self.run_command(["mise", "tasks", "ls"], check=False)
+        code, stdout, _stderr = self.run_command(["mise", "tasks", "ls"], check=False)
         if code == 0:
             tasks = stdout.strip().split("\n")
             conductor_tasks = [t for t in tasks if "conductor" in t.lower()]

@@ -5,7 +5,7 @@ from typing import Any
 
 
 class TelemetryLogger:
-    def __init__(self, log_dir: Path):
+    def __init__(self, log_dir: Path) -> None:
         self.log_dir = log_dir
         self.log_dir.mkdir(parents=True, exist_ok=True)
 

@@ -26,15 +26,16 @@ Usage:
         {"type": "yesno", "question": "Enable TypeScript?", "key": "typescript"},
     ])
 """
+from __future__ import annotations
 
 import json
-from typing import Any, Dict, List, Optional, Union
+from typing import Any
 
 
 class AskUserTool:
     """AskUser tool wrapper for structured user input."""
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize AskUser tool."""
         self.tool_name = "AskUser"
 
@@ -57,10 +58,10 @@ class AskUserTool:
     def ask_choice(
         self,
         question: str,
-        options: List[str],
+        options: list[str],
         multi: bool = False,
-        default: Optional[Union[str, List[str]]] = None,
-    ) -> Union[str, List[str]]:
+        default: str | list[str] | None = None,
+    ) -> str | list[str]:
         """Ask a single or multi-select choice question.
 
         Args:
@@ -87,7 +88,7 @@ class AskUserTool:
         question: str,
         placeholder: str = "",
         default: str = "",
-        validate: Optional[str] = None,
+        validate: str | None = None,
     ) -> str:
         """Ask for text input.
 
@@ -110,7 +111,7 @@ class AskUserTool:
             }
         )
 
-    def ask_batch(self, questions: List[Dict[str, Any]]) -> Dict[str, Any]:
+    def ask_batch(self, questions: list[dict[str, Any]]) -> dict[str, Any]:
         """Ask multiple questions in a single batch.
 
         Args:
@@ -135,7 +136,7 @@ class AskUserTool:
             }
         )
 
-    def _call_tool(self, params: Dict[str, Any]) -> Any:
+    def _call_tool(self, params: dict[str, Any]) -> Any:
         """Call the AskUser tool with given parameters.
 
         Args:
@@ -190,10 +191,10 @@ def ask_yesno(question: str) -> bool:
 
 def ask_choice(
     question: str,
-    options: List[str],
+    options: list[str],
     multi: bool = False,
-    default: Optional[Union[str, List[str]]] = None,
-) -> Union[str, List[str]]:
+    default: str | list[str] | None = None,
+) -> str | list[str]:
     """Ask a single or multi-select choice question using AskUser tool."""
     return _ask_user.ask_choice(question, options, multi, default)
 
@@ -202,13 +203,13 @@ def ask_text(
     question: str,
     placeholder: str = "",
     default: str = "",
-    validate: Optional[str] = None,
+    validate: str | None = None,
 ) -> str:
     """Ask for text input using AskUser tool."""
     return _ask_user.ask_text(question, placeholder, default, validate)
 
 
-def ask_batch(questions: List[Dict[str, Any]]) -> Dict[str, Any]:
+def ask_batch(questions: list[dict[str, Any]]) -> dict[str, Any]:
     """Ask multiple questions in a single batch using AskUser tool."""
     return _ask_user.ask_batch(questions)
 

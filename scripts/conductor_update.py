@@ -6,6 +6,7 @@ Checks for updates and applies them to conductor components.
 Usage:
     python scripts/conductor_update.py [--check-only] [--all] [--component COMPONENT]
 """
+from __future__ import annotations
 
 import argparse
 import json
@@ -14,7 +15,6 @@ import subprocess
 import sys
 import urllib.request
 from pathlib import Path
-from typing import Optional
 
 
 class Colors:
@@ -42,7 +42,7 @@ class UpdateChecker:
         else:
             print(message)
 
-    def run_command(self, cmd: list[str], cwd: Optional[Path] = None) -> tuple[int, str, str]:
+    def run_command(self, cmd: list[str], cwd: Path | None = None) -> tuple[int, str, str]:
         """Run a shell command"""
         try:
             result = subprocess.run(
@@ -56,7 +56,7 @@ class UpdateChecker:
         except Exception as e:
             return 1, "", str(e)
 
-    def get_current_version(self, component: str) -> Optional[str]:
+    def get_current_version(self, component: str) -> str | None:
         """Get current installed version of a component"""
         if component == "core":
             # Try to import and get version
@@ -75,7 +75,7 @@ class UpdateChecker:
 
         elif component == "vscode":
             # Check VS Code extension version
-            code, stdout, stderr = self.run_command(["code", "--list-extensions", "--show-versions"])
+            code, stdout, _stderr = self.run_command(["code", "--list-extensions", "--show-versions"])
             if code == 0:
                 for line in stdout.split("\n"):
                     if "conductor" in line.lower():
@@ -85,7 +85,7 @@ class UpdateChecker:
 
         return None
 
-    def get_latest_github_release(self, repo: str) -> Optional[str]:
+    def get_latest_github_release(self, repo: str) -> str | None:
         """Get latest release version from GitHub"""
         try:
             url = f"https://api.github.com/repos/{repo}/releases/latest"
@@ -101,13 +101,13 @@ class UpdateChecker:
         except Exception:
             return None
 
-    def get_latest_git_tag(self, component: str) -> Optional[str]:
+    def get_latest_git_tag(self, component: str) -> str | None:
         """Get latest version from git tags"""
         component_dir = self.base_path / f"conductor-{component}"
         if not component_dir.exists():
             return None
 
-        code, stdout, stderr = self.run_command(
+        code, stdout, _stderr = self.run_command(
             ["git", "describe", "--tags", "--abbrev=0"],
             cwd=component_dir,
         )
@@ -115,7 +115,7 @@ class UpdateChecker:
             return stdout.strip().lstrip("v")
         return None
 
-    def check_updates(self, component: str) -> Optional[dict]:
+    def check_updates(self, component: str) -> dict | None:
         """Check for updates for a specific component"""
         current = self.get_current_version(component)
         latest = self.get_latest_git_tag(component)
@@ -205,7 +205,7 @@ class UpdateChecker:
             return False
 
         # Reinstall
-        code, stdout, stderr = self.run_command([sys.executable, "-m", "pip", "install", "--upgrade", str(core_path)])
+        code, _stdout, stderr = self.run_command([sys.executable, "-m", "pip", "install", "--upgrade", str(core_path)])
         if code != 0:
             self.log(f"[FAIL] Reinstall failed: {stderr}", Colors.RED)
             return False
@@ -224,7 +224,7 @@ class UpdateChecker:
             self.log(f"[FAIL] Git pull failed: {stderr}", Colors.RED)
             return False
 
-        code, stdout, stderr = self.run_command([sys.executable, "-m", "pip", "install", "--upgrade", str(gemini_path)])
+        code, _stdout, stderr = self.run_command([sys.executable, "-m", "pip", "install", "--upgrade", str(gemini_path)])
         if code != 0:
             self.log(f"[FAIL] Reinstall failed: {stderr}", Colors.RED)
             return False
@@ -253,7 +253,7 @@ class UpdateChecker:
         # Reinstall extension
         vsix_path = self.base_path / "conductor.vsix"
         if vsix_path.exists():
-            code, stdout, stderr = self.run_command(["code", "--install-extension", str(vsix_path), "--force"])
+            code, _stdout, stderr = self.run_command(["code", "--install-extension", str(vsix_path), "--force"])
             if code != 0:
                 self.log(f"[FAIL] Extension install failed: {stderr}", Colors.RED)
                 return False
@@ -272,7 +272,7 @@ class UpdateChecker:
             return True
 
         # Pull changes
-        code, stdout, stderr = self.run_command(["git", "pull"])
+        code, _stdout, stderr = self.run_command(["git", "pull"])
         if code != 0:
             self.log(f"[FAIL] Git pull failed: {stderr}", Colors.RED)
             return False
@@ -284,7 +284,7 @@ class UpdateChecker:
 
         return True
 
-    def update_all(self, components: Optional[list[str]] = None) -> bool:
+    def update_all(self, components: list[str] | None = None) -> bool:
         """Update all or specified components"""
         if not self.updates_available:
             self.log("\n[PASS] No updates available", Colors.GREEN)
