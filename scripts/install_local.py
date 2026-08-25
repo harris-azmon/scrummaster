@@ -7,7 +7,7 @@ from pathlib import Path, PurePath
 
 
 def _log(status: str, name: str, detail: str) -> None:
-    print(f"{status}  {name}  {detail}")  # noqa: T201
+    print(f"{status}  {name}  {detail}")
 
 
 def install_vsix(vsix_path: Path, *, dry_run: bool) -> bool:
@@ -155,7 +155,7 @@ def _print_locations(repo_root: Path) -> None:
 
 
 def _summarize(ok: int, warn: int, fail: int) -> None:
-    print(f"SUMMARY  ok={ok} warn={warn} fail={fail}")  # noqa: T201
+    print(f"SUMMARY  ok={ok} warn={warn} fail={fail}")
 
 
 def main() -> int:  # noqa: C901, PLR0912

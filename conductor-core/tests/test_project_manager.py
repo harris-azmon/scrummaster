@@ -5,7 +5,7 @@ from conductor_core.models import TrackStatus
 from conductor_core.project_manager import ProjectManager
 
 
-@pytest.fixture()
+@pytest.fixture
 def workspace(tmp_path):
     return tmp_path
 

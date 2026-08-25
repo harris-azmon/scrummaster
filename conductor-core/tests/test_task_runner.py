@@ -4,7 +4,7 @@ from conductor_core.task_runner import TaskRunner
 from git import Repo
 
 
-@pytest.fixture()
+@pytest.fixture
 def project(tmp_path):
     pm = ProjectManager(tmp_path)
     pm.initialize_project("Test project")

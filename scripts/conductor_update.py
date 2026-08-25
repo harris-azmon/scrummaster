@@ -128,13 +128,12 @@ class UpdateChecker:
                     "latest": latest,
                     "update_available": True,
                 }
-            else:
-                return {
-                    "component": component,
-                    "current": current,
-                    "latest": latest,
-                    "update_available": False,
-                }
+            return {
+                "component": component,
+                "current": current,
+                "latest": latest,
+                "update_available": False,
+            }
 
         return None
 
@@ -183,11 +182,11 @@ class UpdateChecker:
 
         if component == "core":
             return self._update_core()
-        elif component == "gemini":
+        if component == "gemini":
             return self._update_gemini()
-        elif component == "vscode":
+        if component == "vscode":
             return self._update_vscode()
-        elif component == "claude":
+        if component == "claude":
             return self._update_claude()
 
         return False

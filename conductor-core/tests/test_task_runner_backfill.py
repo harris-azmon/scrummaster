@@ -5,7 +5,7 @@ from conductor_core.project_manager import ProjectManager
 from conductor_core.task_runner import TaskRunner
 
 
-@pytest.fixture()
+@pytest.fixture
 def tr(tmp_path):
     pm = ProjectManager(tmp_path)
     pm.initialize_project("Goal")

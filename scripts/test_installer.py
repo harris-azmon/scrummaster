@@ -33,10 +33,9 @@ def test_verify_installation() -> bool:
     if code == 0:
         print("PASS verify_installation.py works correctly")
         return True
-    else:
-        print(f"WARN  verify_installation.py returned exit code {code}")
-        print(f"   stderr: {stderr[:200]}")
-        return False
+    print(f"WARN  verify_installation.py returned exit code {code}")
+    print(f"   stderr: {stderr[:200]}")
+    return False
 
 
 def test_validate_docs() -> bool:
@@ -49,9 +48,8 @@ def test_validate_docs() -> bool:
     if "Running documentation validation" in stderr or code in [0, 1]:
         print("PASS validate_docs.py runs correctly")
         return True
-    else:
-        print(f"FAIL validate_docs.py failed: {stderr[:200]}")
-        return False
+    print(f"FAIL validate_docs.py failed: {stderr[:200]}")
+    return False
 
 
 def test_conductor_install_help() -> bool:
@@ -63,9 +61,8 @@ def test_conductor_install_help() -> bool:
     if code == 0 and "Install conductor components" in stdout:
         print("PASS conductor_install.py --help works")
         return True
-    else:
-        print("FAIL conductor_install.py --help failed")
-        return False
+    print("FAIL conductor_install.py --help failed")
+    return False
 
 
 def test_conductor_update_help() -> bool:
@@ -77,9 +74,8 @@ def test_conductor_update_help() -> bool:
     if code == 0 and "Check for and apply conductor updates" in stdout:
         print("PASS conductor_update.py --help works")
         return True
-    else:
-        print("FAIL conductor_update.py --help failed")
-        return False
+    print("FAIL conductor_update.py --help failed")
+    return False
 
 
 def test_sync_upstream_help() -> bool:
@@ -91,9 +87,8 @@ def test_sync_upstream_help() -> bool:
     if code == 0 and "Sync from upstream repositories" in stdout:
         print("PASS sync_upstream.py --help works")
         return True
-    else:
-        print("FAIL sync_upstream.py --help failed")
-        return False
+    print("FAIL sync_upstream.py --help failed")
+    return False
 
 
 def test_triage_issues_help() -> bool:
@@ -105,9 +100,8 @@ def test_triage_issues_help() -> bool:
     if code == 0 and "Triage GitHub issues" in stdout:
         print("PASS triage_issues.py --help works")
         return True
-    else:
-        print("FAIL triage_issues.py --help failed")
-        return False
+    print("FAIL triage_issues.py --help failed")
+    return False
 
 
 def test_mise_toml_exists() -> bool:
@@ -123,9 +117,8 @@ def test_mise_toml_exists() -> bool:
     if "[tools]" in content and "[tasks]" in content:
         print("PASS mise.toml exists and looks valid")
         return True
-    else:
-        print("WARN  mise.toml exists but may be missing sections")
-        return True  # Still pass, just warn
+    print("WARN  mise.toml exists but may be missing sections")
+    return True  # Still pass, just warn
 
 
 def test_install_scripts_exist() -> bool:

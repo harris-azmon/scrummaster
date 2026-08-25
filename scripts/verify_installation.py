@@ -296,10 +296,9 @@ class InstallationVerifier:
             else:
                 self.log("  [DONE] Installation is complete and healthy!\n", Colors.GREEN)
             return True
-        else:
-            self.log(f"\n  [FAIL] {self.checks_failed} critical check(s) failed", Colors.RED)
-            self.log("  Please review the errors above and reinstall if necessary\n")
-            return False
+        self.log(f"\n  [FAIL] {self.checks_failed} critical check(s) failed", Colors.RED)
+        self.log("  Please review the errors above and reinstall if necessary\n")
+        return False
 
 
 def main() -> int:

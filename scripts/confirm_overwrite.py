@@ -7,7 +7,7 @@ during conductor operations like track creation, sync, etc.
 
 import sys
 from pathlib import Path
-from typing import List, Optional
+from typing import List
 
 
 def confirm_overwrite(files: List[Path], dry_run: bool = False) -> bool:
@@ -35,7 +35,7 @@ def confirm_overwrite(files: List[Path], dry_run: bool = False) -> bool:
     # In production, this would use AskUser tool:
     # AskUser: {"type": "yesno", "question": "Proceed with overwriting these files?"}
     response = input("\nProceed with overwriting? [y/N]: ").strip().lower()
-    return response in ('y', 'yes')
+    return response in ("y", "yes")
 
 
 def find_files_to_create(track_dir: Path, force: bool = False) -> List[Path]:
@@ -49,7 +49,7 @@ def find_files_to_create(track_dir: Path, force: bool = False) -> List[Path]:
         List of existing files that would be overwritten
     """
     existing = []
-    track_files = ['index.md', 'plan.md', 'spec.md', 'metadata.json']
+    track_files = ["index.md", "plan.md", "spec.md", "metadata.json"]
 
     for fname in track_files:
         fpath = track_dir / fname
@@ -63,9 +63,7 @@ def main():
     """Main entry point."""
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="Add overwrite confirmation for file operations"
-    )
+    parser = argparse.ArgumentParser(description="Add overwrite confirmation for file operations")
     parser.add_argument(
         "--check",
         type=Path,
@@ -79,9 +77,9 @@ def main():
 
     args = parser.parse_args()
 
-    print("="*60)
+    print("=" * 60)
     print("Overwrite Confirmation for Conductor Operations")
-    print("="*60)
+    print("=" * 60)
 
     if args.check:
         existing = find_files_to_create(args.check)

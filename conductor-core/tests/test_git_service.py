@@ -8,7 +8,7 @@ from git.exc import InvalidGitRepositoryError
 GIT_PATH = shutil.which("git")
 
 
-@pytest.fixture()
+@pytest.fixture
 def temp_repo(tmp_path):
     if GIT_PATH is None:
         pytest.skip("git executable not found")

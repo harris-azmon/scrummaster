@@ -19,4 +19,4 @@ ignore = [
 
 [lint.per-file-ignores]
 "**/tests/*" = ["S101", "ANN", "PLR2004", "INP001"] # Assertions, types, magic numbers in tests
-"scripts/*" = ["INP001"] # Implicit namespace packages
+"scripts/*" = ["INP001", "T201"] # Implicit namespace packages; these are CLI tools whose job is to print to stdout

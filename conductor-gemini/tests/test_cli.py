@@ -6,7 +6,7 @@ from conductor_gemini.cli import main
 from git import Repo
 
 
-@pytest.fixture()
+@pytest.fixture
 def base_path(tmp_path):
     # Initialize a git repo in the temporary directory
     Repo.init(tmp_path)

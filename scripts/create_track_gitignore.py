@@ -8,7 +8,6 @@ with appropriate patterns for common development artifacts.
 import sys
 from pathlib import Path
 
-
 # Standard .gitignore patterns for conductor tracks
 TRACK_GITIGNORE = """# Conductor Track Artifacts
 *.pyc
@@ -126,9 +125,7 @@ def main():
     """Main entry point."""
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="Auto-create .gitignore files for conductor tracks"
-    )
+    parser = argparse.ArgumentParser(description="Auto-create .gitignore files for conductor tracks")
     parser.add_argument(
         "--dir",
         type=Path,
@@ -148,9 +145,9 @@ def main():
 
     args = parser.parse_args()
 
-    print("="*60)
+    print("=" * 60)
     print("Auto-create .gitignore for Conductor Tracks")
-    print("="*60)
+    print("=" * 60)
 
     if args.track:
         # Single track mode
@@ -162,7 +159,7 @@ def main():
     print(f"Tracks directory: {args.dir}")
     print(f"Found {len(tracks)} tracks")
     print(f"Dry run: {args.dry_run}")
-    print("="*60)
+    print("=" * 60)
 
     if args.dry_run:
         print("\n[DRY RUN] Would create .gitignore for:")
@@ -182,9 +179,9 @@ def main():
             create_track_gitignore(track)
             created += 1
 
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print(f"Summary: Created {created} .gitignore files, Skipped {skipped} (already exist)")
-    print("="*60)
+    print("=" * 60)
 
     return 0
 

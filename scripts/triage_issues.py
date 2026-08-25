@@ -5,46 +5,43 @@ This script fetches issues from upstream repositories, classifies them,
 and can automatically create tracks for high-priority issues.
 """
 
+import json
 import os
 import sys
-import json
-import re
+from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
-from collections import defaultdict
 
 import requests
-from github import Github, Auth, Issue
+from github import Auth, Github
 
 
 class TriageError(Exception):
     """Base exception for triage errors."""
-    pass
 
 
 class IssueClassifier:
     """Classify GitHub issues by type and priority."""
 
     # Keywords for issue classification
-    BUG_KEYWORDS = ['bug', 'error', 'fail', 'crash', 'broken', 'issue', 'fix']
-    FEATURE_KEYWORDS = ['feature', 'enhancement', 'add', 'support', 'new']
-    DOCS_KEYWORDS = ['docs', 'documentation', 'typo', 'readme']
-    QUESTION_KEYWORDS = ['question', 'help', 'how to', 'usage']
+    BUG_KEYWORDS = ["bug", "error", "fail", "crash", "broken", "issue", "fix"]
+    FEATURE_KEYWORDS = ["feature", "enhancement", "add", "support", "new"]
+    DOCS_KEYWORDS = ["docs", "documentation", "typo", "readme"]
+    QUESTION_KEYWORDS = ["question", "help", "how to", "usage"]
 
     # Priority scoring weights
     LABEL_WEIGHTS = {
-        'bug': 30,
-        'critical': 50,
-        'high-priority': 40,
-        'enhancement': 20,
-        'good-first-issue': 10,
-        'help-wanted': 15,
+        "bug": 30,
+        "critical": 50,
+        "high-priority": 40,
+        "enhancement": 20,
+        "good-first-issue": 10,
+        "help-wanted": 15,
     }
 
     def __init__(self):
         """Initialize the classifier."""
-        pass
 
     def classify_type(self, title: str, body: str, labels: list) -> str:
         """Classify issue type based on content.
@@ -60,15 +57,15 @@ class IssueClassifier:
         text = f"{title} {body}".lower()
 
         # Check labels first
-        label_text = ' '.join(labels).lower()
-        if 'bug' in label_text:
-            return 'bug'
-        if 'enhancement' in label_text or 'feature' in label_text:
-            return 'feature'
-        if 'documentation' in label_text or 'docs' in label_text:
-            return 'docs'
-        if 'question' in label_text:
-            return 'question'
+        label_text = " ".join(labels).lower()
+        if "bug" in label_text:
+            return "bug"
+        if "enhancement" in label_text or "feature" in label_text:
+            return "feature"
+        if "documentation" in label_text or "docs" in label_text:
+            return "docs"
+        if "question" in label_text:
+            return "question"
 
         # Fall back to keyword matching
         bug_score = sum(1 for kw in self.BUG_KEYWORDS if kw in text)
@@ -77,17 +74,17 @@ class IssueClassifier:
         question_score = sum(1 for kw in self.QUESTION_KEYWORDS if kw in text)
 
         scores = {
-            'bug': bug_score,
-            'feature': feature_score,
-            'docs': docs_score,
-            'question': question_score,
+            "bug": bug_score,
+            "feature": feature_score,
+            "docs": docs_score,
+            "question": question_score,
         }
 
         max_type = max(scores, key=scores.get)
         if scores[max_type] > 0:
             return max_type
 
-        return 'other'
+        return "other"
 
     def calculate_priority(self, issue: dict) -> int:
         """Calculate priority score for an issue.
@@ -101,7 +98,7 @@ class IssueClassifier:
         score = 0
 
         # Label-based scoring
-        labels = [label['name'] for label in issue.get('labels', [])]
+        labels = [label["name"] for label in issue.get("labels", [])]
         for label in labels:
             label_lower = label.lower()
             for key, weight in self.LABEL_WEIGHTS.items():
@@ -109,7 +106,7 @@ class IssueClassifier:
                     score += weight
 
         # Recency bonus (issues from last 7 days)
-        created_at = datetime.fromisoformat(issue['created_at'].replace('Z', '+00:00'))
+        created_at = datetime.fromisoformat(issue["created_at"].replace("Z", "+00:00"))
         days_old = (datetime.now(timezone.utc) - created_at).days
         if days_old <= 7:
             score += 20
@@ -117,13 +114,13 @@ class IssueClassifier:
             score += 10
 
         # Engagement bonus (comments indicate interest)
-        comments = issue.get('comments', 0)
+        comments = issue.get("comments", 0)
         score += min(comments * 2, 20)  # Cap at 20 points
 
         # Upstream repo bonus
-        repo_name = issue.get('repository_url', '').split('/')[-2:]
-        repo_name = '/'.join(repo_name) if len(repo_name) == 2 else ''
-        if repo_name in ['gemini-cli-extensions/conductor', 'jnorthrup/conductor2']:
+        repo_name = issue.get("repository_url", "").split("/")[-2:]
+        repo_name = "/".join(repo_name) if len(repo_name) == 2 else ""
+        if repo_name in ["gemini-cli-extensions/conductor", "jnorthrup/conductor2"]:
             score += 15
 
         return score
@@ -138,13 +135,12 @@ class IssueClassifier:
             Priority label: 'P0', 'P1', 'P2', or 'P3'
         """
         if score >= 80:
-            return 'P0'  # Critical
-        elif score >= 50:
-            return 'P1'  # High
-        elif score >= 30:
-            return 'P2'  # Medium
-        else:
-            return 'P3'  # Low
+            return "P0"  # Critical
+        if score >= 50:
+            return "P1"  # High
+        if score >= 30:
+            return "P2"  # Medium
+        return "P3"  # Low
 
 
 class IssueTriageBot:
@@ -170,7 +166,7 @@ class IssueTriageBot:
             "X-GitHub-Api-Version": "2022-11-28",
         }
 
-    def fetch_issues(self, repo_name: str, state: str = 'open') -> list:
+    def fetch_issues(self, repo_name: str, state: str = "open") -> list:
         """Fetch issues from a repository.
 
         Args:
@@ -182,7 +178,7 @@ class IssueTriageBot:
         """
         print(f"[FETCH] Fetching issues from {repo_name}...")
         url = f"{self.api_base}/repos/{repo_name}/issues"
-        params = {'state': state, 'per_page': 100}
+        params = {"state": state, "per_page": 100}
 
         issues = []
         while url:
@@ -191,14 +187,14 @@ class IssueTriageBot:
             issues.extend(response.json())
 
             # Handle pagination
-            if 'next' in response.links:
-                url = response.links['next']['url']
+            if "next" in response.links:
+                url = response.links["next"]["url"]
                 params = {}  # Params are in the URL
             else:
                 url = None
 
         # Filter out pull requests
-        issues = [i for i in issues if 'pull_request' not in i]
+        issues = [i for i in issues if "pull_request" not in i]
         print(f"[INFO] Found {len(issues)} issues")
         return issues
 
@@ -211,25 +207,21 @@ class IssueTriageBot:
         Returns:
             Triage result with classification and priority
         """
-        labels = [label['name'] for label in issue.get('labels', [])]
-        issue_type = self.classifier.classify_type(
-            issue['title'],
-            issue.get('body', ''),
-            labels
-        )
+        labels = [label["name"] for label in issue.get("labels", [])]
+        issue_type = self.classifier.classify_type(issue["title"], issue.get("body", ""), labels)
         priority_score = self.classifier.calculate_priority(issue)
         priority_label = self.classifier.get_priority_label(priority_score)
 
         return {
-            'number': issue['number'],
-            'title': issue['title'],
-            'url': issue['html_url'],
-            'type': issue_type,
-            'priority': priority_label,
-            'priority_score': priority_score,
-            'labels': labels,
-            'created_at': issue['created_at'],
-            'state': issue['state'],
+            "number": issue["number"],
+            "title": issue["title"],
+            "url": issue["html_url"],
+            "type": issue_type,
+            "priority": priority_label,
+            "priority_score": priority_score,
+            "labels": labels,
+            "created_at": issue["created_at"],
+            "state": issue["state"],
         }
 
     def generate_track_from_issue(self, triaged: dict) -> dict:
@@ -246,11 +238,11 @@ class IssueTriageBot:
         track_id = f"issue_{triaged['number']}_{timestamp}"
 
         # Create spec
-        spec = f"""# Specification: {triaged['title']}
+        spec = f"""# Specification: {triaged["title"]}
 
-**Source Issue:** {triaged['url']}
-**Upstream Issue:** #{triaged['number']}
-**Priority:** {triaged['priority']}
+**Source Issue:** {triaged["url"]}
+**Upstream Issue:** #{triaged["number"]}
+**Priority:** {triaged["priority"]}
 
 ## Overview
 <!-- Brief description of the issue and proposed solution -->
@@ -262,16 +254,16 @@ class IssueTriageBot:
 <!-- Clear criteria for when this track is complete -->
 
 ## References
-- Upstream Issue: {triaged['url']}
-- Related Labels: {', '.join(triaged['labels'])}
+- Upstream Issue: {triaged["url"]}
+- Related Labels: {", ".join(triaged["labels"])}
 """
 
         # Create plan
-        plan = f"""# Implementation Plan: {triaged['title']}
+        plan = f"""# Implementation Plan: {triaged["title"]}
 
 **Track ID:** {track_id}
-**Priority:** {triaged['priority']}
-**Source:** Upstream Issue #{triaged['number']}
+**Priority:** {triaged["priority"]}
+**Source:** Upstream Issue #{triaged["number"]}
 
 ## Phase 1: Analysis
 
@@ -295,20 +287,20 @@ class IssueTriageBot:
         # Create metadata
         metadata = {
             "track_id": track_id,
-            "type": "feature" if triaged['type'] == 'feature' else "fix",
+            "type": "feature" if triaged["type"] == "feature" else "fix",
             "status": "new",
-            "priority": triaged['priority'],
+            "priority": triaged["priority"],
             "depends_on": [],
             "created_at": datetime.now(timezone.utc).isoformat(),
-            "description": triaged['title'],
-            "upstream_issue": triaged['url'],
+            "description": triaged["title"],
+            "upstream_issue": triaged["url"],
         }
 
         return {
-            'track_id': track_id,
-            'spec': spec,
-            'plan': plan,
-            'metadata': metadata,
+            "track_id": track_id,
+            "spec": spec,
+            "plan": plan,
+            "metadata": metadata,
         }
 
     def triage_all(self, repos: list[str], output_file: Path) -> dict:
@@ -322,17 +314,17 @@ class IssueTriageBot:
             Summary of triage results
         """
         results = {
-            'timestamp': datetime.now(timezone.utc).isoformat(),
-            'repos': {},
-            'summary': defaultdict(int),
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "repos": {},
+            "summary": defaultdict(int),
         }
 
         all_triaged = []
 
         for repo in repos:
-            print(f"\n{'='*60}")
+            print(f"\n{'=' * 60}")
             print(f"[TRIAGE] Processing {repo}")
-            print(f"{'='*60}")
+            print(f"{'=' * 60}")
 
             try:
                 issues = self.fetch_issues(repo)
@@ -344,39 +336,39 @@ class IssueTriageBot:
                     all_triaged.append(triaged)
 
                     # Update summary
-                    results['summary'][triaged['type']] += 1
-                    results['summary'][f"priority_{triaged['priority']}"] += 1
+                    results["summary"][triaged["type"]] += 1
+                    results["summary"][f"priority_{triaged['priority']}"] += 1
 
-                results['repos'][repo] = {
-                    'count': len(repo_results),
-                    'issues': repo_results,
+                results["repos"][repo] = {
+                    "count": len(repo_results),
+                    "issues": repo_results,
                 }
 
             except Exception as e:
                 print(f"[ERROR] Failed to triage {repo}: {e}")
-                results['repos'][repo] = {'error': str(e)}
+                results["repos"][repo] = {"error": str(e)}
 
         # Save results
         output_file.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_file, 'w') as f:
+        with open(output_file, "w") as f:
             json.dump(results, f, indent=2, default=str)
 
         # Print summary
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("Triage Summary")
-        print("="*60)
+        print("=" * 60)
         print(f"Total issues: {len(all_triaged)}")
         print("\nBy Type:")
-        for issue_type, count in sorted(results['summary'].items()):
-            if not issue_type.startswith('priority_'):
+        for issue_type, count in sorted(results["summary"].items()):
+            if not issue_type.startswith("priority_"):
                 print(f"  {issue_type}: {count}")
         print("\nBy Priority:")
-        for priority in ['P0', 'P1', 'P2', 'P3']:
-            count = results['summary'].get(f'priority_{priority}', 0)
+        for priority in ["P0", "P1", "P2", "P3"]:
+            count = results["summary"].get(f"priority_{priority}", 0)
             print(f"  {priority}: {count}")
 
         # Highlight high-priority issues
-        high_priority = [i for i in all_triaged if i['priority'] in ['P0', 'P1']]
+        high_priority = [i for i in all_triaged if i["priority"] in ["P0", "P1"]]
         if high_priority:
             print("\nHigh Priority Issues (P0/P1):")
             for issue in high_priority[:10]:  # Show top 10
@@ -414,20 +406,20 @@ def main():
     parser.add_argument(
         "--min-priority",
         default="P2",
-        choices=['P0', 'P1', 'P2', 'P3'],
+        choices=["P0", "P1", "P2", "P3"],
         help="Minimum priority for track creation (default: P2)",
     )
 
     args = parser.parse_args()
 
-    print("="*60)
+    print("=" * 60)
     print("Issue Triage Bot")
-    print("="*60)
+    print("=" * 60)
     print(f"Repos: {', '.join(args.repo)}")
     print(f"Output: {args.output}")
     print(f"Create tracks: {args.create_tracks}")
     print(f"Min priority for tracks: {args.min_priority}")
-    print("="*60)
+    print("=" * 60)
 
     try:
         bot = IssueTriageBot()
@@ -435,11 +427,11 @@ def main():
 
         # Optionally create tracks for high-priority issues
         if args.create_tracks:
-            priority_order = {'P0': 0, 'P1': 1, 'P2': 2, 'P3': 3}
+            priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
             min_priority_level = priority_order[args.min_priority]
 
-            for issue in results['repos'].get('gemini-cli-extensions/conductor', {}).get('issues', []):
-                if priority_order.get(issue['priority'], 4) <= min_priority_level:
+            for issue in results["repos"].get("gemini-cli-extensions/conductor", {}).get("issues", []):
+                if priority_order.get(issue["priority"], 4) <= min_priority_level:
                     print(f"\n[TRACK] Creating track for issue #{issue['number']}...")
                     # In production, would create track files here
                     track = bot.generate_track_from_issue(issue)
@@ -454,6 +446,7 @@ def main():
     except Exception as e:
         print(f"[ERROR] Unexpected error: {e}")
         import traceback
+
         traceback.print_exc()
         return 1
 

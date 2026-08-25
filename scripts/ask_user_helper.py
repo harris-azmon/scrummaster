@@ -6,19 +6,19 @@ for structured user interactions in Conductor workflows.
 
 Usage:
     from ask_user_helper import ask_yesno, ask_choice, ask_text, ask_batch
-    
+
     # Yes/No question
     confirmed = ask_yesno("Do you want to proceed with the setup?")
-    
+
     # Single choice
     framework = ask_choice("Select a framework:", ["React", "Vue", "Angular"])
-    
+
     # Multi-select
     features = ask_choice("Select features:", ["Auth", "API", "Database"], multi=True)
-    
+
     # Text input
     project_name = ask_text("Enter project name:", placeholder="my-project")
-    
+
     # Batch questions
     responses = ask_batch([
         {"type": "text", "question": "Project name:", "key": "name"},
@@ -28,7 +28,6 @@ Usage:
 """
 
 import json
-import sys
 from typing import Any, Dict, List, Optional, Union
 
 
@@ -48,10 +47,12 @@ class AskUserTool:
         Returns:
             True if yes, False if no
         """
-        return self._call_tool({
-            "type": "yesno",
-            "question": question,
-        })
+        return self._call_tool(
+            {
+                "type": "yesno",
+                "question": question,
+            }
+        )
 
     def ask_choice(
         self,
@@ -71,13 +72,15 @@ class AskUserTool:
         Returns:
             Selected option(s)
         """
-        return self._call_tool({
-            "type": "choice",
-            "question": question,
-            "options": options,
-            "multi": multi,
-            "default": default,
-        })
+        return self._call_tool(
+            {
+                "type": "choice",
+                "question": question,
+                "options": options,
+                "multi": multi,
+                "default": default,
+            }
+        )
 
     def ask_text(
         self,
@@ -97,13 +100,15 @@ class AskUserTool:
         Returns:
             User's text input
         """
-        return self._call_tool({
-            "type": "text",
-            "question": question,
-            "placeholder": placeholder,
-            "default": default,
-            "validate": validate,
-        })
+        return self._call_tool(
+            {
+                "type": "text",
+                "question": question,
+                "placeholder": placeholder,
+                "default": default,
+                "validate": validate,
+            }
+        )
 
     def ask_batch(self, questions: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Ask multiple questions in a single batch.
@@ -123,10 +128,12 @@ class AskUserTool:
         Returns:
             Dict mapping keys to responses
         """
-        return self._call_tool({
-            "type": "batch",
-            "questions": questions,
-        })
+        return self._call_tool(
+            {
+                "type": "batch",
+                "questions": questions,
+            }
+        )
 
     def _call_tool(self, params: Dict[str, Any]) -> Any:
         """Call the AskUser tool with given parameters.
@@ -149,14 +156,14 @@ class AskUserTool:
         # Placeholder responses for testing
         if params.get("type") == "yesno":
             return True
-        elif params.get("type") == "choice":
+        if params.get("type") == "choice":
             options = params.get("options", [])
             if params.get("multi"):
                 return options[:1] if options else []
             return options[0] if options else ""
-        elif params.get("type") == "text":
+        if params.get("type") == "text":
             return params.get("default", "user-input")
-        elif params.get("type") == "batch":
+        if params.get("type") == "batch":
             responses = {}
             for q in params.get("questions", []):
                 key = q.get("key", "unknown")
@@ -212,7 +219,7 @@ def generate_skill_snippet() -> str:
     Returns:
         Markdown code snippet for skill documentation
     """
-    return '''```markdown
+    return r"""```markdown
 ## AskUser Tool Examples
 
 ### Yes/No Question
@@ -268,14 +275,14 @@ Use for related questions to reduce turns:
   - Framework (choice)
   - Enable TypeScript (yesno)
 \`\`\`
-```'''
+```"""
 
 
 if __name__ == "__main__":
     # Demo/test mode
-    print("="*60)
+    print("=" * 60)
     print("AskUser Tool Helper - Demo")
-    print("="*60)
+    print("=" * 60)
 
     # Demo yesno
     print("\n1. Yes/No Question:")
@@ -284,39 +291,30 @@ if __name__ == "__main__":
 
     # Demo choice
     print("\n2. Single Choice:")
-    result = ask_choice(
-        "Select a framework:",
-        ["React", "Vue", "Angular", "Svelte"]
-    )
+    result = ask_choice("Select a framework:", ["React", "Vue", "Angular", "Svelte"])
     print(f"   Response: {result}")
 
     # Demo multi-select
     print("\n3. Multi-Select Choice:")
-    result = ask_choice(
-        "Select features:",
-        ["Auth", "API", "Database", "Testing"],
-        multi=True
-    )
+    result = ask_choice("Select features:", ["Auth", "API", "Database", "Testing"], multi=True)
     print(f"   Response: {result}")
 
     # Demo text
     print("\n4. Text Input:")
-    result = ask_text(
-        "Enter project name:",
-        placeholder="my-project",
-        validate=r"^[a-z][a-z0-9-]*$"
-    )
+    result = ask_text("Enter project name:", placeholder="my-project", validate=r"^[a-z][a-z0-9-]*$")
     print(f"   Response: {result}")
 
     # Demo batch
     print("\n5. Batch Questions:")
-    result = ask_batch([
-        {"type": "text", "question": "Project name:", "key": "name", "default": "demo-project"},
-        {"type": "choice", "question": "Framework:", "options": ["React", "Vue"], "key": "framework"},
-        {"type": "yesno", "question": "Enable TypeScript?", "key": "typescript"},
-    ])
+    result = ask_batch(
+        [
+            {"type": "text", "question": "Project name:", "key": "name", "default": "demo-project"},
+            {"type": "choice", "question": "Framework:", "options": ["React", "Vue"], "key": "framework"},
+            {"type": "yesno", "question": "Enable TypeScript?", "key": "typescript"},
+        ]
+    )
     print(f"   Response: {json.dumps(result, indent=2)}")
 
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print("Demo complete!")
-    print("="*60)
+    print("=" * 60)

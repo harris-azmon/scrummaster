@@ -1,4 +1,3 @@
-import os
 import sys
 from pathlib import Path
 
@@ -8,6 +7,7 @@ sys.path.insert(0, str(ROOT / "conductor-core" / "src"))
 
 from scripts.sync_skills import sync_skills
 from scripts.validate_platforms import sync_platforms
+
 
 def main():
     print("--- Phase 1: Synchronizing Global & Platform Skills ---")
@@ -28,6 +28,7 @@ def main():
 
     print("\n🎉 Conductor Synchronization Complete!")
     return 0
+
 
 if __name__ == "__main__":
     sys.exit(main())

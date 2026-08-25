@@ -2,7 +2,7 @@ import pytest
 from conductor_core.validation import ValidationService
 
 
-@pytest.fixture()
+@pytest.fixture
 def validation_setup(tmp_path):
     templates_dir = tmp_path / "templates"
     templates_dir.mkdir()

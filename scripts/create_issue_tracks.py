@@ -9,11 +9,9 @@ This script creates conductor tracks for key upstream issues:
 - #108, #103, #97, #96: Other issues
 """
 
-import os
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-
 
 # Issue definitions with titles and descriptions
 UPSTREAM_ISSUES = {
@@ -89,15 +87,15 @@ def create_track(issue_number: int, issue_data: dict, tracks_dir: Path) -> Path:
     print(f"[CREATE] {track_dir}")
 
     # Create spec.md
-    spec_content = f"""# Specification: {issue_data['title']}
+    spec_content = f"""# Specification: {issue_data["title"]}
 
 **Source Issue:** gemini-cli-extensions/conductor#{issue_number}
-**Priority:** {issue_data['priority']}
-**Labels:** {', '.join(issue_data['labels'])}
+**Priority:** {issue_data["priority"]}
+**Labels:** {", ".join(issue_data["labels"])}
 
 ## Overview
 
-{issue_data['description']}
+{issue_data["description"]}
 
 This track implements the feature/fix requested in the upstream issue.
 
@@ -131,11 +129,11 @@ This track implements the feature/fix requested in the upstream issue.
         f.write(spec_content)
 
     # Create plan.md
-    plan_content = f"""# Implementation Plan: {issue_data['title']}
+    plan_content = f"""# Implementation Plan: {issue_data["title"]}
 
 **Track ID:** {track_id}
 **Source:** Upstream Issue #{issue_number}
-**Priority:** {issue_data['priority']}
+**Priority:** {issue_data["priority"]}
 
 ## Phase 1: Analysis
 
@@ -168,6 +166,7 @@ This track implements the feature/fix requested in the upstream issue.
 
     # Create metadata.json
     import json
+
     metadata = {
         "track_id": track_id,
         "type": "feature",
@@ -184,10 +183,10 @@ This track implements the feature/fix requested in the upstream issue.
         json.dump(metadata, f, indent=2)
 
     # Create index.md
-    index_content = f"""# Track: {issue_data['title']}
+    index_content = f"""# Track: {issue_data["title"]}
 
 **Status:** new
-**Priority:** {issue_data['priority']}
+**Priority:** {issue_data["priority"]}
 **Upstream Issue:** #{issue_number}
 
 [Plan](./plan.md) | [Spec](./spec.md) | [Metadata](./metadata.json)
@@ -196,7 +195,7 @@ This track implements the feature/fix requested in the upstream issue.
 
 ## Summary
 
-{issue_data['description']}
+{issue_data["description"]}
 
 ## Progress
 
@@ -221,7 +220,7 @@ def update_tracks_md(tracks_dir: Path, issues: dict):
     tracks_md = tracks_dir.parent / "tracks.md"
 
     # Read existing content
-    with open(tracks_md, "r") as f:
+    with open(tracks_md) as f:
         content = f.read()
 
     # Find the position to insert new tracks (before "## Phase 5" or at end of active tracks)
@@ -272,9 +271,9 @@ def main():
 
     args = parser.parse_args()
 
-    print("="*60)
+    print("=" * 60)
     print("Upstream Issue Track Creator")
-    print("="*60)
+    print("=" * 60)
 
     # Determine which issues to process
     if args.all:
@@ -283,9 +282,7 @@ def main():
         issues_to_create = {n: UPSTREAM_ISSUES[n] for n in args.issue if n in UPSTREAM_ISSUES}
     else:
         # Default: create tracks for high-priority issues
-        issues_to_create = {
-            n: d for n, d in UPSTREAM_ISSUES.items() if d["priority"] in ["P0", "P1"]
-        }
+        issues_to_create = {n: d for n, d in UPSTREAM_ISSUES.items() if d["priority"] in ["P0", "P1"]}
 
     if not issues_to_create:
         print("[ERROR] No valid issues specified")
@@ -294,7 +291,7 @@ def main():
     print(f"Issues to process: {list(issues_to_create.keys())}")
     print(f"Tracks directory: {args.tracks_dir}")
     print(f"Dry run: {args.dry_run}")
-    print("="*60)
+    print("=" * 60)
 
     if args.dry_run:
         print("\n[DRY RUN] Would create the following tracks:")
@@ -319,9 +316,9 @@ def main():
         created_issues = {n: UPSTREAM_ISSUES[n] for n, _ in created_tracks}
         update_tracks_md(args.tracks_dir, created_issues)
 
-    print("\n" + "="*60)
+    print("\n" + "=" * 60)
     print(f"Summary: Created {len(created_tracks)} tracks")
-    print("="*60)
+    print("=" * 60)
 
     return 0
 

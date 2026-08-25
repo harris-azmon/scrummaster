@@ -9,7 +9,7 @@ from conductor_core.errors import ValidationError
 from conductor_gemini.cli import main
 
 
-@pytest.fixture()
+@pytest.fixture
 def repo_dir(tmp_path):
     git.Repo.init(tmp_path)
     return tmp_path

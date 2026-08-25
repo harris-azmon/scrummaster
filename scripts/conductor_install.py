@@ -52,19 +52,18 @@ class ConductorInstaller:
         system = platform.system()
         if system == "Darwin":
             return "macos"
-        elif system == "Linux":
+        if system == "Linux":
             return "linux"
-        elif system == "Windows":
+        if system == "Windows":
             return "windows"
-        else:
-            return system.lower()
+        return system.lower()
 
     def detect_arch(self) -> str:
         """Detect system architecture"""
         machine = platform.machine().lower()
         if machine in ["amd64", "x86_64"]:
             return "x64"
-        elif machine in ["arm64", "aarch64"]:
+        if machine in ["arm64", "aarch64"]:
             return "arm64"
         return machine
 

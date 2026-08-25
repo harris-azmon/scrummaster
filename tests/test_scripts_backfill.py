@@ -19,7 +19,7 @@ from scripts.sync_skills import (
 )
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_repo(tmp_path):
     repo = tmp_path / "repo"
     repo.mkdir()
