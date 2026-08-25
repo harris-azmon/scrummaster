@@ -4,25 +4,27 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Conductor is a **Gemini CLI extension** that enables Context-Driven Development. It transforms Gemini CLI into a project manager that follows a strict protocol: **Context → Spec & Plan → Implement**.
+Conductor is an **agent plugin** (installable into Antigravity and Claude Code) that enables Spec-Driven Development. It transforms your coding agent into a project manager that follows a strict protocol: **Context → Spec & Plan → Implement**.
 
-The extension is defined in `gemini-extension.json` and provides slash commands through TOML files in `commands/conductor/`.
+The plugin is defined in `plugin.json` and `.claude-plugin/marketplace.json`, and provides its protocol logic through `SKILL.md` files in `skills/conductor-*/`.
 
 ## Architecture
 
-### Extension Structure
-- `gemini-extension.json` - Extension manifest (name, version, context file)
-- `GEMINI.md` - Context file loaded by Gemini CLI when extension is active
-- `commands/conductor/*.toml` - Slash command definitions containing prompts
+### Plugin Structure
+- `plugin.json` - Plugin manifest (name, description)
+- `.claude-plugin/marketplace.json` - Claude Code plugin marketplace listing
+- `skills/conductor-*/SKILL.md` - Protocol logic for each command, portable across Agent-Skills-compatible clients
+- `rules/` - Platform-specific operational rules (e.g. Antigravity)
 
-### Commands (in `commands/conductor/`)
-| Command | File | Purpose |
+### Commands (in `skills/conductor-*/`)
+| Command | Skill | Purpose |
 |---------|------|---------|
-| `/conductor:setup` | `setup.toml` | Initialize project with product.md, tech-stack.md, workflow.md, and first track |
-| `/conductor:newTrack` | `newTrack.toml` | Create new feature/bug track with spec.md and plan.md |
-| `/conductor:implement` | `implement.toml` | Execute tasks from current track's plan following TDD workflow |
-| `/conductor:status` | `status.toml` | Display progress overview from tracks.md |
-| `/conductor:revert` | `revert.toml` | Git-aware revert of tracks, phases, or tasks |
+| `/conductor:conductor-setup` | `conductor-setup` | Initialize project with product.md, tech-stack.md, workflow.md, and first track |
+| `/conductor:conductor-new-track` | `conductor-new-track` | Create new feature/bug track with spec.md and plan.md |
+| `/conductor:conductor-implement` | `conductor-implement` | Execute tasks from current track's plan following TDD workflow |
+| `/conductor:conductor-status` | `conductor-status` | Display progress overview from tracks.md |
+| `/conductor:conductor-revert` | `conductor-revert` | Git-aware revert of tracks, phases, or tasks |
+| `/conductor:conductor-review` | `conductor-review` | Review completed work against guidelines and the plan |
 
 ### Generated Artifacts (in user projects)
 When users run Conductor, it creates:
@@ -92,12 +94,12 @@ The skill in `.claude/skills/conductor/` automatically activates when Claude det
 Copy `.claude/` to any project to enable Conductor commands, or copy commands to `~/.claude/commands/` for global access.
 
 ### Interoperability
-Both Gemini CLI and Claude Code implementations use the same `conductor/` directory structure. Projects set up with either tool work with both.
+Antigravity and Claude Code both consume the same `conductor/` directory structure. Projects set up with either tool work with both.
 
 ## Development Notes
 
-- Commands are pure TOML files with embedded prompts - no build step required
-- The extension relies on Gemini CLI's tool calling capabilities
+- Commands are `SKILL.md` files with embedded prompts - no build step required
+- The plugin relies on the host agent's (Antigravity/Claude Code) tool calling capabilities
 - State is tracked in JSON files (setup_state.json, metadata.json)
 - Git notes are used extensively for audit trails
 - Commands always validate setup before executing
