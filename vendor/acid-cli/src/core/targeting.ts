@@ -1,5 +1,5 @@
 import type { ApiClient } from "./api.ts";
-import { readGitContext } from "./git.ts";
+import { readFossilContext } from "./fossil.ts";
 import { runtimeError, usageError } from "./errors.ts";
 
 export interface OneImplementationTarget {
@@ -15,7 +15,7 @@ export interface OneImplementationOptions {
 }
 
 export interface OneImplementationResolverDependencies {
-	readGitContext?: typeof readGitContext;
+	readFossilContext?: typeof readFossilContext;
 }
 
 export interface NormalizeOneImplementationTargetOptions {
@@ -107,12 +107,12 @@ export async function resolveImplementationTarget(
 		};
 	}
 
-	const contextReader = dependencies.readGitContext ?? readGitContext;
-	const gitContext = await contextReader();
+	const contextReader = dependencies.readFossilContext ?? readFossilContext;
+	const fossilContext = await contextReader();
 	const response = await apiClient.listImplementations({
 		productName: target.productName,
-		repoUri: gitContext.repoUri,
-		branchName: gitContext.branchName,
+		repoUri: fossilContext.repoUri,
+		branchName: fossilContext.branchName,
 		featureName: target.featureName,
 	});
 

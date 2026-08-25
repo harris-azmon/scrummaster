@@ -2,7 +2,7 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import type { CommandResult } from "./output.ts";
 
-import canonicalSkillContent from "../../.agents/skills/acai/SKILL.md" with {
+import canonicalSkillContent from "../../.agents/skills/acid/SKILL.md" with {
 	type: "text",
 };
 
@@ -20,7 +20,7 @@ export interface SkillDependencies {
 	writeFile?: typeof writeFile;
 }
 
-const SKILL_INSTALL_PATH_SEGMENTS = [".agents", "skills", "acai", "SKILL.md"];
+const SKILL_INSTALL_PATH_SEGMENTS = [".agents", "skills", "acid", "SKILL.md"];
 
 // skill.MAIN.2 / skill.SAFETY.3
 export function getCanonicalSkillContent(): string {

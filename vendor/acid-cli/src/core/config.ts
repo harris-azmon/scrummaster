@@ -1,25 +1,18 @@
-import { usageError } from "./errors.ts";
-
-export interface ApiConfig {
-    baseUrl: string;
-    token: string;
+export interface FossilConfig {
+    cwd: string;
 }
 
 export interface EnvLike {
     [key: string]: string | undefined;
 }
 
-// cli-core.CONFIG.1, cli-core.CONFIG.2, and cli-core.AUTH.2
-export function resolveApiConfig(env: EnvLike = process.env): ApiConfig {
-    const baseUrl =
-        env.ACAI_API_BASE_URL ??
-        env.ACAI_API_URL ??
-        "https://app.acai.sh/api/v1";
-
-    const token = env.ACAI_API_TOKEN;
-    if (!token) {
-        throw usageError("Missing API bearer token configuration.");
-    }
-
-    return { baseUrl, token };
+// cli-core.CONFIG.1, cli-core.CONFIG.2
+// The fossil backend is entirely local — there is no base URL or bearer
+// token to resolve (that was app.acai.sh-specific). ACID_FOSSIL_CWD lets a
+// caller point at a checkout other than the process cwd, e.g. for tests.
+export function resolveFossilConfig(
+    env: EnvLike = process.env,
+    cwd: string = process.cwd(),
+): FossilConfig {
+    return { cwd: env.ACID_FOSSIL_CWD ?? cwd };
 }

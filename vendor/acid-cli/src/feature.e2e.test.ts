@@ -3,7 +3,7 @@ import {
 	buildFeatureContextResponse,
 	buildImplementationsResponse,
 } from "../test/support/fixtures.ts";
-import { createFakeGitContext } from "../test/support/fake-git.ts";
+import { createFakeFossilContext } from "../test/support/fake-git.ts";
 import { createMockApiServer } from "../test/support/mock-api.ts";
 import { runCliSubprocess } from "../test/support/cli.ts";
 import { apiEnv, expectUsageError } from "../test/support/e2e.ts";
@@ -99,7 +99,7 @@ describe("feature command", () => {
 	});
 
 	test("feature.MAIN.2-1 cli-core.TARGETING.2 cli-core.TARGETING.3 resolve exactly one implementation from git context without --product", async () => {
-		const git = await createFakeGitContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
+		const git = await createFakeFossilContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
 		const server = createMockApiServer((request) => {
 			const url = new URL(request.url);
 			if (url.pathname === "/implementations") {
@@ -130,7 +130,7 @@ describe("feature command", () => {
 	});
 
 	test("feature.MAIN.2-1 feature.API.1 cli-core.ERRORS.2 exits before feature lookup when git context is missing without --product", async () => {
-		const git = await createFakeGitContext({ remoteExitCode: 1 });
+		const git = await createFakeFossilContext({ remoteExitCode: 1 });
 		const server = createMockApiServer(() => {
 			throw new Error("feature lookup should not be reached without git context");
 		});
@@ -176,7 +176,7 @@ describe("feature command", () => {
 	});
 
 	test("cli-core.TARGETING.4 feature.MAIN.2-2 reports ambiguous cross-product discovery", async () => {
-		const git = await createFakeGitContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
+		const git = await createFakeFossilContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
 		const server = createMockApiServer((request) => {
 			const url = new URL(request.url);
 			if (url.pathname === "/implementations") {
@@ -207,7 +207,7 @@ describe("feature command", () => {
 	});
 
 	test("cli-core.TARGETING.5 feature.MAIN.2-2 reports no-match discovery with filter wording", async () => {
-		const git = await createFakeGitContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
+		const git = await createFakeFossilContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
 		const server = createMockApiServer((request) => {
 			const url = new URL(request.url);
 			if (url.pathname === "/implementations") {

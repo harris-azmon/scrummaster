@@ -14,7 +14,7 @@ export interface RuntimeCompat {
 	runCommand(
 		command: string,
 		args: string[],
-		options?: { cwd?: string },
+		options?: { cwd?: string; input?: string },
 	): Promise<CommandExecutionResult>;
 }
 
@@ -36,8 +36,12 @@ export const defaultRuntime: RuntimeCompat = {
 	async runCommand(command, args, options = {}) {
 		const child = spawn(command, args, {
 			cwd: options.cwd,
-			stdio: ["ignore", "pipe", "pipe"],
+			stdio: [options.input === undefined ? "ignore" : "pipe", "pipe", "pipe"],
 		});
+
+		if (options.input !== undefined) {
+			child.stdin?.end(options.input);
+		}
 
 		const exitCodePromise = new Promise<number>((resolve, reject) => {
 			child.once("error", reject);

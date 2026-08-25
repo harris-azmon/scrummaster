@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { buildFeatureStatesResponse, buildImplementationsResponse } from "../test/support/fixtures.ts";
-import { createFakeGitContext } from "../test/support/fake-git.ts";
+import { createFakeFossilContext } from "../test/support/fake-git.ts";
 import { createMockApiServer } from "../test/support/mock-api.ts";
 import { runCliSubprocess } from "../test/support/cli.ts";
 import { apiEnv, createTempWorkspace, expectUsageError } from "../test/support/e2e.ts";
@@ -130,7 +130,7 @@ describe("set-status command", () => {
 	});
 
 	test("cli-core.TARGETING.2 cli-core.TARGETING.3 resolve git-derived implementations when --impl is omitted", async () => {
-		const git = await createFakeGitContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
+		const git = await createFakeFossilContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
 		const server = createMockApiServer(async (request) => {
 			const url = new URL(request.url);
 			if (url.pathname === "/implementations") {
@@ -173,7 +173,7 @@ describe("set-status command", () => {
 		],
 	] as const) {
 		test(`${acid} fails for unsupported git-derived target resolution`, async () => {
-			const git = await createFakeGitContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
+			const git = await createFakeFossilContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
 			const server = createMockApiServer((request) => {
 				const url = new URL(request.url);
 				if (url.pathname === "/implementations") {

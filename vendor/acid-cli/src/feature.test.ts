@@ -152,7 +152,7 @@ describe("implementation targeting", () => {
 				apiClient as never,
 				{ featureName: "feature" },
 				{
-					readGitContext: async () => ({
+					readFossilContext: async () => ({
 						repoUri: "github.com/my-org/my-repo",
 						branchName: "main",
 					}),
@@ -197,7 +197,7 @@ describe("implementation targeting", () => {
 				apiClient as never,
 				{ featureName: "feature", implementationFilter: "main" },
 				{
-					readGitContext: async () => ({
+					readFossilContext: async () => ({
 						repoUri: "github.com/my-org/my-repo",
 						branchName: "main",
 					}),
@@ -233,7 +233,7 @@ describe("implementation targeting", () => {
 
 		await expect(
 			resolveImplementationName(apiClient as never, {}, {
-				readGitContext: async () => ({
+				readFossilContext: async () => ({
 					repoUri: "github.com/my-org/my-repo",
 					branchName: "main",
 				}),
@@ -252,7 +252,7 @@ describe("implementation targeting", () => {
 
 		await expect(
 			resolveImplementationName(apiClient as never, { featureName: "feature" }, {
-				readGitContext: async () => ({
+				readFossilContext: async () => ({
 					repoUri: "github.com/my-org/my-repo",
 					branchName: "main",
 				}),
@@ -269,7 +269,7 @@ describe("implementation targeting", () => {
 
 		await expect(
 			resolveImplementationName(apiClient as never, { productName: "example-product" }, {
-				readGitContext: async () => {
+				readFossilContext: async () => {
 					throw new Error("git missing");
 				},
 			}),

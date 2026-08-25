@@ -22,6 +22,13 @@ ALTER TABLE ticket ADD COLUMN story_id TEXT;
 ALTER TABLE ticket ADD COLUMN acid TEXT;
 ALTER TABLE ticket ADD COLUMN component TEXT;
 ALTER TABLE ticket ADD COLUMN deprecated BOOLEAN DEFAULT 0;
+-- `status` (built-in fossil field) tracks Open/Closed — "is this ACID's code
+-- done". `acai_status` carries the richer acai.sh vocabulary
+-- (assigned/blocked/incomplete/completed/rejected/accepted) set by
+-- `acid set-status`, kept separate so the two don't fight over one field.
+ALTER TABLE ticket ADD COLUMN acai_status TEXT;
+ALTER TABLE ticket ADD COLUMN acai_comment TEXT;
+ALTER TABLE ticket ADD COLUMN last_seen_commit TEXT;
 
 -- Helpful indexes for `fossil sql "... WHERE story_id='...'"` status rollups.
 CREATE INDEX IF NOT EXISTS ticket_story_id_idx ON ticket(story_id);

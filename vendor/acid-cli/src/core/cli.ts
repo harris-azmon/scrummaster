@@ -1,7 +1,7 @@
 import { Command, CommanderError } from "commander";
 import type { ApiClient } from "./api.ts";
-import { createApiClient } from "./api.ts";
-import { resolveApiConfig } from "./config.ts";
+import { createFossilClient } from "./fossil-client.ts";
+import { resolveFossilConfig } from "./config.ts";
 import { CliError, runtimeError } from "./errors.ts";
 import {
     defaultOutputPorts,
@@ -36,6 +36,11 @@ import {
     runSkillCommand,
     type SkillCommandOptions,
 } from "./skill.ts";
+import {
+    normalizeTrelloExportOptions,
+    runTrelloExportCommand,
+    type TrelloExportCommandOptions,
+} from "./trello-export.ts";
 
 export interface CliDependencies {
     env?: Record<string, string | undefined>;
@@ -49,6 +54,7 @@ interface CliState {
     pushResult?: CommandResult;
     setStatusResult?: CommandResult;
     skillResult?: CommandResult;
+    trelloExportResult?: CommandResult;
     usageError?: CliError;
     usageHelpCommand?: string;
 }
@@ -123,6 +129,11 @@ export async function runCli(
         return state.skillResult.exitCode;
     }
 
+    if (state?.trelloExportResult) {
+        await writeCommandResult(output, state.trelloExportResult);
+        return state.trelloExportResult.exitCode;
+    }
+
     return 0;
 }
 
@@ -138,18 +149,16 @@ function createCliProgram(
     const reset = "\x1b[0m";
     const program = new Command();
     program
-        .name("acai")
+        .name("acid")
         .description(
-            `  ${purple}${bold}Acai helps you coordinate spec-driven software projects.${reset}
+            `  ${purple}${bold}Acid helps you coordinate spec-driven software projects on Fossil.${reset}
 
   ${purple}•${reset} Specs are written in local .yaml files (e.g. ${dim}my-feature.feature.yaml${reset}).
   ${purple}•${reset} Specs contain a list of functional acceptance criteria with stable IDs (AKA 'ACIDs').
-  ${purple}•${reset} A Product can have many Features, and many Implementations. (e.g. ${dim}my-cli${reset} Product has a ${dim}dev${reset} Implementation with ${dim}my-new-command.feature.yaml${reset})
-  ${purple}•${reset} An Implementation tracks specific git branches (e.g. 'Production' tracks 'main'), and optionally a parent implementation from which to inherit data.
-  ${purple}•${reset} The Acai.sh server is a hub to help humans and AI agents coordinate across all Products, Features, and Implementations.
-
-  ${purple}🔗${reset} ${bold}Official Docs:${reset}  ${purple}https://acai.sh${reset}
-  ${purple}🤖${reset} ${bold}AI/LLM Docs:${reset}    https://acai.sh/llms.txt
+  ${purple}•${reset} A Product can have many Features (Scrummaster stories), each backed by one fossil ticket per ACID.
+  ${purple}•${reset} Scrummaster is Cathedral-style and trunk-oriented — there is one Implementation ("trunk") per product, no branch-based targeting.
+  ${purple}•${reset} Everything is local: state lives in your fossil repository's ticket table, not a hosted server.
+  ${purple}•${reset} Use ${dim}trello-export${reset} for one-way visibility into a Trello board (Backlog/In Progress/Done lists, epics as labels).
 
   ${dim}Use these commands after editing specs, implementing code, or to identify and self-assign remaining work.${reset}`,
         )
@@ -166,12 +175,12 @@ function createCliProgram(
         .command("skill")
         .usage("[options]")
         .description(
-            `The ${dim}\`skill\`${reset} command prints a short prompt teaching you best practices for spec-driven development with acai. Optionally, pass ${dim}--install${reset} to write a SKILL.md file containing the same prompt.\n`,
+            `The ${dim}\`skill\`${reset} command prints a short prompt teaching you best practices for spec-driven development with acid. Optionally, pass ${dim}--install${reset} to write a SKILL.md file containing the same prompt.\n`,
         )
         // skill.MAIN.4
         .option(
             "--install",
-            "write the bundled acai skill to .agents/skills/acai/SKILL.md",
+            "write the bundled acid skill to .agents/skills/acid/SKILL.md",
         )
         .action(async (options: SkillCommandOptions) => {
             state.skillResult = await runSkillCommand(
@@ -186,7 +195,7 @@ function createCliProgram(
         .command("push")
         .usage("[feature-names...] [options]")
         .description(
-            `The ${dim}\`push\`${reset} command is used to scan your git repository and sync local specs and ACID refs to the server. Use feature names to limit the scan, or --all to scan the full repo.\n`,
+            `The ${dim}\`push\`${reset} command is used to scan your working directory and sync local specs and ACID refs to fossil tickets. Use feature names to limit the scan, or --all to scan the full repo.\n`,
         )
         // push.MAIN.1
         .argument("[feature-names...]")
@@ -224,7 +233,7 @@ function createCliProgram(
                 });
                 const apiClient =
                     dependencies.apiClient ??
-                    createApiClient(resolveApiConfig(env));
+                    createFossilClient(resolveFossilConfig(env));
                 state.pushResult = await runPushCommand(
                     apiClient,
                     pushArgs,
@@ -277,7 +286,7 @@ function createCliProgram(
                 );
                 const apiClient =
                     dependencies.apiClient ??
-                    createApiClient(resolveApiConfig(env));
+                    createFossilClient(resolveFossilConfig(env));
                 state.featureResult = await runFeatureCommand(
                     apiClient,
                     featureArgs,
@@ -297,7 +306,7 @@ function createCliProgram(
         .command("features")
         .usage("[options]")
         .description(
-            `The ${dim}\`features\`${reset} command fetches a summary list of known features for one implementation. The summary includes status & reference counts, inheritance, and metadata. Use this to understand what exists and what to work on next. When --product is omitted, acai resolves the target from the current git branch unless --impl uses a namespaced selector.\n`,
+            `The ${dim}\`features\`${reset} command fetches a summary list of known features for one implementation. The summary includes status & reference counts, inheritance, and metadata. Use this to understand what exists and what to work on next. When --product is omitted, acid resolves the target from the current fossil checkout (trunk-only by default) unless --impl uses a namespaced selector.\n`,
         )
         // features.MAIN.2
         .option("--product <name>", "product name")
@@ -321,7 +330,7 @@ function createCliProgram(
                 const featuresArgs = normalizeFeaturesOptions(options);
                 const apiClient =
                     dependencies.apiClient ??
-                    createApiClient(resolveApiConfig(env));
+                    createFossilClient(resolveFossilConfig(env));
                 state.featuresResult = await runFeaturesCommand(
                     apiClient,
                     featuresArgs,
@@ -362,7 +371,7 @@ function createCliProgram(
                 );
                 const apiClient =
                     dependencies.apiClient ??
-                    createApiClient(resolveApiConfig(env));
+                    createFossilClient(resolveFossilConfig(env));
                 state.setStatusResult = await runSetStatusCommand(
                     apiClient,
                     setStatusArgs,
@@ -370,6 +379,33 @@ function createCliProgram(
             } catch (error) {
                 if (error instanceof CliError && error.kind === "usage") {
                     state.usageHelpCommand = "set-status";
+                    state.usageError = error;
+                    return;
+                }
+
+                throw error;
+            }
+        });
+
+    program
+        .command("trello-export")
+        .usage("[options]")
+        .description(
+            `The ${dim}\`trello-export\`${reset} command exports local fossil ACID ticket state to a Trello board: one board per project, lists for Backlog/In Progress/Done, one card per story (ACID checklist in the description), one label per epic. One-way export only — nothing is imported back from Trello. Requires ${dim}TRELLO_API_KEY${reset} and ${dim}TRELLO_TOKEN${reset}.\n`,
+        )
+        .option("--product <name>", "product/project name (defaults to the fossil project name)")
+        .option("--board-name <name>", "Trello board name (defaults to --product)")
+        .option("--json", "emit JSON output")
+        .action(async (options: TrelloExportCommandOptions) => {
+            try {
+                const trelloArgs = normalizeTrelloExportOptions(options);
+                state.trelloExportResult = await runTrelloExportCommand(trelloArgs, {
+                    cwd: process.cwd(),
+                    env,
+                });
+            } catch (error) {
+                if (error instanceof CliError && error.kind === "usage") {
+                    state.usageHelpCommand = "trello-export";
                     state.usageError = error;
                     return;
                 }

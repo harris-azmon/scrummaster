@@ -4,7 +4,7 @@ import {
 	buildImplementationFeaturesResponse,
 	buildImplementationsResponse,
 } from "../test/support/fixtures.ts";
-import { createFakeGitContext } from "../test/support/fake-git.ts";
+import { createFakeFossilContext } from "../test/support/fake-git.ts";
 import { createMockApiServer } from "../test/support/mock-api.ts";
 import { runCliSubprocess } from "../test/support/cli.ts";
 import { apiEnv, expectUsageError } from "../test/support/e2e.ts";
@@ -65,7 +65,7 @@ describe("features command", () => {
 	});
 
 	test("cli-core.TARGETING.2 cli-core.TARGETING.3 resolve exactly one implementation from git context", async () => {
-		const git = await createFakeGitContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
+		const git = await createFakeFossilContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
 		const server = createMockApiServer((request) => {
 			const url = new URL(request.url);
 			if (url.pathname === "/implementations") {
@@ -100,7 +100,7 @@ describe("features command", () => {
 	});
 
 	test("features.MAIN.2-1 cli-core.TARGETING.2 cli-core.TARGETING.3 resolves acai features without --product from git context", async () => {
-		const git = await createFakeGitContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
+		const git = await createFakeFossilContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
 		let implementationFeaturesRequests = 0;
 		const server = createMockApiServer((request) => {
 			const url = new URL(request.url);
@@ -187,7 +187,7 @@ describe("features command", () => {
 		],
 	] as const) {
 		test(`${acid} exits non-zero for unsupported branch targeting`, async () => {
-			const git = await createFakeGitContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
+			const git = await createFakeFossilContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
 			const server = createMockApiServer((request) => {
 				const url = new URL(request.url);
 				if (url.pathname === "/implementations") {
@@ -208,7 +208,7 @@ describe("features command", () => {
 	}
 
 	test("cli-core.ERRORS.2 exits non-zero when git context cannot be determined", async () => {
-		const git = await createFakeGitContext({ remoteExitCode: 1 });
+		const git = await createFakeFossilContext({ remoteExitCode: 1 });
 		const result = await runCliSubprocess(["features", "--product", "example-product"], {
 			...git.env,
 			ACAI_API_BASE_URL: "https://api.example.test",
@@ -225,7 +225,7 @@ describe("features command", () => {
 	});
 
 	test("features.MAIN.2-2 cli-core.TARGETING.4 rejects ambiguous branch discovery across products", async () => {
-		const git = await createFakeGitContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
+		const git = await createFakeFossilContext({ remote: "git@github.com:my-org/my-repo.git", branch: "main" });
 		const server = createMockApiServer((request) => {
 			const url = new URL(request.url);
 			if (url.pathname === "/implementations") {

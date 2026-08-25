@@ -4,13 +4,13 @@ import type { components } from "../generated/types.ts";
 import { runtimeError, usageError } from "./errors.ts";
 import { formatTextTable, type CommandResult } from "./output.ts";
 import {
-	readGitCommitHash,
-	readGitFileLastSeenCommit,
-	readGitPushContext,
-	readGitRepoRoot,
-	type GitCommandRunner,
-	type GitPushContext,
-} from "./git.ts";
+	readFossilCommitHash,
+	readFossilFileLastSeenCommit,
+	readFossilPushContext,
+	readFossilRepoRoot,
+	type FossilCommandRunner,
+	type FossilPushContext,
+} from "./fossil.ts";
 import { defaultRuntime, type RuntimeCompat } from "./runtime.ts";
 
 export type PushRequest = components["schemas"]["PushRequest"];
@@ -21,7 +21,7 @@ export type PushReference = NonNullable<
 
 export interface PushCommandOptions {
 	cwd?: string;
-	runner?: GitCommandRunner;
+	runner?: FossilCommandRunner;
 	runtime?: RuntimeCompat;
 	featureNames?: string[];
 	all?: boolean;
@@ -60,7 +60,7 @@ export interface PushScanResult {
 	references: DiscoveredPushReference[];
 }
 
-export interface PushPlan extends GitPushContext {
+export interface PushPlan extends FossilPushContext {
 	payloads: PushRequest[];
 }
 
@@ -105,6 +105,8 @@ const FEATURE_SPEC_PREFIX = "features/";
 const UNSCOPED_REFS_BUCKET = "";
 const IGNORED_REF_DIRS = new Set([
 	".git",
+	".fslckout",
+	"_FOSSIL_",
 	"node_modules",
 	"coverage",
 	"dist",
@@ -139,9 +141,9 @@ export async function planPush(
 	const cwd = options.cwd ?? process.cwd();
 	const runner = options.runner;
 	const runtime = options.runtime ?? defaultRuntime;
-	const repoRoot = await readGitRepoRoot({ cwd, runner });
+	const repoRoot = await readFossilRepoRoot({ cwd, runner });
 	const [gitContext, scan] = await Promise.all([
-		readGitPushContext({ cwd: repoRoot, runner }),
+		readFossilPushContext({ cwd: repoRoot, runner }),
 		scanPushRepo({
 			cwd: repoRoot,
 			runner,
@@ -166,7 +168,7 @@ export async function planPush(
 export async function scanPushRepo(
 	options: {
 		cwd?: string;
-		runner?: GitCommandRunner;
+		runner?: FossilCommandRunner;
 		runtime?: RuntimeCompat;
 		featureNames?: string[];
 		repoRoot?: string;
@@ -176,7 +178,7 @@ export async function scanPushRepo(
 	const runner = options.runner;
 	const runtime = options.runtime ?? defaultRuntime;
 	const featureFilter = normalizeFeatureFilter(options.featureNames);
-	const repoRoot = options.repoRoot ?? (await readGitRepoRoot({ cwd, runner }));
+	const repoRoot = options.repoRoot ?? (await readFossilRepoRoot({ cwd, runner }));
 	const filePaths = await listRepoFiles(repoRoot);
 
 	const specs: DiscoveredPushSpec[] = [];
@@ -211,7 +213,7 @@ export async function scanPushRepo(
 export async function parseFeatureSpecFile(
 	cwd: string,
 	relativePath: string,
-	runner?: GitCommandRunner,
+	runner?: FossilCommandRunner,
 	runtime: RuntimeCompat = defaultRuntime,
 ): Promise<DiscoveredPushSpec> {
 	const absolutePath = joinPath(cwd, relativePath);
@@ -236,15 +238,15 @@ export async function parseFeatureSpecFile(
 async function resolveSpecLastSeenCommit(
 	cwd: string,
 	relativePath: string,
-	runner?: GitCommandRunner,
+	runner?: FossilCommandRunner,
 ): Promise<string> {
-	const lastSeenCommit = await readGitFileLastSeenCommit(relativePath, {
+	const lastSeenCommit = await readFossilFileLastSeenCommit(relativePath, {
 		cwd,
 		runner,
 	});
 	if (lastSeenCommit) return lastSeenCommit;
 
-	return readGitCommitHash({ cwd, runner });
+	return readFossilCommitHash({ cwd, runner });
 }
 
 // push.SCAN.2 / push.SCAN.4 / push.UX.2
@@ -339,7 +341,7 @@ export async function runPushCommand(
 	options: NormalizedPushOptions,
 	dependencies: {
 		cwd?: string;
-		runner?: GitCommandRunner;
+		runner?: FossilCommandRunner;
 	} = {},
 	plan?: PushPlan,
 ): Promise<CommandResult> {
@@ -642,7 +644,7 @@ export function parseFeatureDocument(
 // push.MAIN.9
 export function buildPushPayloads(
 	scan: PushScanResult,
-	options: GitPushContext & {
+	options: FossilPushContext & {
 		featureNames?: string[];
 		product?: string;
 		target?: string;

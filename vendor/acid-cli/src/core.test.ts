@@ -9,7 +9,7 @@ import {
     writeTextResult,
 } from "./core/output.ts";
 import { getCanonicalSkillContent } from "./core/skill.ts";
-import { normalizeRepoUri, readGitContext } from "./core/git.ts";
+import { normalizeRepoUri, readFossilContext } from "./core/fossil.ts";
 import {
     normalizeFeaturesOptions,
     runFeaturesCommand,
@@ -81,7 +81,7 @@ describe("cli-core.DIST.1 cli-core.DIST.2 cli-core.DIST.3", () => {
             "utf8",
         );
         const gitRuntime = await readFile(
-            new URL("./core/git.ts", import.meta.url),
+            new URL("./core/fossil.ts", import.meta.url),
             "utf8",
         );
         const pushRuntime = await readFile(
@@ -580,7 +580,7 @@ describe("features command targeting", () => {
     });
 
     test("cli-core.TARGETING.2 and cli-core.TARGETING.3 normalize git remote context", async () => {
-        const context = await readGitContext({
+        const context = await readFossilContext({
             runner: {
                 async run(args) {
                     if (args.join(" ") === "remote get-url origin") {
@@ -632,7 +632,7 @@ describe("features command targeting", () => {
             apiClient as never,
             { productName: "example-product", statuses: [], json: false },
             {
-                readGitContext: async () => ({
+                readFossilContext: async () => ({
                     repoUri: "github.com/my-org/my-repo",
                     branchName: "main",
                 }),
@@ -696,7 +696,7 @@ describe("features command targeting", () => {
                 json: false,
             },
             {
-                readGitContext: async () => ({
+                readFossilContext: async () => ({
                     repoUri: "github.com/my-org/my-repo",
                     branchName: "main",
                 }),
@@ -746,7 +746,7 @@ describe("features command targeting", () => {
                 ambiguousClient as never,
                 { statuses: [], json: false },
                 {
-                    readGitContext: async () => ({
+                    readFossilContext: async () => ({
                         repoUri: "github.com/my-org/my-repo",
                         branchName: "main",
                     }),
@@ -787,7 +787,7 @@ describe("features command targeting", () => {
                 ambiguousClient as never,
                 { productName: "example-product", statuses: [], json: false },
                 {
-                    readGitContext: async () => ({
+                    readFossilContext: async () => ({
                         repoUri: "github.com/my-org/my-repo",
                         branchName: "main",
                     }),
@@ -800,7 +800,7 @@ describe("features command targeting", () => {
 
     test("cli-core.ERRORS.2 reports missing git context", async () => {
         await expect(
-            readGitContext({
+            readFossilContext({
                 runner: {
                     async run() {
                         return {
@@ -948,7 +948,7 @@ describe("features command output", () => {
                 json: false,
             },
             {
-                readGitContext: async () => ({
+                readFossilContext: async () => ({
                     repoUri: "github.com/my-org/my-repo",
                     branchName: "main",
                 }),

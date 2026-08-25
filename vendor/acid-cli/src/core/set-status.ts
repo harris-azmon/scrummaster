@@ -58,6 +58,11 @@ export function normalizeSetStatusOptions(
 	}
 
 	const target = normalizeOneImplementationTarget(options);
+	if (!target.productName) {
+		throw usageError(
+			"Missing product selector. Provide --product or use --impl <product/implementation>.",
+		);
+	}
 	return {
 		source,
 		productName: target.productName,

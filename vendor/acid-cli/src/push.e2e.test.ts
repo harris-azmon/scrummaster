@@ -1,5 +1,5 @@
 import { describe, expect, test } from "bun:test";
-import { createFakeGitContext } from "../test/support/fake-git.ts";
+import { createFakeFossilContext } from "../test/support/fake-git.ts";
 import { createMockApiServer } from "../test/support/mock-api.ts";
 import { runCliSubprocess } from "../test/support/cli.ts";
 import { apiEnv, createTempWorkspace } from "../test/support/e2e.ts";
@@ -15,7 +15,7 @@ describe("push command", () => {
 			},
 			"acai-push-full-",
 		);
-		const git = await createFakeGitContext({
+		const git = await createFakeFossilContext({
 			remote: "git@github.com:my-org/my-repo.git",
 			branch: "main",
 			topLevel: workspace.root,
@@ -68,7 +68,7 @@ describe("push command", () => {
 			},
 			"acai-push-filter-",
 		);
-		const git = await createFakeGitContext({
+		const git = await createFakeFossilContext({
 			remote: "git@github.com:my-org/my-repo.git",
 			branch: "main",
 			topLevel: workspace.root,
@@ -117,7 +117,7 @@ describe("push command", () => {
 			},
 			"acai-push-head-",
 		);
-		const git = await createFakeGitContext({
+		const git = await createFakeFossilContext({
 			remote: "git@github.com:my-org/my-repo.git",
 			branch: "main",
 			topLevel: workspace.root,
@@ -157,7 +157,7 @@ describe("push command", () => {
 			},
 			"acai-push-deprecated-",
 		);
-		const git = await createFakeGitContext({
+		const git = await createFakeFossilContext({
 			topLevel: workspace.root,
 			fileCommits: { "features/alpha.feature.yaml": "a1" },
 		});
@@ -191,7 +191,7 @@ describe("push command", () => {
 			},
 			"acai-push-scope-",
 		);
-		const git = await createFakeGitContext({
+		const git = await createFakeFossilContext({
 			topLevel: workspace.root,
 			fileCommits: {
 				"features/alpha.feature.yaml": "a1",
@@ -231,7 +231,7 @@ describe("push command", () => {
 
 	test("push.API.6 push.SAFETY.4 pushes refs-only payloads without --product", async () => {
 		const workspace = await createTempWorkspace({ "src/alpha.ts": 'const alpha = "alpha.MAIN.1";\n' }, "acai-push-refs-only-");
-		const git = await createFakeGitContext({ topLevel: workspace.root });
+		const git = await createFakeFossilContext({ topLevel: workspace.root });
 		const requests: any[] = [];
 		const server = createMockApiServer(async (request) => {
 			requests.push(await request.clone().json());
@@ -254,7 +254,7 @@ describe("push command", () => {
 
 	test("push.API.5 push.SAFETY.5 only sends refs-only child creation selectors when --product, --target, and --parent are all provided", async () => {
 		const workspace = await createTempWorkspace({ "src/alpha.ts": 'const alpha = "alpha.MAIN.1";\n' }, "acai-push-child-refs-");
-		const git = await createFakeGitContext({ topLevel: workspace.root });
+		const git = await createFakeFossilContext({ topLevel: workspace.root });
 		const requests: any[] = [];
 		const server = createMockApiServer(async (request) => {
 			requests.push(await request.clone().json());
@@ -290,7 +290,7 @@ describe("push command", () => {
 			},
 			"acai-push-partial-fail-",
 		);
-		const git = await createFakeGitContext({
+		const git = await createFakeFossilContext({
 			topLevel: workspace.root,
 			fileCommits: {
 				"features/alpha.feature.yaml": "a1",
@@ -328,7 +328,7 @@ describe("push command", () => {
 			},
 			"acai-push-json-",
 		);
-		const git = await createFakeGitContext({ topLevel: workspace.root, fileCommits: { "features/alpha.feature.yaml": "a1" } });
+		const git = await createFakeFossilContext({ topLevel: workspace.root, fileCommits: { "features/alpha.feature.yaml": "a1" } });
 		const server = createMockApiServer(() =>
 			Response.json({ data: { product_name: "product-a", implementation_name: "main", specs_created: 1, specs_updated: 0, warnings: ["json warning"] } }),
 		);
