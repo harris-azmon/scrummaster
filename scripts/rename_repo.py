@@ -7,6 +7,7 @@ This script helps coordinate the repository rename by:
 3. Implementing URL replacement logic
 4. Creating migration guide for users
 """
+
 from __future__ import annotations
 
 import json

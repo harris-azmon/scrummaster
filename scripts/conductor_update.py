@@ -6,6 +6,7 @@ Checks for updates and applies them to conductor components.
 Usage:
     python scripts/conductor_update.py [--check-only] [--all] [--component COMPONENT]
 """
+
 from __future__ import annotations
 
 import argparse
@@ -224,7 +225,9 @@ class UpdateChecker:
             self.log(f"[FAIL] Git pull failed: {stderr}", Colors.RED)
             return False
 
-        code, _stdout, stderr = self.run_command([sys.executable, "-m", "pip", "install", "--upgrade", str(gemini_path)])
+        code, _stdout, stderr = self.run_command(
+            [sys.executable, "-m", "pip", "install", "--upgrade", str(gemini_path)]
+        )
         if code != 0:
             self.log(f"[FAIL] Reinstall failed: {stderr}", Colors.RED)
             return False

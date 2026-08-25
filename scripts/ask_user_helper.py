@@ -26,6 +26,7 @@ Usage:
         {"type": "yesno", "question": "Enable TypeScript?", "key": "typescript"},
     ])
 """
+
 from __future__ import annotations
 
 import json

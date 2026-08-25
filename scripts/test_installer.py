@@ -3,6 +3,7 @@
 
 Tests the installation and verification scripts to ensure they work correctly.
 """
+
 from __future__ import annotations
 
 import subprocess

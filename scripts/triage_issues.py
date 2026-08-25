@@ -4,6 +4,7 @@
 This script fetches issues from upstream repositories, classifies them,
 and can automatically create tracks for high-priority issues.
 """
+
 from __future__ import annotations
 
 import json

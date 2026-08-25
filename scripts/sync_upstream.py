@@ -7,6 +7,7 @@ This script fetches changes from upstream repositories:
 
 It detects merge conflicts and creates draft PRs when needed.
 """
+
 from __future__ import annotations
 
 import json
