@@ -7,7 +7,7 @@ describe("CLI help output", () => {
 
 		expect(result.exitCode).toBe(0);
 		expect(result.stderr.trim()).toBe("");
-		expect(result.stdout).toContain("Usage: acai");
+		expect(result.stdout).toContain("Usage: acid");
 		expect(result.stdout).toContain("features");
 	});
 
@@ -30,7 +30,7 @@ describe("CLI help output", () => {
 		expect(shortHelp.exitCode).toBe(0);
 		expect(help.stdout).toBe(shortHelp.stdout);
 		expect(help.stdout).toContain(
-			"Usage: acai features [options]",
+			"Usage: acid features [options]",
 		);
 		expect(help.stdout).toContain("product name");
 		expect(help.stdout).toContain(
@@ -49,7 +49,7 @@ describe("CLI help output", () => {
 		expect(shortHelp.exitCode).toBe(0);
 		expect(help.stdout).toBe(shortHelp.stdout);
 		expect(help.stdout).toContain(
-			"Usage: acai feature <feature-name> [options]",
+			"Usage: acid feature <feature-name> [options]",
 		);
 		expect(help.stderr.trim()).toBe("");
 	});

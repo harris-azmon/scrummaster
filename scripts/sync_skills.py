@@ -136,8 +136,8 @@ def sync_skills() -> None:
     validate_manifest(MANIFEST_PATH, SCHEMA_PATH)
     manifest = load_manifest(MANIFEST_PATH)
     skills = list(iter_skills(manifest))
-    to_repo_only = os.environ.get("CONDUCTOR_SYNC_REPO_ONLY") == "1"
-    emit_antigravity_skills = os.environ.get("CONDUCTOR_ANTIGRAVITY_SKILLS") == "1"
+    to_repo_only = os.environ.get("SCRUMMASTER_SYNC_REPO_ONLY") == "1"
+    emit_antigravity_skills = os.environ.get("SCRUMMASTER_ANTIGRAVITY_SKILLS") == "1"
 
     # Sync to standard skills directory
     _perform_sync(SKILLS_DIR, skills)

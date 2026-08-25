@@ -52,7 +52,7 @@ def test_sync_aix_and_skillshare(tmp_path, monkeypatch):
     monkeypatch.setattr(sync_module, "validate_manifest", lambda *args, **kwargs: None)
 
     # Ensure env var is set to avoid repo-only mode
-    monkeypatch.setenv("CONDUCTOR_SYNC_REPO_ONLY", "0")
+    monkeypatch.setenv("SCRUMMASTER_SYNC_REPO_ONLY", "0")
 
     sync_module.sync_skills()
 

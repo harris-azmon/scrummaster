@@ -190,9 +190,9 @@ def main() -> int:  # noqa: C901, PLR0912
         _print_locations(repo_root)
 
     if args.repo_only:
-        os.environ["CONDUCTOR_SYNC_REPO_ONLY"] = "1"
+        os.environ["SCRUMMASTER_SYNC_REPO_ONLY"] = "1"
     if args.emit_skills:
-        os.environ["CONDUCTOR_ANTIGRAVITY_SKILLS"] = "1"
+        os.environ["SCRUMMASTER_ANTIGRAVITY_SKILLS"] = "1"
 
     if args.verify:
         return 0 if verify(repo_root) else 1

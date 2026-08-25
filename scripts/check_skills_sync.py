@@ -137,7 +137,7 @@ def main() -> int:
             skills, TEMPLATES_DIR, ANTIGRAVITY_WORKSPACE_DIR, fix=args.fix, optional=not workspace_required
         )
     )
-    global_required = args.check_global or os.environ.get("CONDUCTOR_VALIDATE_GLOBAL_ANTIGRAVITY") == "1"
+    global_required = args.check_global or os.environ.get("SCRUMMASTER_VALIDATE_GLOBAL_ANTIGRAVITY") == "1"
     mismatches.extend(
         _check_antigravity_workflows(
             skills,
@@ -150,7 +150,7 @@ def main() -> int:
 
     mismatches.extend(_check_vsix_artifact(VSIX_PATH, require=args.require_vsix))
 
-    check_skills = args.check_antigravity_skills or os.environ.get("CONDUCTOR_VALIDATE_ANTIGRAVITY_SKILLS") == "1"
+    check_skills = args.check_antigravity_skills or os.environ.get("SCRUMMASTER_VALIDATE_ANTIGRAVITY_SKILLS") == "1"
     if check_skills:
         mismatches.extend(_check_skill_dir(skills, TEMPLATES_DIR, ANTIGRAVITY_SKILLS_WORKSPACE_DIR, fix=args.fix))
         mismatches.extend(_check_skill_dir(skills, TEMPLATES_DIR, ANTIGRAVITY_SKILLS_GLOBAL_DIR, fix=args.fix))

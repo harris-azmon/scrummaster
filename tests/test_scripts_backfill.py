@@ -89,7 +89,7 @@ def test_sync_skills_all(mock_repo, monkeypatch):
         {"id": "s2", "name": "c2", "description": "d", "enabled": {}, "template": "setup"},
     ]
 
-    monkeypatch.setenv("CONDUCTOR_SYNC_REPO_ONLY", "1")
+    monkeypatch.setenv("SCRUMMASTER_SYNC_REPO_ONLY", "1")
     with (
         patch("scripts.sync_skills.load_manifest", return_value={"manifest_version": 1, "skills": skills}),
         patch("scripts.sync_skills.validate_manifest"),
@@ -143,8 +143,8 @@ def test_sync_skills_emits_antigravity_skills(mock_repo, monkeypatch):
         {"id": "s1", "name": "c1", "description": "d", "enabled": {}, "template": "setup"},
     ]
 
-    monkeypatch.setenv("CONDUCTOR_ANTIGRAVITY_SKILLS", "1")
-    monkeypatch.setenv("CONDUCTOR_SYNC_REPO_ONLY", "1")
+    monkeypatch.setenv("SCRUMMASTER_ANTIGRAVITY_SKILLS", "1")
+    monkeypatch.setenv("SCRUMMASTER_SYNC_REPO_ONLY", "1")
     with (
         patch("scripts.sync_skills.load_manifest", return_value={"manifest_version": 1, "skills": skills}),
         patch("scripts.sync_skills.validate_manifest"),

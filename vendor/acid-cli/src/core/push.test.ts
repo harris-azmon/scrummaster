@@ -42,13 +42,29 @@ function createGitRunner(outputs: Record<string, string>): {
 				return {
 					exitCode: 1,
 					stdout: "",
-					stderr: `unexpected git call: ${key}`,
+					stderr: `unexpected fossil call: ${key}`,
 				};
 			}
 
 			return { exitCode: 0, stdout: `${value}\n`, stderr: "" };
 		},
 	};
+}
+
+// Builds `fossil info`-style "key:  value" output for the fake runner above.
+function buildFossilInfoOutput(fields: {
+	localRoot?: string;
+	repoUri?: string;
+	branchName?: string;
+	commitHash?: string;
+}): string {
+	const lines: string[] = [];
+	if (fields.localRoot) lines.push(`local-root:   ${fields.localRoot}`);
+	if (fields.repoUri) lines.push(`project-name: ${fields.repoUri}`);
+	if (fields.branchName) lines.push(`tags:         ${fields.branchName}`);
+	if (fields.commitHash)
+		lines.push(`checkout:     ${fields.commitHash} 2026-01-01 00:00:00 UTC`);
+	return lines.join("\n");
 }
 
 describe("push.SCAN.1 push.SCAN.5 push.SCAN.5-1", () => {
@@ -148,7 +164,7 @@ describe("push reference scanning", () => {
 		const spec = await parseFeatureSpecFile(
 			"/repo",
 			"features/alpha.feature.yaml",
-			createGitRunner({ 'log -1 --format=%H -- features/alpha.feature.yaml': 'abc123' }),
+			createGitRunner({ "finfo -b features/alpha.feature.yaml": "abc123" }),
 			runtime,
 		);
 		const references = await scanPushReferences(
@@ -605,11 +621,13 @@ describe("push planning", () => {
 		});
 
 		const runner = createGitRunner({
-			"rev-parse --show-toplevel": root,
-			"remote get-url origin": "git@github.com:my-org/my-repo.git",
-			"branch --show-current": "main",
-			"rev-parse HEAD": "c0ffee0000000000000000000000000000000000",
-			"log -1 --format=%H -- features/alpha.feature.yaml":
+			info: buildFossilInfoOutput({
+				localRoot: root,
+				repoUri: "github.com/my-org/my-repo",
+				branchName: "main",
+				commitHash: "c0ffee0000000000000000000000000000000000",
+			}),
+			"finfo -b features/alpha.feature.yaml":
 				"a1b2c3d4e5f6789012345678901234567890abcd",
 		});
 
@@ -664,11 +682,13 @@ describe("push planning", () => {
 		await mkdir(nestedCwd, { recursive: true });
 
 		const runner = createGitRunner({
-			"rev-parse --show-toplevel": root,
-			"remote get-url origin": "git@github.com:my-org/my-repo.git",
-			"branch --show-current": "main",
-			"rev-parse HEAD": "c0ffee0000000000000000000000000000000000",
-			"log -1 --format=%H -- features/alpha.feature.yaml":
+			info: buildFossilInfoOutput({
+				localRoot: root,
+				repoUri: "github.com/my-org/my-repo",
+				branchName: "main",
+				commitHash: "c0ffee0000000000000000000000000000000000",
+			}),
+			"finfo -b features/alpha.feature.yaml":
 				"a1b2c3d4e5f6789012345678901234567890abcd",
 		});
 
@@ -712,11 +732,13 @@ describe("push planning", () => {
 		});
 
 		const runner = createGitRunner({
-			"rev-parse --show-toplevel": root,
-			"remote get-url origin": "git@github.com:my-org/my-repo.git",
-			"branch --show-current": "main",
-			"rev-parse HEAD": "c0ffee0000000000000000000000000000000000",
-			"log -1 --format=%H -- features/alpha.feature.yaml": "",
+			info: buildFossilInfoOutput({
+				localRoot: root,
+				repoUri: "github.com/my-org/my-repo",
+				branchName: "main",
+				commitHash: "c0ffee0000000000000000000000000000000000",
+			}),
+			"finfo -b features/alpha.feature.yaml": "",
 		});
 
 		const plan = await planPush({ cwd: root, runner: runner as never });
@@ -761,9 +783,9 @@ describe("push planning", () => {
 		});
 
 		const runner = createGitRunner({
-			"rev-parse --show-toplevel": root,
-			"log -1 --format=%H -- features/alpha.feature.yaml": "a1",
-			"log -1 --format=%H -- features/beta.feature.yaml": "b1",
+			info: buildFossilInfoOutput({ localRoot: root }),
+			"finfo -b features/alpha.feature.yaml": "a1",
+			"finfo -b features/beta.feature.yaml": "b1",
 		});
 
 		const scan = await scanPushRepo({
@@ -821,12 +843,14 @@ describe("push command execution", () => {
 		});
 
 		const runner = createGitRunner({
-			"rev-parse --show-toplevel": root,
-			"remote get-url origin": "git@github.com:my-org/my-repo.git",
-			"branch --show-current": "main",
-			"rev-parse HEAD": "c0ffee0000000000000000000000000000000000",
-			"log -1 --format=%H -- features/alpha.feature.yaml": "a1",
-			"log -1 --format=%H -- features/beta.feature.yaml": "b1",
+			info: buildFossilInfoOutput({
+				localRoot: root,
+				repoUri: "github.com/my-org/my-repo",
+				branchName: "main",
+				commitHash: "c0ffee0000000000000000000000000000000000",
+			}),
+			"finfo -b features/alpha.feature.yaml": "a1",
+			"finfo -b features/beta.feature.yaml": "b1",
 		});
 
 		const apiClient = {

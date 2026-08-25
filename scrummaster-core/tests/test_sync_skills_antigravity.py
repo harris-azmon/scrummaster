@@ -78,7 +78,7 @@ def test_sync_to_antigravity():
         written_files = [str(call.args[0]) for call in mock_write_text.call_args_list]
 
         # Verification 2: Check Global Antigravity Sync (Flat structure)
-        # Assuming CONDUCTOR_SYNC_REPO_ONLY is not set or handling default
+        # Assuming SCRUMMASTER_SYNC_REPO_ONLY is not set or handling default
         # The script checks env var. We should mock os.environ or ensure it's not set.
 
         expected_global_file = antigravity_global_dir / "scrummaster-test.md"
