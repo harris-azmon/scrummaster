@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Test suite for conductor installer scripts.
+"""Test suite for scrummaster installer scripts.
 
 Tests the installation and verification scripts to ensure they work correctly.
 """
@@ -54,29 +54,29 @@ def test_validate_docs() -> bool:
     return False
 
 
-def test_conductor_install_help() -> bool:
-    """Test that conductor_install.py shows help correctly."""
-    print("\nTEST Testing conductor_install.py --help...")
+def test_scrummaster_install_help() -> bool:
+    """Test that scrummaster_install.py shows help correctly."""
+    print("\nTEST Testing scrummaster_install.py --help...")
 
-    code, stdout, _stderr = run_command([sys.executable, "scripts/conductor_install.py", "--help"])
+    code, stdout, _stderr = run_command([sys.executable, "scripts/scrummaster_install.py", "--help"])
 
-    if code == 0 and "Install conductor components" in stdout:
-        print("PASS conductor_install.py --help works")
+    if code == 0 and "Install scrummaster components" in stdout:
+        print("PASS scrummaster_install.py --help works")
         return True
-    print("FAIL conductor_install.py --help failed")
+    print("FAIL scrummaster_install.py --help failed")
     return False
 
 
-def test_conductor_update_help() -> bool:
-    """Test that conductor_update.py shows help correctly."""
-    print("\nTEST Testing conductor_update.py --help...")
+def test_scrummaster_update_help() -> bool:
+    """Test that scrummaster_update.py shows help correctly."""
+    print("\nTEST Testing scrummaster_update.py --help...")
 
-    code, stdout, _stderr = run_command([sys.executable, "scripts/conductor_update.py", "--help"])
+    code, stdout, _stderr = run_command([sys.executable, "scripts/scrummaster_update.py", "--help"])
 
-    if code == 0 and "Check for and apply conductor updates" in stdout:
-        print("PASS conductor_update.py --help works")
+    if code == 0 and "Check for and apply scrummaster updates" in stdout:
+        print("PASS scrummaster_update.py --help works")
         return True
-    print("FAIL conductor_update.py --help failed")
+    print("FAIL scrummaster_update.py --help failed")
     return False
 
 
@@ -152,14 +152,14 @@ def test_install_scripts_exist() -> bool:
 def main() -> int:
     """Run all tests."""
     print("=" * 60)
-    print("Conductor Installer Test Suite")
+    print("Scrummaster Installer Test Suite")
     print("=" * 60)
 
     tests = [
         ("mise.toml exists", test_mise_toml_exists),
         ("install scripts exist", test_install_scripts_exist),
-        ("conductor_install.py --help", test_conductor_install_help),
-        ("conductor_update.py --help", test_conductor_update_help),
+        ("scrummaster_install.py --help", test_scrummaster_install_help),
+        ("scrummaster_update.py --help", test_scrummaster_update_help),
         ("verify_installation.py", test_verify_installation),
         ("validate_docs.py", test_validate_docs),
         ("sync_upstream.py --help", test_sync_upstream_help),

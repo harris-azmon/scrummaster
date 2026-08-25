@@ -101,12 +101,12 @@ def sync_skills(repo_root: Path, *, dry_run: bool) -> None:
 
 def sync_copilot(repo_root: Path, *, dry_run: bool) -> None:
     if dry_run:
-        _log("OK", "copilot", str(Path.home() / ".config" / "github-copilot" / "conductor.md"))
+        _log("OK", "copilot", str(Path.home() / ".config" / "github-copilot" / "scrummaster.md"))
         return
     sys.path.insert(0, str(repo_root))
     sync_skills_module = importlib.import_module("scripts.sync_skills")
     sync_skills_module.sync_skills()
-    _log("OK", "copilot", str(Path.home() / ".config" / "github-copilot" / "conductor.md"))
+    _log("OK", "copilot", str(Path.home() / ".config" / "github-copilot" / "scrummaster.md"))
 
 
 def verify(repo_root: Path) -> bool:
@@ -124,7 +124,7 @@ def verify(repo_root: Path) -> bool:
         else:
             _log("FAIL", "verify", " ".join(cmd[1:]))
             all_ok = False
-    vsix_path = repo_root / "conductor.vsix"
+    vsix_path = repo_root / "scrummaster.vsix"
     if vsix_path.exists() and vsix_path.stat().st_size > 0:
         _log("OK", "vsix", str(vsix_path))
     else:
@@ -143,8 +143,8 @@ def _resolve_locations(repo_root: PurePath, home: PurePath) -> dict[str, PurePat
         "codex": home / ".codex" / "skills",
         "claude": home / ".claude" / "skills",
         "opencode": home / ".opencode" / "skill",
-        "copilot": home / ".config" / "github-copilot" / "conductor.md",
-        "vsix": repo_root / "conductor.vsix",
+        "copilot": home / ".config" / "github-copilot" / "scrummaster.md",
+        "vsix": repo_root / "scrummaster.vsix",
     }
 
 
@@ -158,8 +158,8 @@ def _summarize(ok: int, warn: int, fail: int) -> None:
     print(f"SUMMARY  ok={ok} warn={warn} fail={fail}")
 
 
-def main() -> int:
-    parser = argparse.ArgumentParser(description="Install Conductor artifacts locally.")
+def main() -> int:  # noqa: C901, PLR0912
+    parser = argparse.ArgumentParser(description="Install Scrummaster artifacts locally.")
     parser.add_argument("--verify", action="store_true", help="Run validation checks only")
     parser.add_argument("--dry-run", action="store_true", help="Print planned actions without changes")
     parser.add_argument("--print-locations", action="store_true", help="Print resolved artifact locations")
@@ -172,7 +172,7 @@ def main() -> int:
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parents[1]
-    vsix_path = repo_root / "conductor.vsix"
+    vsix_path = repo_root / "scrummaster.vsix"
 
     action_flags = [
         args.verify,

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Documentation validation script for conductor-next.
+"""Documentation validation script for scrummaster-next.
 
 This script validates documentation files against the project's style guides:
 - Markdown files (markdownlint rules)

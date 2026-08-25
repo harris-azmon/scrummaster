@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Upstream Sync Bot - Sync changes from upstream conductor repositories.
+"""Upstream Sync Bot - Sync changes from upstream scrummaster repositories.
 
 This script fetches changes from upstream repositories:
-- gemini-cli-extensions/conductor
-- jnorthrup/conductor2
+- gemini-cli-extensions/scrummaster
+- jnorthrup/scrummaster2
 
 It detects merge conflicts and creates draft PRs when needed.
 """
@@ -131,7 +131,7 @@ class GitHubClient:
 
 
 class SyncState:
-    """Track sync state and history."""
+    """Story sync state and history."""
 
     def __init__(self, state_file: Path) -> None:
         """Initialize sync state tracker.
@@ -364,15 +364,15 @@ def main() -> int | None:
     parser = argparse.ArgumentParser(description="Sync changes from upstream repositories")
     parser.add_argument(
         "--target",
-        default="harris-azmon/conductor",
-        help="Target repository (default: harris-azmon/conductor)",
+        default="harris-azmon/scrummaster",
+        help="Target repository (default: harris-azmon/scrummaster)",
     )
     parser.add_argument(
         "--upstream",
         action="append",
         default=[
-            "gemini-cli-extensions/conductor",
-            "jnorthrup/conductor2",
+            "gemini-cli-extensions/scrummaster",
+            "jnorthrup/scrummaster2",
         ],
         help="Upstream repositories to sync from",
     )

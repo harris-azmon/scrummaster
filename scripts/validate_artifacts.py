@@ -13,7 +13,7 @@ def _run(cmd: list[str]) -> bool:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Validate generated artifacts and platform mappings.")
-    parser.add_argument("--require-vsix", action="store_true", help="Require conductor.vsix to exist")
+    parser.add_argument("--require-vsix", action="store_true", help="Require scrummaster.vsix to exist")
     parser.add_argument("--check-global", action="store_true", help="Validate Antigravity global workflows")
     parser.add_argument(
         "--check-antigravity-skills",

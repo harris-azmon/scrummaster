@@ -30,20 +30,20 @@ def _default_thresholds() -> Thresholds:
     )
 
 
-def _resolve_track_id(tracks_md: Path) -> str | None:
+def _resolve_story_id(tracks_md: Path) -> str | None:
     if not tracks_md.exists():
         return None
     content = tracks_md.read_text(encoding="utf-8")
-    pattern = r"(?:##|[-])\s*\[\s*([ xX~]?)\s*\]\s*(?:\*\*)?Track:.*?\r?\n" r"\*Link:\s*\[.*?/tracks/(.*?)/\].*?\*"
+    pattern = r"(?:##|[-])\s*\[\s*([ xX~]?)\s*\]\s*(?:\*\*)?Story:.*?\r?\n" r"\*Link:\s*\[.*?/stories/(.*?)/\].*?\*"
     matches: list[tuple[str, str]] = []
     for match in re.finditer(pattern, content):
-        status_char, track_id = match.groups()
-        matches.append((status_char.strip(), track_id.strip()))
+        status_char, story_id = match.groups()
+        matches.append((status_char.strip(), story_id.strip()))
     if not matches:
         return None
-    for status, track_id in matches:
+    for status, story_id in matches:
         if status == "~":
-            return track_id
+            return story_id
     return matches[0][1]
 
 
@@ -55,35 +55,35 @@ def _file_status(size_bytes: int, thresholds: Thresholds) -> str:
     return "OK"
 
 
-def build_context_report(repo_root: Path, track_id: str | None, thresholds: Thresholds) -> dict:
-    conductor_dir = repo_root / "conductor"
+def build_context_report(repo_root: Path, story_id: str | None, thresholds: Thresholds) -> dict:
+    scrummaster_dir = repo_root / "scrummaster"
     required_files = [
-        conductor_dir / "product.md",
-        conductor_dir / "tech-stack.md",
-        conductor_dir / "workflow.md",
-        conductor_dir / "tracks.md",
+        scrummaster_dir / "product.md",
+        scrummaster_dir / "tech-stack.md",
+        scrummaster_dir / "workflow.md",
+        scrummaster_dir / "stories.md",
     ]
     optional_files = [
-        conductor_dir / "product-guidelines.md",
+        scrummaster_dir / "product-guidelines.md",
     ]
 
     code_styleguides = []
-    style_dir = conductor_dir / "code_styleguides"
+    style_dir = scrummaster_dir / "code_styleguides"
     if style_dir.exists():
         code_styleguides = sorted(p for p in style_dir.glob("*") if p.is_file())
 
-    resolved_track = track_id
+    resolved_track = story_id
     if resolved_track is None:
-        resolved_track = _resolve_track_id(conductor_dir / "tracks.md")
+        resolved_track = _resolve_story_id(scrummaster_dir / "stories.md")
 
     track_files: list[Path] = []
     if resolved_track:
-        track_dir = conductor_dir / "tracks" / resolved_track
+        story_dir = scrummaster_dir / "stories" / resolved_track
         track_files = [
-            track_dir / "spec.md",
-            track_dir / "plan.md",
-            track_dir / "metadata.json",
-            track_dir / "index.md",
+            story_dir / "spec.md",
+            story_dir / "plan.md",
+            story_dir / "metadata.json",
+            story_dir / "index.md",
         ]
 
     files = []
@@ -103,7 +103,7 @@ def build_context_report(repo_root: Path, track_id: str | None, thresholds: Thre
         total_status = "WARN"
 
     return {
-        "track_id": resolved_track,
+        "story_id": resolved_track,
         "files": files,
         "missing": missing,
         "total_bytes": total_bytes,
@@ -116,8 +116,8 @@ def _format_bytes(size: int) -> str:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Report Conductor context size and key files.")
-    parser.add_argument("--track-id", help="Track id to report (defaults to first in-progress track).")
+    parser = argparse.ArgumentParser(description="Report Scrummaster context size and key files.")
+    parser.add_argument("--story-id", help="Story id to report (defaults to first in-progress story).")
     parser.add_argument("--warn-file-kb", type=int, default=250)
     parser.add_argument("--block-file-kb", type=int, default=1024)
     parser.add_argument("--warn-total-kb", type=int, default=2048)
@@ -132,10 +132,10 @@ def main() -> int:
     )
 
     repo_root = Path(__file__).resolve().parents[1]
-    report = build_context_report(repo_root, args.track_id, thresholds)
+    report = build_context_report(repo_root, args.story_id, thresholds)
 
-    track_label = report["track_id"] or "none"
-    print(f"Context report (track: {track_label})")
+    track_label = report["story_id"] or "none"
+    print(f"Context report (story: {track_label})")
     for item in report["files"]:
         rel_path = item.path.relative_to(repo_root)
         print(f"{item.status}  {_format_bytes(item.size_bytes)}  {rel_path}")

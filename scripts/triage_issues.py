@@ -2,7 +2,7 @@
 """Issue Triage Bot - Analyze and classify GitHub issues from upstream repositories.
 
 This script fetches issues from upstream repositories, classifies them,
-and can automatically create tracks for high-priority issues.
+and can automatically create stories for high-priority issues.
 """
 
 from __future__ import annotations
@@ -122,7 +122,7 @@ class IssueClassifier:
         # Upstream repo bonus
         repo_name = issue.get("repository_url", "").split("/")[-2:]
         repo_name = "/".join(repo_name) if len(repo_name) == 2 else ""
-        if repo_name in ["gemini-cli-extensions/conductor", "jnorthrup/conductor2"]:
+        if repo_name in ["gemini-cli-extensions/scrummaster", "jnorthrup/scrummaster2"]:
             score += 15
 
         return score
@@ -227,17 +227,17 @@ class IssueTriageBot:
         }
 
     def generate_track_from_issue(self, triaged: dict) -> dict:
-        """Generate a track structure from an issue.
+        """Generate a story structure from an issue.
 
         Args:
             triaged: Triaged issue data
 
         Returns:
-            Track structure (spec, plan, metadata)
+            Story structure (spec, plan, metadata)
         """
-        # Generate track ID
+        # Generate story ID
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%d")
-        track_id = f"issue_{triaged['number']}_{timestamp}"
+        story_id = f"issue_{triaged['number']}_{timestamp}"
 
         # Create spec
         spec = f"""# Specification: {triaged["title"]}
@@ -253,7 +253,7 @@ class IssueTriageBot:
 <!-- Functional and non-functional requirements -->
 
 ## Acceptance Criteria
-<!-- Clear criteria for when this track is complete -->
+<!-- Clear criteria for when this story is complete -->
 
 ## References
 - Upstream Issue: {triaged["url"]}
@@ -263,7 +263,7 @@ class IssueTriageBot:
         # Create plan
         plan = f"""# Implementation Plan: {triaged["title"]}
 
-**Track ID:** {track_id}
+**Story ID:** {story_id}
 **Priority:** {triaged["priority"]}
 **Source:** Upstream Issue #{triaged["number"]}
 
@@ -288,7 +288,7 @@ class IssueTriageBot:
 
         # Create metadata
         metadata = {
-            "track_id": track_id,
+            "story_id": story_id,
             "type": "feature" if triaged["type"] == "feature" else "fix",
             "status": "new",
             "priority": triaged["priority"],
@@ -299,7 +299,7 @@ class IssueTriageBot:
         }
 
         return {
-            "track_id": track_id,
+            "story_id": story_id,
             "spec": spec,
             "plan": plan,
             "metadata": metadata,
@@ -389,8 +389,8 @@ def main() -> int | None:
         "--repo",
         action="append",
         default=[
-            "gemini-cli-extensions/conductor",
-            "jnorthrup/conductor2",
+            "gemini-cli-extensions/scrummaster",
+            "jnorthrup/scrummaster2",
         ],
         help="Repositories to triage issues from",
     )
@@ -401,15 +401,15 @@ def main() -> int | None:
         help="Path to save triage results",
     )
     parser.add_argument(
-        "--create-tracks",
+        "--create-stories",
         action="store_true",
-        help="Create track folders for high-priority issues",
+        help="Create story folders for high-priority issues",
     )
     parser.add_argument(
         "--min-priority",
         default="P2",
         choices=["P0", "P1", "P2", "P3"],
-        help="Minimum priority for track creation (default: P2)",
+        help="Minimum priority for story creation (default: P2)",
     )
 
     args = parser.parse_args()
@@ -419,25 +419,25 @@ def main() -> int | None:
     print("=" * 60)
     print(f"Repos: {', '.join(args.repo)}")
     print(f"Output: {args.output}")
-    print(f"Create tracks: {args.create_tracks}")
-    print(f"Min priority for tracks: {args.min_priority}")
+    print(f"Create stories: {args.create_tracks}")
+    print(f"Min priority for stories: {args.min_priority}")
     print("=" * 60)
 
     try:
         bot = IssueTriageBot()
         results = bot.triage_all(args.repo, args.output)
 
-        # Optionally create tracks for high-priority issues
+        # Optionally create stories for high-priority issues
         if args.create_tracks:
             priority_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
             min_priority_level = priority_order[args.min_priority]
 
-            for issue in results["repos"].get("gemini-cli-extensions/conductor", {}).get("issues", []):
+            for issue in results["repos"].get("gemini-cli-extensions/scrummaster", {}).get("issues", []):
                 if priority_order.get(issue["priority"], 4) <= min_priority_level:
-                    print(f"\n[TRACK] Creating track for issue #{issue['number']}...")
-                    # In production, would create track files here
-                    track = bot.generate_track_from_issue(issue)
-                    print(f"      Track ID: {track['track_id']}")
+                    print(f"\n[TRACK] Creating story for issue #{issue['number']}...")
+                    # In production, would create story files here
+                    story = bot.generate_track_from_issue(issue)
+                    print(f"      Story ID: {story['story_id']}")
                     print(f"      Priority: {issue['priority']}")
 
         return 0

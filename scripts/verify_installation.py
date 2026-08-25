@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""Conductor Installation Verification
+"""Scrummaster Installation Verification
 
-Verifies that all conductor components are correctly installed and functional.
+Verifies that all scrummaster components are correctly installed and functional.
 
 Usage:
     python scripts/verify_installation.py [--verbose]
@@ -24,7 +24,7 @@ class Colors:
 
 
 class InstallationVerifier:
-    """Verifies conductor installation"""
+    """Verifies scrummaster installation"""
 
     def __init__(self, verbose: bool = False) -> None:
         self.verbose = verbose
@@ -95,41 +95,41 @@ class InstallationVerifier:
         else:
             self.check_warn("Node.js: Not found (optional)")
 
-    def verify_conductor_core(self) -> None:
-        """Verify conductor-core installation"""
-        self.log("\n[SCAN] Conductor Core", Colors.BLUE)
+    def verify_scrummaster_core(self) -> None:
+        """Verify scrummaster-core installation"""
+        self.log("\n[SCAN] Scrummaster Core", Colors.BLUE)
 
         # Check if module can be imported
         code, stdout, stderr = self.run_command(
-            [sys.executable, "-c", "import conductor_core; print(conductor_core.__version__)"]
+            [sys.executable, "-c", "import scrummaster_core; print(scrummaster_core.__version__)"]
         )
         if code == 0:
             version = stdout.strip()
-            self.check_pass(f"conductor-core: v{version}")
+            self.check_pass(f"scrummaster-core: v{version}")
         else:
-            self.check_fail("conductor-core: Not installed or import error")
+            self.check_fail("scrummaster-core: Not installed or import error")
             if self.verbose:
                 self.log(f"    Error: {stderr}")
 
-    def verify_conductor_gemini(self) -> None:
-        """Verify conductor-gemini installation"""
-        self.log("\n[SCAN] Conductor Gemini", Colors.BLUE)
+    def verify_scrummaster_gemini(self) -> None:
+        """Verify scrummaster-gemini installation"""
+        self.log("\n[SCAN] Scrummaster Gemini", Colors.BLUE)
 
         # Check if module can be imported
-        code, _stdout, stderr = self.run_command([sys.executable, "-c", "import conductor_gemini; print('OK')"])
+        code, _stdout, stderr = self.run_command([sys.executable, "-c", "import scrummaster_gemini; print('OK')"])
         if code == 0:
-            self.check_pass("conductor-gemini: Installed")
+            self.check_pass("scrummaster-gemini: Installed")
         else:
-            self.check_fail("conductor-gemini: Not installed or import error")
+            self.check_fail("scrummaster-gemini: Not installed or import error")
             if self.verbose:
                 self.log(f"    Error: {stderr}")
 
         # Check CLI entry point
-        code, _stdout, stderr = self.run_command(["conductor-gemini", "--help"], check=False)
+        code, _stdout, stderr = self.run_command(["scrummaster-gemini", "--help"], check=False)
         if code == 0:
-            self.check_pass("conductor-gemini CLI: Available")
+            self.check_pass("scrummaster-gemini CLI: Available")
         else:
-            self.check_warn("conductor-gemini CLI: Not in PATH")
+            self.check_warn("scrummaster-gemini CLI: Not in PATH")
 
     def verify_vscode_extension(self) -> None:
         """Verify VS Code extension installation"""
@@ -147,7 +147,7 @@ class InstallationVerifier:
         code, stdout, _stderr = self.run_command(["code", "--list-extensions"], check=False)
         if code == 0:
             extensions = stdout.lower()
-            if "conductor" in extensions:
+            if "scrummaster" in extensions:
                 self.check_pass("VS Code Extension: Installed")
             else:
                 self.check_fail("VS Code Extension: Not found")
@@ -160,21 +160,21 @@ class InstallationVerifier:
 
         claude_dir = Path.home() / ".claude"
         if claude_dir.exists():
-            # Check for conductor skill
-            conductor_skill = claude_dir / "skills" / "conductor"
-            if conductor_skill.exists():
-                self.check_pass("Claude Code: conductor skill installed")
+            # Check for scrummaster skill
+            scrummaster_skill = claude_dir / "skills" / "scrummaster"
+            if scrummaster_skill.exists():
+                self.check_pass("Claude Code: scrummaster skill installed")
             else:
-                self.check_warn("Claude Code: conductor skill not found")
+                self.check_warn("Claude Code: scrummaster skill not found")
 
             # Check for commands
             commands_dir = claude_dir / "commands"
             if commands_dir.exists():
-                cmd_files = list(commands_dir.glob("conductor*"))
+                cmd_files = list(commands_dir.glob("scrummaster*"))
                 if cmd_files:
-                    self.check_pass(f"Claude Code: {len(cmd_files)} conductor command(s)")
+                    self.check_pass(f"Claude Code: {len(cmd_files)} scrummaster command(s)")
                 else:
-                    self.check_warn("Claude Code: No conductor commands found")
+                    self.check_warn("Claude Code: No scrummaster commands found")
             else:
                 self.check_warn("Claude Code: commands directory not found")
         else:
@@ -204,11 +204,11 @@ class InstallationVerifier:
         code, stdout, _stderr = self.run_command(["mise", "tasks", "ls"], check=False)
         if code == 0:
             tasks = stdout.strip().split("\n")
-            conductor_tasks = [t for t in tasks if "conductor" in t.lower()]
-            if conductor_tasks:
-                self.check_pass(f"mise tasks: {len(conductor_tasks)} conductor task(s)")
+            scrummaster_tasks = [t for t in tasks if "scrummaster" in t.lower()]
+            if scrummaster_tasks:
+                self.check_pass(f"mise tasks: {len(scrummaster_tasks)} scrummaster task(s)")
             else:
-                self.check_warn("mise tasks: No conductor tasks found")
+                self.check_warn("mise tasks: No scrummaster tasks found")
 
     def verify_documentation(self) -> None:
         """Verify documentation is accessible"""
@@ -220,11 +220,11 @@ class InstallationVerifier:
         else:
             self.check_warn("README.md: Not found")
 
-        workflow = Path("conductor/workflow.md")
+        workflow = Path("scrummaster/workflow.md")
         if workflow.exists():
-            self.check_pass("conductor/workflow.md: Found")
+            self.check_pass("scrummaster/workflow.md: Found")
         else:
-            self.check_warn("conductor/workflow.md: Not found")
+            self.check_warn("scrummaster/workflow.md: Not found")
 
         style_guides = Path("templates/code_styleguides")
         if style_guides.exists():
@@ -238,8 +238,8 @@ class InstallationVerifier:
         self.log("\n[SCAN] Installation Scripts", Colors.BLUE)
 
         scripts = [
-            "scripts/conductor_install.py",
-            "scripts/conductor_update.py",
+            "scripts/scrummaster_install.py",
+            "scripts/scrummaster_update.py",
             "scripts/verify_installation.py",
             "scripts/validate_docs.py",
         ]
@@ -254,12 +254,12 @@ class InstallationVerifier:
     def run_all_verifications(self) -> bool:
         """Run all verification checks"""
         self.log("\n" + "=" * 60, Colors.BLUE)
-        self.log("  Conductor Installation Verification", Colors.BLUE)
+        self.log("  Scrummaster Installation Verification", Colors.BLUE)
         self.log("=" * 60, Colors.BLUE)
 
         self.verify_system_requirements()
-        self.verify_conductor_core()
-        self.verify_conductor_gemini()
+        self.verify_scrummaster_core()
+        self.verify_scrummaster_gemini()
         self.verify_vscode_extension()
         self.verify_claude_commands()
         self.verify_mise_configuration()
@@ -303,7 +303,7 @@ class InstallationVerifier:
 
 def main() -> int:
     parser = argparse.ArgumentParser(
-        description="Verify conductor installation",
+        description="Verify scrummaster installation",
     )
     parser.add_argument(
         "--verbose",

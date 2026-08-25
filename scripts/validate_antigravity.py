@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
-PYTHONPATH = f"{ROOT}/conductor-gemini/src:{ROOT}/conductor-core/src"
+PYTHONPATH = f"{ROOT}/scrummaster-gemini/src:{ROOT}/scrummaster-core/src"
 
 
 def run_command(cmd, cwd=None, env=None):
@@ -26,23 +26,23 @@ def main() -> None:
     all_passed = True
 
     # 1. Verify Extension Manifest
-    test_step("Verifying conductor-vscode/package.json")
-    pkg_path = ROOT / "conductor-vscode" / "package.json"
+    test_step("Verifying scrummaster-vscode/package.json")
+    pkg_path = ROOT / "scrummaster-vscode" / "package.json"
     with open(pkg_path) as f:
         pkg = json.load(f)
 
     chat_participants = pkg.get("contributes", {}).get("chatParticipants", [])
-    if any(p.get("id") == "conductor.agent" for p in chat_participants):
+    if any(p.get("id") == "scrummaster.agent" for p in chat_participants):
         pass
     else:
         all_passed = False
 
     # 2. Verify Compiled Extension Logic
-    test_step("Verifying conductor-vscode/out/extension.js logic")
-    ext_js_path = ROOT / "conductor-vscode" / "out" / "extension.js"
+    test_step("Verifying scrummaster-vscode/out/extension.js logic")
+    ext_js_path = ROOT / "scrummaster-vscode" / "out" / "extension.js"
     if ext_js_path.exists():
         content = ext_js_path.read_text()
-        if "conductor.agent" in content and ("runConductorCommandAsync" in content or "runConductorCommand" in content):
+        if "scrummaster.agent" in content and ("runScrummasterCommandAsync" in content or "runScrummasterCommand" in content):
             pass
         else:
             all_passed = False
@@ -52,7 +52,7 @@ def main() -> None:
     # 3. Run Skill Sync Unit Test
     test_step("Running Antigravity skill sync unit tests")
     python = sys.executable
-    res = run_command(f'"{python}" -m pytest conductor-core/tests/test_sync_skills_antigravity.py')
+    res = run_command(f'"{python}" -m pytest scrummaster-core/tests/test_sync_skills_antigravity.py')
     if res.returncode == 0:
         pass
     else:
@@ -60,7 +60,7 @@ def main() -> None:
 
     # 4. Run VS Code Contract Tests
     test_step("Running VS Code contract integration tests")
-    res = run_command(f'"{python}" -m pytest conductor-gemini/tests/test_vscode_contract.py')
+    res = run_command(f'"{python}" -m pytest scrummaster-gemini/tests/test_vscode_contract.py')
     if res.returncode == 0:
         pass
     else:

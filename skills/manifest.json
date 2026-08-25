@@ -166,8 +166,8 @@
       }
     },
     {
-      "id": "new_track",
-      "template": "new_track",
+      "id": "new_story",
+      "template": "new_story",
       "name": "scrummaster-new-story",
       "description": "Plans a new story (feature or bug fix), generates spec/plan documents, and updates the registry.",
       "commands": {

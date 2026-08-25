@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Repository Rename Coordinator - Handle repository rename from conductor to conductor-next.
+"""Repository Rename Coordinator - Handle repository rename from scrummaster to scrummaster-next.
 
 This script helps coordinate the repository rename by:
 1. Scanning codebase for old repository references
@@ -22,8 +22,8 @@ class RenameCoordinator:
 
     def __init__(
         self,
-        old_name: str = "conductor",
-        new_name: str = "conductor-next",
+        old_name: str = "scrummaster",
+        new_name: str = "scrummaster-next",
         old_owner: str = "edithatogo",
         exclude_patterns: list[str] | None = None,
     ) -> None:
@@ -96,7 +96,7 @@ class RenameCoordinator:
             rf"pip install {self.old_name}",
             rf"npm install.*{self.old_name}",
             # Documentation references
-            r"conductor (?:CLI|tool|extension)",
+            r"scrummaster (?:CLI|tool|extension)",
             # Git remote URLs
             rf"git@github\.com:{self.old_owner}/{self.old_name}\.git",
             rf"https://github\.com/{self.old_owner}/{self.old_name}\.git",
@@ -153,10 +153,10 @@ class RenameCoordinator:
             f"npm install -g {self.old_name}": f"npm install -g {self.new_name}",
             f"npx {self.old_name}": f"npx {self.new_name}",
             # Documentation
-            "Conductor-Next CLI": "Conductor-Next CLI",
-            "conductor-next CLI": "conductor-next CLI",
-            "conductor-next tool": "conductor-next tool",
-            "conductor-next extension": "conductor-next extension",
+            "Scrummaster-Next CLI": "Scrummaster-Next CLI",
+            "scrummaster-next CLI": "scrummaster-next CLI",
+            "scrummaster-next tool": "scrummaster-next tool",
+            "scrummaster-next extension": "scrummaster-next extension",
         }
 
     def update_file(self, file_path: Path, dry_run: bool = True) -> int:
@@ -444,16 +444,16 @@ def main() -> int:
     """Main entry point."""
     import argparse
 
-    parser = argparse.ArgumentParser(description="Coordinate repository rename from conductor to conductor-next")
+    parser = argparse.ArgumentParser(description="Coordinate repository rename from scrummaster to scrummaster-next")
     parser.add_argument(
         "--old-name",
-        default="conductor",
-        help="Old repository name (default: conductor)",
+        default="scrummaster",
+        help="Old repository name (default: scrummaster)",
     )
     parser.add_argument(
         "--new-name",
-        default="conductor-next",
-        help="New repository name (default: conductor-next)",
+        default="scrummaster-next",
+        help="New repository name (default: scrummaster-next)",
     )
     parser.add_argument(
         "--owner",

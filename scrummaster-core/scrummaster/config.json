@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "project_name": "",
+  "description": "",
+  "default_story_template": "default",
+  "enable_fossil_integration": true,
+  "enable_locking": true,
+  "default_workflow": "standard",
+  "extensions": {},
+  "templates_path": "./templates",
+  "stories_path": "./stories",
+  "archive_path": "./archive"
+}
