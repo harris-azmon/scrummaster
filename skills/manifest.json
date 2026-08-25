@@ -26,10 +26,10 @@
       "needs_confirmation": true
     },
     "opencode": {
-      "artifact": "~/.opencode/skill/<skill>/SKILL.md",
+      "artifact": "~/.config/opencode/skills/<skill>/SKILL.md",
       "command_style": "slash-dash",
       "example": "/scrummaster-setup",
-      "needs_confirmation": true
+      "needs_confirmation": false
     },
     "antigravity": {
       "artifact": ".agent/workflows/<skill>.md and ~/.gemini/antigravity/global_workflows/<skill>.md",

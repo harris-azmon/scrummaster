@@ -1,7 +1,8 @@
 # ADR 0002: Fork Conductor into Scrummaster (Fossil-native, ACID-driven)
 
 ## Status
-Accepted
+Accepted (the OpenCode-adapter deferral below is addressed by
+[ADR 0003](0003-scrummaster-opencode-adapter.md))
 
 ## Context
 Conductor (see [ADR 0001](0001-monorepo-architecture.md)) used git as its

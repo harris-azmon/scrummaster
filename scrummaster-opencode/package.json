@@ -1,0 +1,39 @@
+{
+  "name": "scrummaster-opencode",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "OpenCode adapter for Scrummaster: a plugin exposing fossil-ticket status/context tools, plus installable Scrummaster slash commands.",
+  "license": "Apache-2.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "bin": {
+    "scrummaster-opencode-install": "dist/install-commands.js"
+  },
+  "files": [
+    "dist",
+    "commands",
+    "README.md"
+  ],
+  "scripts": {
+    "prebuild": "node ./scripts/copy-commands.mjs",
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "typescript": "^5.0.0",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "@opencode-ai/plugin": "^1.18.0",
+    "zod": "^3.24.2"
+  }
+}

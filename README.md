@@ -148,8 +148,11 @@ latest Fossil checkin will automatically update the skill.
 
 > **OpenCode note:** OpenCode is Scrummaster's primary CLI target and already
 > works via the generic Agent Skills path above. A dedicated
-> `scrummaster-opencode` adapter package is planned as a future addition, not
-> part of this release.
+> [`scrummaster-opencode`](scrummaster-opencode/) adapter package is also
+> available — it adds two native tools (`scrummaster_status`,
+> `scrummaster_context`) backed by the local Fossil ticket table, plus an
+> installer (`npx scrummaster-opencode-install`) that puts Scrummaster's
+> slash commands directly under `.opencode/commands/`.
 
 --------------------------------------------------------------------------------
 

@@ -27,7 +27,7 @@ print_targets() {
 
 detect_environments() {
     DETECTED_TARGETS=()
-    if [ -d "$HOME/.opencode" ]; then DETECTED_TARGETS+=("opencode"); fi
+    if [ -d "$HOME/.config/opencode" ]; then DETECTED_TARGETS+=("opencode"); fi
     if [ -d "$HOME/.claude" ]; then DETECTED_TARGETS+=("claude"); fi
     if [ -d "$HOME/.codex" ]; then DETECTED_TARGETS+=("codex"); fi
 
@@ -94,13 +94,13 @@ echo "========================="
 echo ""
 
 # Check if we're running from within a scrummaster repo
-if [ ! -f "$SCRUMMASTER_ROOT/commands/scrummaster/setup.toml" ]; then
+if [ ! -f "$SCRUMMASTER_ROOT/commands/scrummaster-setup.md" ]; then
     echo "Error: This script must be run from within the Scrummaster repository."
-    echo "Expected to find: $SCRUMMASTER_ROOT/commands/scrummaster/setup.toml"
+    echo "Expected to find: $SCRUMMASTER_ROOT/commands/scrummaster-setup.md"
     echo ""
     echo "Please clone the repository first:"
-    echo "  git clone https://github.com/gemini-cli-extensions/scrummaster.git"
-    echo "  cd scrummaster"
+    echo "  git clone https://github.com/harris-azmon/conductor.git"
+    echo "  cd conductor"
     echo "  ./skill/scripts/install.sh"
     exit 1
 fi
@@ -116,7 +116,7 @@ if [ -z "$TARGET" ]; then
     echo ""
     echo "Where do you want to install the skill?"
     echo ""
-    echo "  1) OpenCode global    (~/.opencode/skill/scrummaster/)"
+    echo "  1) OpenCode global    (~/.config/opencode/skills/scrummaster/)"
     echo "  2) Claude CLI global  (~/.claude/skills/scrummaster/)"
     echo "  3) Codex global       (~/.codex/skills/scrummaster/)"
     echo "  4) All of the above"
@@ -145,7 +145,7 @@ fi
 
 case "$TARGET" in
     opencode)
-        TARGETS=("$HOME/.opencode/skill/scrummaster")
+        TARGETS=("$HOME/.config/opencode/skills/scrummaster")
         ;;
     claude)
         TARGETS=("$HOME/.claude/skills/scrummaster")
@@ -154,7 +154,7 @@ case "$TARGET" in
         TARGETS=("$HOME/.codex/skills/scrummaster")
         ;;
     all)
-        TARGETS=("$HOME/.opencode/skill/scrummaster" "$HOME/.claude/skills/scrummaster" "$HOME/.codex/skills/scrummaster")
+        TARGETS=("$HOME/.config/opencode/skills/scrummaster" "$HOME/.claude/skills/scrummaster" "$HOME/.codex/skills/scrummaster")
         ;;
     *)
         echo "Invalid target: $TARGET"

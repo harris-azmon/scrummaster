@@ -12,13 +12,12 @@ The canonical schema is `skills/manifest.schema.json`, and the data source is `s
 | qwen | `commands/scrummaster/*.toml` | `slash-colon` | `/scrummaster:setup` |
 | claude | `.claude/commands/*.md and .claude-plugin/*` | `slash-dash` | `/scrummaster-setup` |
 | codex | `~/.codex/skills/<skill>/SKILL.md` | `dollar-dash` | `$scrummaster-setup` |
-| opencode | `~/.opencode/skill/<skill>/SKILL.md` | `slash-dash` | `/scrummaster-setup` |
+| opencode | `~/.config/opencode/skills/<skill>/SKILL.md` | `slash-dash` | `/scrummaster-setup` |
 | antigravity | `.agent/workflows/<skill>.md and ~/.gemini/antigravity/global_workflows/<skill>.md` | `at-mention + slash` | `@scrummaster /setup` |
 | copilot | `~/.config/github-copilot/scrummaster.md` | `slash-dash` | `/scrummaster-setup` |
 | aix | `~/.config/aix/scrummaster.md` | `slash-dash` | `/scrummaster-setup` |
 | skillshare | `~/.config/skillshare/skills/<skill>/SKILL.md` | `slash-dash` | `/scrummaster-setup` |
 <!-- END: TOOL-MATRIX -->
-
 ## Notes
 
 - The single source of truth for command syntax is `skills/manifest.json`.
