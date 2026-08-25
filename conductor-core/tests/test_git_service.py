@@ -90,6 +90,39 @@ def test_git_service_create_worktree(temp_repo, tmp_path):
     assert (worktree_dir / ".git").exists()
 
 
+def test_git_service_get_status(temp_repo):
+    service = GitService(repo_path=str(temp_repo))
+    (temp_repo / "test.txt").write_text("hello")
+    status = service.get_status()
+    assert "test.txt" in status
+
+
+def test_git_service_get_latest_hash(temp_repo):
+    service = GitService(repo_path=str(temp_repo))
+    (temp_repo / "test.txt").write_text("hello")
+    service.add("test.txt")
+    sha = service.commit("feat: Test commit")
+    assert service.get_latest_hash() == sha
+
+
+def test_git_service_checkout_and_merge_method(temp_repo):
+    service = GitService(repo_path=str(temp_repo))
+    default_branch = service.repo.active_branch.name
+
+    (temp_repo / "main.txt").write_text("main")
+    service.add("main.txt")
+    service.commit("feat: Main commit")
+
+    service.checkout("feature", create=True)
+    (temp_repo / "feat.txt").write_text("feat")
+    service.add("feat.txt")
+    service.commit("feat: Feature commit")
+
+    service.checkout(default_branch)
+    service.checkout_and_merge("feature")
+    assert (temp_repo / "feat.txt").exists()
+
+
 def test_git_service_missing_repo(tmp_path):
     # Pass a path that is not a git repo
     with pytest.raises(InvalidGitRepositoryError):
