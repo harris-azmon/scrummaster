@@ -1,4 +1,4 @@
-import sys
+import json
 from pathlib import Path
 
 from conductor_core.models import PlatformCapability, SkillManifest
@@ -24,16 +24,19 @@ def test_valid_skill_manifest():
     assert manifest.commands["claude"] == "/test-skill"
 
 
-def test_rendered_skill_matches_repo_output():
+def test_skills_manifest_entries_have_matching_skill_files():
+    """skills/*/SKILL.md files are canonical, hand-authored content (adopted from
+    upstream's agent-plugin format), not generated from conductor-core's Jinja
+    templates. This previously asserted render_skill(...) byte-for-byte matched
+    skills/conductor-setup/SKILL.md, which stopped being true once that file (and
+    conductor-implement/revert/status) became upstream-authored content instead of
+    a local-generator artifact. What's still a real invariant: every skill listed
+    in the manifest has a corresponding SKILL.md on disk.
+    """
     repo_root = _repo_root()
-    sys.path.insert(0, str(repo_root))
-    from scripts.skills_manifest import render_skill
-
     manifest_path = repo_root / "skills" / "manifest.json"
-    templates_dir = repo_root / "conductor-core" / "src" / "conductor_core" / "templates"
-    skill_dir = repo_root / "skills" / "conductor-setup" / "SKILL.md"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
-    rendered = render_skill(manifest_path, templates_dir, "setup").strip()
-    expected = skill_dir.read_text(encoding="utf-8").strip()
-
-    assert rendered == expected
+    for skill in manifest["skills"]:
+        skill_file = repo_root / "skills" / skill["name"] / "SKILL.md"
+        assert skill_file.exists(), f"Missing SKILL.md for {skill['name']}"
