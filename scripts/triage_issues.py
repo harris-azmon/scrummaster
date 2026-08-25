@@ -13,6 +13,7 @@ import sys
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import ClassVar
 
 import requests
 from github import Auth, Github
@@ -26,13 +27,13 @@ class IssueClassifier:
     """Classify GitHub issues by type and priority."""
 
     # Keywords for issue classification
-    BUG_KEYWORDS = ["bug", "error", "fail", "crash", "broken", "issue", "fix"]
-    FEATURE_KEYWORDS = ["feature", "enhancement", "add", "support", "new"]
-    DOCS_KEYWORDS = ["docs", "documentation", "typo", "readme"]
-    QUESTION_KEYWORDS = ["question", "help", "how to", "usage"]
+    BUG_KEYWORDS: ClassVar[list[str]] = ["bug", "error", "fail", "crash", "broken", "issue", "fix"]
+    FEATURE_KEYWORDS: ClassVar[list[str]] = ["feature", "enhancement", "add", "support", "new"]
+    DOCS_KEYWORDS: ClassVar[list[str]] = ["docs", "documentation", "typo", "readme"]
+    QUESTION_KEYWORDS: ClassVar[list[str]] = ["question", "help", "how to", "usage"]
 
     # Priority scoring weights
-    LABEL_WEIGHTS = {
+    LABEL_WEIGHTS: ClassVar[dict[str, int]] = {
         "bug": 30,
         "critical": 50,
         "high-priority": 40,
@@ -235,7 +236,7 @@ class IssueTriageBot:
             Track structure (spec, plan, metadata)
         """
         # Generate track ID
-        timestamp = datetime.now().strftime("%Y%m%d")
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d")
         track_id = f"issue_{triaged['number']}_{timestamp}"
 
         # Create spec

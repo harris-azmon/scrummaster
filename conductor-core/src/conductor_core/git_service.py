@@ -43,8 +43,8 @@ class GitService:
         try:
             self.repo = Repo(repo_path, search_parent_directories=True)
             self.path = repo_path
-        except InvalidGitRepositoryError:
-            raise InvalidGitRepositoryError(f"Not a git repository: {repo_path}")
+        except InvalidGitRepositoryError as err:
+            raise InvalidGitRepositoryError(f"Not a git repository: {repo_path}") from err
 
     def get_status(self) -> str:
         return str(self.repo.git.status())

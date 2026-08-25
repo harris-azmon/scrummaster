@@ -249,7 +249,7 @@ class UpstreamSyncBot:
             PR data if created, None otherwise
         """
         # Create a branch name with timestamp
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         upstream_name = upstream.replace("/", "-")
         branch_name = f"sync/{upstream_name}_{timestamp}"
 

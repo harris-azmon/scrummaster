@@ -145,7 +145,9 @@ class RenameCoordinator:
             # URLs
             f"github.com/{self.old_owner}/{self.old_name}": f"github.com/{self.old_owner}/{self.new_name}",
             f"github.com/{self.old_owner}/{self.old_name}.git": f"github.com/{self.old_owner}/{self.new_name}.git",
-            f"git@github.com:{self.old_owner}/{self.old_name}.git": f"git@github.com:{self.old_owner}/{self.new_name}.git",
+            f"git@github.com:{self.old_owner}/{self.old_name}.git": (
+                f"git@github.com:{self.old_owner}/{self.new_name}.git"
+            ),
             # Commands
             f"pip install {self.old_name}": f"pip install {self.new_name}",
             f"npm install -g {self.old_name}": f"npm install -g {self.new_name}",
@@ -365,7 +367,8 @@ git remote set-url origin https://github.com/{self.old_owner}/{self.new_name}.gi
 
 ### Issue: Old bookmarks still work
 
-**Note:** GitHub will redirect old URLs to the new repository, but it's best to update your bookmarks to use the new URL directly.
+**Note:** GitHub will redirect old URLs to the new repo, but it's best to update
+your bookmarks to use the new URL directly.
 
 ## Timeline
 

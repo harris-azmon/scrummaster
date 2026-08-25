@@ -14,9 +14,9 @@ def temp_repo(tmp_path):
         pytest.skip("git executable not found")
     repo_dir = tmp_path / "repo"
     repo_dir.mkdir()
-    subprocess.run([GIT_PATH, "init"], cwd=repo_dir, check=True)  # noqa: S603
-    subprocess.run([GIT_PATH, "config", "user.email", "test@example.com"], cwd=repo_dir, check=True)  # noqa: S603
-    subprocess.run([GIT_PATH, "config", "user.name", "test"], cwd=repo_dir, check=True)  # noqa: S603
+    subprocess.run([GIT_PATH, "init"], cwd=repo_dir, check=True)
+    subprocess.run([GIT_PATH, "config", "user.email", "test@example.com"], cwd=repo_dir, check=True)
+    subprocess.run([GIT_PATH, "config", "user.name", "test"], cwd=repo_dir, check=True)
     return repo_dir
 
 

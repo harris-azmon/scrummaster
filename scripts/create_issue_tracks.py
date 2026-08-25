@@ -78,7 +78,7 @@ def create_track(issue_number: int, issue_data: dict, tracks_dir: Path) -> Path:
         Path to created track directory
     """
     # Generate track ID
-    timestamp = datetime.now().strftime("%Y%m%d")
+    timestamp = datetime.now(timezone.utc).strftime("%Y%m%d")
     track_id = f"issue_{issue_number}_{timestamp}"
     track_dir = tracks_dir / track_id
 
@@ -229,7 +229,7 @@ def update_tracks_md(tracks_dir: Path, issues: dict) -> None:
     print("-" * 60)
 
     for issue_number in sorted(issues.keys()):
-        timestamp = datetime.now().strftime("%Y%m%d")
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d")
         track_id = f"issue_{issue_number}_{timestamp}"
         issue_data = issues[issue_number]
         print(f"- [ ] **Track: {issue_data['title']}** (./tracks/{track_id}/)")
@@ -296,7 +296,7 @@ def main() -> int:
     if args.dry_run:
         print("\n[DRY RUN] Would create the following tracks:")
         for issue_number, issue_data in issues_to_create.items():
-            timestamp = datetime.now().strftime("%Y%m%d")
+            timestamp = datetime.now(timezone.utc).strftime("%Y%m%d")
             track_id = f"issue_{issue_number}_{timestamp}"
             print(f"  - {track_id}: {issue_data['title']}")
         return 0

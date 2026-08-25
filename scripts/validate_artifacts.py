@@ -7,7 +7,7 @@ ROOT = Path(__file__).parent.parent
 
 
 def _run(cmd: list[str]) -> bool:
-    result = subprocess.run(cmd, cwd=ROOT, check=False)  # noqa: S603
+    result = subprocess.run(cmd, cwd=ROOT, check=False)
     return result.returncode == 0
 
 

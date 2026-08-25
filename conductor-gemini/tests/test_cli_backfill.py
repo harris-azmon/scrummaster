@@ -87,12 +87,11 @@ def test_archive_exception(repo_dir):
 
 
 def test_main_invocation_help():
-    with patch("sys.argv", ["conductor", "--help"]):
-        with pytest.raises(SystemExit) as e:
-            from conductor_gemini import cli
+    from conductor_gemini import cli
 
-            cli.main()
-        assert e.value.code == 0
+    with patch("sys.argv", ["conductor", "--help"]), pytest.raises(SystemExit) as e:
+        cli.main()
+    assert e.value.code == 0
 
 
 def test_cli_run_main_block(repo_dir):

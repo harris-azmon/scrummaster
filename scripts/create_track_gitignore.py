@@ -107,16 +107,12 @@ def find_tracks(base_dir: Path) -> list[Path]:
         tracks_dir = base_dir
 
     # Find all directories with plan.md (indicator of a track)
-    for item in tracks_dir.iterdir():
-        if item.is_dir() and (item / "plan.md").exists():
-            tracks.append(item)
+    tracks.extend(item for item in tracks_dir.iterdir() if item.is_dir() and (item / "plan.md").exists())
 
     # Also check archive subdirectory
     archive_dir = tracks_dir / "archive"
     if archive_dir.exists():
-        for item in archive_dir.iterdir():
-            if item.is_dir() and (item / "plan.md").exists():
-                tracks.append(item)
+        tracks.extend(item for item in archive_dir.iterdir() if item.is_dir() and (item / "plan.md").exists())
 
     return tracks
 
@@ -149,12 +145,7 @@ def main() -> int:
     print("Auto-create .gitignore for Conductor Tracks")
     print("=" * 60)
 
-    if args.track:
-        # Single track mode
-        tracks = [args.track]
-    else:
-        # Find all tracks
-        tracks = find_tracks(args.dir)
+    tracks = [args.track] if args.track else find_tracks(args.dir)
 
     print(f"Tracks directory: {args.dir}")
     print(f"Found {len(tracks)} tracks")

@@ -70,10 +70,8 @@ class DocumentationValidator:
                     self.warnings.append((file_path, f"Line {first_heading_line + 1}: First heading should be H1"))
 
             # Check for frontmatter
-            if content.startswith("---"):
-                # Check if frontmatter is properly closed
-                if content.count("---") < 2:
-                    self.errors.append((file_path, "Frontmatter not properly closed"))
+            if content.startswith("---") and content.count("---") < 2:
+                self.errors.append((file_path, "Frontmatter not properly closed"))
 
             # Check for code blocks without language
             code_block_pattern = r"^```\s*$"

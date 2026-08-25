@@ -25,7 +25,7 @@ def install_vsix(vsix_path: Path, *, dry_run: bool) -> bool:
             _log("OK", "vscode", f"{cmd_str} --install-extension {vsix_path}")
             return True
         try:
-            subprocess.run([cmd_str, "--install-extension", str(vsix_path)], check=True)  # noqa: S603
+            subprocess.run([cmd_str, "--install-extension", str(vsix_path)], check=True)
         except (subprocess.CalledProcessError, FileNotFoundError):
             continue
         else:
@@ -48,7 +48,7 @@ def install_antigravity_vsix(vsix_path: Path, *, dry_run: bool) -> bool:
             _log("OK", "antigravity", f"{cmd} --install-extension {vsix_path}")
             return True
         try:
-            subprocess.run([cmd, "--install-extension", str(vsix_path)], check=True)  # noqa: S603
+            subprocess.run([cmd, "--install-extension", str(vsix_path)], check=True)
         except (subprocess.CalledProcessError, FileNotFoundError):
             continue
         else:
@@ -118,7 +118,7 @@ def verify(repo_root: Path) -> bool:
     ]
     all_ok = True
     for cmd in commands:
-        result = subprocess.run(cmd, cwd=repo_root, check=False)  # noqa: S603
+        result = subprocess.run(cmd, cwd=repo_root, check=False)
         if result.returncode == 0:
             _log("OK", "verify", " ".join(cmd[1:]))
         else:
@@ -158,7 +158,7 @@ def _summarize(ok: int, warn: int, fail: int) -> None:
     print(f"SUMMARY  ok={ok} warn={warn} fail={fail}")
 
 
-def main() -> int:  # noqa: C901, PLR0912
+def main() -> int:
     parser = argparse.ArgumentParser(description="Install Conductor artifacts locally.")
     parser.add_argument("--verify", action="store_true", help="Run validation checks only")
     parser.add_argument("--dry-run", action="store_true", help="Print planned actions without changes")
