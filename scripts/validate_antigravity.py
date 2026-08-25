@@ -66,13 +66,17 @@ def main() -> None:
     else:
         all_passed = False
 
-    # 5. Verify .antigravity/skills structure
-    test_step("Verifying .antigravity/skills structure")
-    ag_skills_dir = ROOT / ".antigravity" / "skills"
-    if ag_skills_dir.exists() and any(ag_skills_dir.iterdir()):
-        pass
-    else:
-        all_passed = False
+    # 5. Verify .antigravity/skills structure (opt-in only: this directory is
+    # gitignored/local-only, populated by `scripts/sync_skills.py` when
+    # CONDUCTOR_ANTIGRAVITY_SKILLS=1 is set, so it never exists in a fresh
+    # checkout and can't be a default CI requirement).
+    if os.environ.get("CONDUCTOR_VALIDATE_ANTIGRAVITY_SKILLS") == "1":
+        test_step("Verifying .antigravity/skills structure")
+        ag_skills_dir = ROOT / ".antigravity" / "skills"
+        if ag_skills_dir.exists() and any(ag_skills_dir.iterdir()):
+            pass
+        else:
+            all_passed = False
 
     if all_passed:
         sys.exit(0)

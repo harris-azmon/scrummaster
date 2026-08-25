@@ -9,25 +9,13 @@ def sync_platforms() -> None:
     core_templates = os.path.join(base_dir, "conductor-core/src/conductor_core/templates")
     service = ValidationService(core_templates)
 
-    # Gemini TOMLs
-    gemini_mappings = {
-        "commands/conductor/conductor.toml": "conductor.j2",
-        "commands/conductor/setup.toml": "setup.j2",
-        "commands/conductor/newTrack.toml": "new_track.j2",
-        "commands/conductor/implement.toml": "implement.j2",
-        "commands/conductor/status.toml": "status.j2",
-        "commands/conductor/revert.toml": "revert.j2",
-    }
-
-    # Claude MDs
-    claude_mappings = {
-        "commands/conductor-info.md": "conductor.j2",
-        ".claude/commands/conductor-setup.md": "setup.j2",
-        ".claude/commands/conductor-newtrack.md": "new_track.j2",
-        ".claude/commands/conductor-implement.md": "implement.j2",
-        ".claude/commands/conductor-status.md": "status.j2",
-        ".claude/commands/conductor-revert.md": "revert.j2",
-    }
+    # Gemini CLI TOML commands (commands/conductor/*.toml) and the Claude Code
+    # .claude/commands/*.md mirror were retired when this repo adopted upstream's
+    # agent-plugin restructure: skills/*/SKILL.md is now the single portable
+    # source of command content, not something synchronized per-tool from these
+    # core templates. Both mapping tables are intentionally empty.
+    gemini_mappings: dict[str, str] = {}
+    claude_mappings: dict[str, str] = {}
 
     for path, template in gemini_mappings.items():
         service.synchronize_gemini_toml(path, template)
@@ -47,25 +35,13 @@ def run_validation() -> None:
     core_templates = os.path.join(base_dir, "conductor-core/src/conductor_core/templates")
     service = ValidationService(core_templates)
 
-    # Gemini TOMLs
-    gemini_mappings = {
-        "commands/conductor/conductor.toml": "conductor.j2",
-        "commands/conductor/setup.toml": "setup.j2",
-        "commands/conductor/newTrack.toml": "new_track.j2",
-        "commands/conductor/implement.toml": "implement.j2",
-        "commands/conductor/status.toml": "status.j2",
-        "commands/conductor/revert.toml": "revert.j2",
-    }
-
-    # Claude MDs
-    claude_mappings = {
-        "commands/conductor-info.md": "conductor.j2",
-        ".claude/commands/conductor-setup.md": "setup.j2",
-        ".claude/commands/conductor-newtrack.md": "new_track.j2",
-        ".claude/commands/conductor-implement.md": "implement.j2",
-        ".claude/commands/conductor-status.md": "status.j2",
-        ".claude/commands/conductor-revert.md": "revert.j2",
-    }
+    # Gemini CLI TOML commands (commands/conductor/*.toml) and the Claude Code
+    # .claude/commands/*.md mirror were retired when this repo adopted upstream's
+    # agent-plugin restructure: skills/*/SKILL.md is now the single portable
+    # source of command content, not something synchronized per-tool from these
+    # core templates. Both mapping tables are intentionally empty.
+    gemini_mappings: dict[str, str] = {}
+    claude_mappings: dict[str, str] = {}
 
     all_valid = True
 
