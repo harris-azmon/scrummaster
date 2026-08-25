@@ -4,9 +4,11 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
 	buildPushPayloads,
+	isScrummasterSpecPath,
 	normalizePushOptions,
 	parseFeatureDocument,
 	parseFeatureSpecFile,
+	parseScrummasterSpecDocument,
 	planPush,
 	runPushCommand,
 	scanPushRepo,
@@ -101,6 +103,144 @@ describe("push.SCAN.1 push.SCAN.5 push.SCAN.5-1", () => {
 				deprecated: false,
 			},
 		});
+	});
+});
+
+describe("push.SCAN.6 push.SCAN.6-1 push.SCAN.6-2", () => {
+	test("isScrummasterSpecPath recognizes only scrummaster/epics/<epic>/stories/<story>/spec.md", () => {
+		expect(isScrummasterSpecPath("scrummaster/epics/epic-1/stories/login-flow/spec.md")).toBe(
+			true,
+		);
+		expect(isScrummasterSpecPath("features/alpha.feature.yaml")).toBe(false);
+		expect(isScrummasterSpecPath("scrummaster/epics/epic-1/stories/login-flow/plan.md")).toBe(
+			false,
+		);
+		expect(isScrummasterSpecPath("scrummaster/epics.md")).toBe(false);
+	});
+
+	test("parseScrummasterSpecDocument extracts ACID bullets grouped under component headings", () => {
+		const raw = [
+			"# Login Flow",
+			"",
+			"## Overview",
+			"Users can log in with email + password.",
+			"",
+			"## AUTH",
+			"- `login-flow.AUTH.1` — a user can authenticate with email + password",
+			"- `login-flow.AUTH.1-1` — invalid credentials show an inline error, not a redirect",
+			"",
+			"## Out of Scope",
+			"- SSO",
+		].join("\n");
+
+		const parsed = parseScrummasterSpecDocument(
+			raw,
+			"scrummaster/epics/epic-1/stories/login-flow/spec.md",
+			"example-product",
+		);
+
+		expect(parsed.spec.feature).toEqual({
+			name: "login-flow",
+			product: "example-product",
+			version: "1.0.0",
+			epic_id: "epic-1",
+		});
+		expect(parsed.spec.requirements).toEqual({
+			"login-flow.AUTH.1": {
+				requirement: "a user can authenticate with email + password",
+				deprecated: false,
+			},
+			"login-flow.AUTH.1-1": {
+				requirement: "invalid credentials show an inline error, not a redirect",
+				deprecated: false,
+			},
+		});
+	});
+
+	test("parseScrummasterSpecDocument marks a bullet deprecated via a trailing [deprecated] marker, with or without a note", () => {
+		const raw = [
+			"## AUTH",
+			"- `login-flow.AUTH.1` — legacy magic link [deprecated: replaced by AUTH.2's password flow]",
+			"- `login-flow.AUTH.2` — password login [deprecated]",
+			"- `login-flow.AUTH.3` — current requirement",
+		].join("\n");
+
+		const parsed = parseScrummasterSpecDocument(
+			raw,
+			"scrummaster/epics/epic-1/stories/login-flow/spec.md",
+			"example-product",
+		);
+
+		expect(parsed.spec.requirements).toEqual({
+			"login-flow.AUTH.1": {
+				requirement: "legacy magic link",
+				deprecated: true,
+				note: "replaced by AUTH.2's password flow",
+			},
+			"login-flow.AUTH.2": {
+				requirement: "password login",
+				deprecated: true,
+			},
+			"login-flow.AUTH.3": {
+				requirement: "current requirement",
+				deprecated: false,
+			},
+		});
+	});
+
+	test("parseScrummasterSpecDocument accepts a plain hyphen as the description separator", () => {
+		const raw = "## MAIN\n- `alpha.MAIN.1` - a plain hyphen separator";
+		const parsed = parseScrummasterSpecDocument(
+			raw,
+			"scrummaster/epics/epic-1/stories/alpha/spec.md",
+			"example-product",
+		);
+		expect(parsed.spec.requirements["alpha.MAIN.1"]).toEqual({
+			requirement: "a plain hyphen separator",
+			deprecated: false,
+		});
+	});
+
+	test("parseScrummasterSpecDocument ignores non-ACID prose lines and returns no requirements when there are none", () => {
+		const raw = "## Overview\nJust some prose, no ACIDs here.\n- A plain bullet with no ACID.\n";
+		const parsed = parseScrummasterSpecDocument(
+			raw,
+			"scrummaster/epics/epic-1/stories/alpha/spec.md",
+			"example-product",
+		);
+		expect(parsed.spec.requirements).toEqual({});
+	});
+
+	test("scanPushRepo discovers scrummaster spec.md files alongside .feature.yaml, resolving product from fossil info", async () => {
+		const root = await createRepoFixture({
+			"scrummaster/epics/epic-1/stories/login-flow/spec.md":
+				"## AUTH\n- `login-flow.AUTH.1` — a user can log in\n",
+			"features/beta.feature.yaml":
+				"feature:\n  name: beta\n  product: product-b\ncomponents:\n  MAIN:\n    requirements:\n      1: Beta requirement\n",
+		});
+
+		const runner = createGitRunner({
+			info: buildFossilInfoOutput({
+				localRoot: root,
+				repoUri: "example-product",
+				branchName: "trunk",
+				commitHash: "c0ffee0000000000000000000000000000000000",
+			}),
+			"finfo -b scrummaster/epics/epic-1/stories/login-flow/spec.md": "",
+			"finfo -b features/beta.feature.yaml": "b1",
+		});
+
+		const scan = await scanPushRepo({ cwd: root, runner: runner as never, repoRoot: root });
+
+		const scrummasterSpec = scan.specs.find((entry) => entry.featureName === "login-flow");
+		expect(scrummasterSpec?.productName).toBe("example-product");
+		expect(scrummasterSpec?.spec.feature.epic_id).toBe("epic-1");
+		expect(scrummasterSpec?.spec.requirements).toEqual({
+			"login-flow.AUTH.1": { requirement: "a user can log in", deprecated: false },
+		});
+
+		const featureYamlSpec = scan.specs.find((entry) => entry.featureName === "beta");
+		expect(featureYamlSpec?.productName).toBe("product-b");
 	});
 });
 

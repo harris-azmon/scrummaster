@@ -41,7 +41,11 @@ This repository is organized as a modular monorepo:
   and tooling integrations.
 - **`vendor/acid-cli`**: A vendored, retargeted fork of `acai-sh/cli`
   providing the `acid` CLI — ACID tracking against local Fossil tickets, with
-  one-way export to Trello.
+  one-way export to Trello. `acid push` recognizes both its own
+  `features/*.feature.yaml` specs and the `scrummaster/epics/<epic_id>/stories/<story_id>/spec.md`
+  files `/scrummaster-newstory` generates, so it can (re-)sync a story's ACIDs
+  into Fossil tickets directly, as an alternative to the `fossil ticket add`
+  the skill itself runs when creating a story.
 
 For tool-native command syntax and the artifacts each client consumes, see
 `docs/skill-command-syntax.md`.

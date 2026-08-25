@@ -35,6 +35,10 @@ components:
             5: Supports `deprecated true` at the component level in feature specs
             5-note: This is a shorthand that applies `deprecated true` to every ACID within that component when building the push payload
             5-1: Individual ACID deprecation on the requirement itself takes precedence when both are present
+            6: Also parses ACID requirements directly from `scrummaster/epics/<epic_id>/stories/<story_id>/spec.md` files, independent of and alongside `.feature.yaml` specs
+            6-note: "Scrummaster stories never generate `.feature.yaml` files (see `commands/scrummaster-newstory.md`), so before this requirement `acid push` could not create or update tickets for a Scrummaster project at all - it silently found zero specs. Parsing is line-based, not markdown-AST-based - `## COMPONENT` headings are for author readability only and are not required for correctness, since each bullet embeds its full ACID string. See `parseScrummasterSpecDocument` in `core/push.ts`."
+            6-1: "A spec.md bullet in the form of a backtick-quoted ACID followed by an em-dash or plain hyphen and the requirement text becomes one requirement; a trailing `[deprecated]` marker, optionally followed by `: <note>` before the closing bracket, marks it deprecated with an optional note."
+            6-2: "The epic_id parsed from the spec.md path (`scrummaster/epics/<epic_id>/...`) is recorded on the fossil ticket the same way the `/scrummaster-newstory` skill's own `fossil ticket add` call does, so tickets created via either path roll up under the same epic."
 
     API:
         description: Interaction with the push backend

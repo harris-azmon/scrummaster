@@ -215,6 +215,56 @@ describe("push command", () => {
 		}
 	});
 
+	test("push.SCAN.6 push.SCAN.6-1 push.SCAN.6-2 pushes a scrummaster story's spec.md with no features/ directory at all", async () => {
+		const fossil = await createFakeFossilContext({ projectName: "example-product" });
+		try {
+			await writeFiles(fossil.root, {
+				"scrummaster/epics/epic-1/stories/login-flow/spec.md":
+					"# Login Flow\n\n## AUTH\n- `login-flow.AUTH.1` — a user can authenticate with email + password\n- `login-flow.AUTH.2` — legacy magic link [deprecated: replaced by AUTH.1]\n",
+			});
+
+			const result = await runCliSubprocess(["push", "--all"], fossil.env, {
+				cwd: fossil.root,
+			});
+
+			expect(result.exitCode).toBe(0);
+			expect(result.stderr.trim()).toBe("");
+			expect(result.stdout).toContain("REPO: example-product");
+			const row = result.stdout
+				.split("\n")
+				.find((line) => line.startsWith("example-product"));
+			expect(row).toMatch(/example-product\s+trunk\s+2\s+0/);
+
+			const featureResult = await runCliSubprocess(
+				["feature", "login-flow", "--product", "example-product", "--impl", "trunk", "--json"],
+				fossil.env,
+				{ cwd: fossil.root },
+			);
+			const acids = JSON.parse(featureResult.stdout).data.acids as Array<{
+				acid: string;
+				requirement: string;
+			}>;
+			expect(acids).toEqual([
+				{
+					acid: "login-flow.AUTH.1",
+					requirement: "a user can authenticate with email + password",
+					state: { status: null },
+					refs_count: 0,
+					test_refs_count: 0,
+				},
+				{
+					acid: "login-flow.AUTH.2",
+					requirement: "legacy magic link",
+					state: { status: null },
+					refs_count: 0,
+					test_refs_count: 0,
+				},
+			]);
+		} finally {
+			await fossil.cleanup();
+		}
+	});
+
 	test("push.OUTPUT.5 cli-core.OUTPUT.1 cli-core.OUTPUT.2 emits JSON payloads on stdout", async () => {
 		const fossil = await createFakeFossilContext({ projectName: "example-product" });
 		try {

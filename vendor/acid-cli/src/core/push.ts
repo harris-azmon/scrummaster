@@ -5,6 +5,7 @@ import { runtimeError, usageError } from "./errors.ts";
 import { formatTextTable, type CommandResult } from "./output.ts";
 import {
 	readFossilCommitHash,
+	readFossilContext,
 	readFossilFileLastSeenCommit,
 	readFossilPushContext,
 	readFossilRepoRoot,
@@ -13,7 +14,21 @@ import {
 } from "./fossil.ts";
 import { defaultRuntime, type RuntimeCompat } from "./runtime.ts";
 
-export type PushRequest = components["schemas"]["PushRequest"];
+type GeneratedPushRequest = components["schemas"]["PushRequest"];
+type GeneratedPushSpec = NonNullable<GeneratedPushRequest["specs"]>[number];
+
+// `epic_id` is a Scrummaster-local extension to the vendored acai.sh
+// PushRequest schema (generated/openapi.ts) - the original SaaS/HTTP API
+// this schema modeled had no epic concept. There's no live server left to
+// regenerate that file from, so this widens the type here instead of
+// hand-editing the "generated" file. `runPush` (fossil-client.ts) reads it
+// to set the ticket's `epic_id` column when a spec came from
+// scrummaster/epics/*/stories/*/spec.md (see push.SCAN.6-2).
+export type PushRequest = Omit<GeneratedPushRequest, "specs"> & {
+	specs?: (Omit<GeneratedPushSpec, "feature"> & {
+		feature: GeneratedPushSpec["feature"] & { epic_id?: string };
+	})[];
+};
 export type PushSpec = NonNullable<PushRequest["specs"]>[number];
 export type PushReference = NonNullable<
 	PushRequest["references"]
@@ -102,6 +117,16 @@ interface AggregatedPushFailure {
 
 const FEATURE_SPEC_SUFFIX = ".feature.yaml";
 const FEATURE_SPEC_PREFIX = "features/";
+const SCRUMMASTER_SPEC_PATH_PATTERN =
+	/^scrummaster\/epics\/([^/]+)\/stories\/([^/]+)\/spec\.md$/;
+// - `<acid>` — <requirement text>, e.g. `- \`login-flow.AUTH.1\` — a user can log in`.
+// Accepts either an em-dash or a plain hyphen as the description separator.
+const SCRUMMASTER_ACID_BULLET_PATTERN =
+	/^-\s*`([a-z0-9-]+\.[A-Z][A-Z0-9_-]*\.[0-9]+(?:-[0-9]+)?)`\s*[-—]\s*(.+)$/;
+// Trailing `[deprecated]` or `[deprecated: <reason>]` marks a scrummaster
+// spec.md requirement deprecated, mirroring `.feature.yaml`'s `deprecated:
+// true` + note fields (see push.SCAN.6-note).
+const SCRUMMASTER_DEPRECATED_SUFFIX_PATTERN = /\s*\[deprecated(?::\s*(.+?))?\]\s*$/i;
 const UNSCOPED_REFS_BUCKET = "";
 const IGNORED_REF_DIRS = new Set([
 	".git",
@@ -181,16 +206,33 @@ export async function scanPushRepo(
 	const repoRoot = options.repoRoot ?? (await readFossilRepoRoot({ cwd, runner }));
 	const filePaths = await listRepoFiles(repoRoot);
 
+	const hasScrummasterSpecs = filePaths.some((path) => isScrummasterSpecPath(path));
+	// Cathedral-style trunk-only fossil projects have exactly one product;
+	// `.feature.yaml` specs carry their own `product` field, but a
+	// scrummaster/epics/*/stories/*/spec.md never does, so resolve it once
+	// (only when there's at least one such file, to avoid an unnecessary
+	// `fossil info` call for repos that don't use the scrummaster layout).
+	const scrummasterProductName = hasScrummasterSpecs
+		? (await readFossilContext({ cwd: repoRoot, runner })).repoUri
+		: undefined;
+
 	const specs: DiscoveredPushSpec[] = [];
 	for (const relativePath of filePaths) {
-		if (!isFeatureSpecPath(relativePath)) continue;
+		let spec: DiscoveredPushSpec;
+		if (isFeatureSpecPath(relativePath)) {
+			spec = await parseFeatureSpecFile(repoRoot, relativePath, runner, runtime);
+		} else if (isScrummasterSpecPath(relativePath)) {
+			spec = await parseScrummasterSpecFile(
+				repoRoot,
+				relativePath,
+				scrummasterProductName!,
+				runner,
+				runtime,
+			);
+		} else {
+			continue;
+		}
 
-		const spec = await parseFeatureSpecFile(
-			repoRoot,
-			relativePath,
-			runner,
-			runtime,
-		);
 		if (
 			featureFilter !== undefined &&
 			!featureFilter.has(spec.spec.feature.name)
@@ -233,6 +275,95 @@ export async function parseFeatureSpecFile(
 		lastSeenCommit,
 		spec: parsed.spec,
 	};
+}
+
+// push.SCAN.6
+export function isScrummasterSpecPath(relativePath: string): boolean {
+	return SCRUMMASTER_SPEC_PATH_PATTERN.test(relativePath);
+}
+
+// push.SCAN.6 / push.SCAN.6-1 / push.SCAN.6-2
+export async function parseScrummasterSpecFile(
+	cwd: string,
+	relativePath: string,
+	productName: string,
+	runner?: FossilCommandRunner,
+	runtime: RuntimeCompat = defaultRuntime,
+): Promise<DiscoveredPushSpec> {
+	const absolutePath = joinPath(cwd, relativePath);
+	const raw = await runtime.readTextFile(absolutePath);
+	const parsed = parseScrummasterSpecDocument(raw, relativePath, productName);
+	const lastSeenCommit = await resolveSpecLastSeenCommit(cwd, relativePath, runner);
+	parsed.spec.meta.last_seen_commit = lastSeenCommit;
+
+	return {
+		featureName: parsed.spec.feature.name,
+		productName: parsed.spec.feature.product,
+		path: relativePath,
+		lastSeenCommit,
+		spec: parsed.spec,
+	};
+}
+
+// push.SCAN.6 / push.SCAN.6-1 / push.SCAN.6-2
+// Parses a scrummaster/epics/<epic_id>/stories/<story_id>/spec.md's ACID
+// bullets (see commands/scrummaster-newstory.md for the generation format)
+// into the same PushSpec shape parseFeatureDocument produces from
+// .feature.yaml, so buildPushPayloads/runPush need no awareness of which
+// format a spec came from.
+//
+// Expected shape, one ACID per bullet, grouped under `## COMPONENT`
+// headings:
+//   ## AUTH
+//   - `login-flow.AUTH.1` — a user can authenticate with email + password
+//   - `login-flow.AUTH.2` — legacy magic link [deprecated: replaced by AUTH.1]
+export function parseScrummasterSpecDocument(
+	raw: string,
+	relativePath: string,
+	productName: string,
+): ParsedFeatureDocument {
+	const pathMatch = SCRUMMASTER_SPEC_PATH_PATTERN.exec(relativePath);
+	if (!pathMatch) {
+		throw runtimeError(`Invalid scrummaster spec path: ${relativePath}`);
+	}
+	const [, epicId, storyId] = pathMatch;
+
+	const requirements: PushSpec["requirements"] = {};
+
+	for (const line of raw.split("\n")) {
+		const bulletMatch = SCRUMMASTER_ACID_BULLET_PATTERN.exec(line.trimEnd());
+		if (!bulletMatch) continue;
+
+		const [, acid, rawText] = bulletMatch;
+		if (!acid || !rawText) continue;
+
+		const deprecatedMatch = SCRUMMASTER_DEPRECATED_SUFFIX_PATTERN.exec(rawText);
+		const requirementText = deprecatedMatch
+			? rawText.slice(0, deprecatedMatch.index).trimEnd()
+			: rawText.trim();
+
+		requirements[acid] = {
+			requirement: requirementText,
+			deprecated: deprecatedMatch !== null,
+			...(deprecatedMatch?.[1] ? { note: deprecatedMatch[1].trim() } : {}),
+		};
+	}
+
+	const spec: PushSpec = {
+		feature: {
+			name: storyId!,
+			product: productName,
+			version: "1.0.0",
+			epic_id: epicId!,
+		},
+		meta: {
+			last_seen_commit: "",
+			path: relativePath,
+		},
+		requirements,
+	};
+
+	return { spec };
 }
 
 async function resolveSpecLastSeenCommit(
@@ -983,7 +1114,7 @@ function isFeatureSpecPath(relativePath: string): boolean {
 }
 
 function shouldScanForReferences(relativePath: string): boolean {
-	if (isFeatureSpecPath(relativePath)) return false;
+	if (isFeatureSpecPath(relativePath) || isScrummasterSpecPath(relativePath)) return false;
 	if (relativePath.split("/").some((segment) => IGNORED_REF_DIRS.has(segment)))
 		return false;
 

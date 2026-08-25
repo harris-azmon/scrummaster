@@ -34,8 +34,25 @@ Ask 3-5 clarifying questions based on story type:
 
 Generate `spec.md` with an Overview, then every requirement expressed as a stable
 **ACID** (`<story-name>.<COMPONENT>.<n>[-<sub>]`, e.g. `login-flow.AUTH.1`), grouped
-by component — see `vendor/acid-cli/.agents/skills/acai/SKILL.md` for the full
-convention. Never renumber an ACID once assigned; mark it `deprecated` instead.
+under `## COMPONENT` headings as bullets in this **exact** format — `acid push`
+(see `vendor/acid-cli/.agents/skills/acid/SKILL.md` for the full convention)
+parses this shape directly, so drifting from it silently loses requirements:
+
+```markdown
+## AUTH
+- `login-flow.AUTH.1` — a user can authenticate with email + password
+- `login-flow.AUTH.1-1` — invalid credentials show an inline error, not a redirect
+```
+
+One bullet per ACID: a backtick-quoted ACID, then an em-dash or hyphen, then the
+requirement text. Never renumber an ACID once assigned — mark it deprecated
+instead by appending `[deprecated]` or `[deprecated: <reason>]` to the end of its
+bullet line:
+
+```markdown
+- `login-flow.AUTH.2` — legacy magic-link login [deprecated: replaced by AUTH.1's password flow]
+```
+
 Close with an **Out of Scope** section.
 
 Present for approval, revise if needed.
@@ -72,6 +89,10 @@ Present for approval, revise if needed.
 ## 7. Create a Fossil Ticket per ACID
 
 For every ACID in `spec.md`: `fossil ticket add type Story epic_id "<epic_id>" story_id "<story_id>" acid "<acid>" status Open title "<short text>"`.
+
+If `vendor/acid-cli`'s `acid` CLI is installed, `acid push --all` does the same
+thing by parsing `spec.md` directly and is idempotent — safe to re-run any time
+`spec.md` is hand-edited later without needing to track which ACIDs are new.
 
 ## 8. Update Epics Index
 

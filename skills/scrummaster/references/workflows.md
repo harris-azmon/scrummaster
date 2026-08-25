@@ -180,7 +180,8 @@ Ask 3-5 questions based on story type:
 - **Bug**: Steps to reproduce? Expected vs actual? When did it start?
 
 Generate `spec.md` where every requirement is a stable **ACID** grouped by component,
-following the acai.sh convention (see `vendor/acid-cli/.agents/skills/acai/SKILL.md`):
+following the acid-cli convention (see `vendor/acid-cli/.agents/skills/acid/SKILL.md`).
+`acid push` (if installed) parses this exact shape directly, so don't drift from it:
 
 ```markdown
 # Spec: <story-name>
@@ -191,14 +192,16 @@ following the acai.sh convention (see `vendor/acid-cli/.agents/skills/acai/SKILL
 ## AUTH
 - `<story-name>.AUTH.1` — a user can authenticate with email + password
 - `<story-name>.AUTH.1-1` — invalid credentials show an inline error, not a redirect
+- `<story-name>.AUTH.2` — legacy magic-link login [deprecated: replaced by AUTH.1's password flow]
 
 ## Out of Scope
 ...
 ```
 
-Rules: never renumber an ACID once assigned — mark it `deprecated` instead. Never
-duplicate requirement text outside the spec; reference the ACID alone elsewhere.
-Present for approval, revise if needed.
+Rules: never renumber an ACID once assigned — mark it deprecated instead by
+appending `[deprecated]` or `[deprecated: <reason>]` to the end of its bullet
+line. Never duplicate requirement text outside the spec; reference the ACID
+alone elsewhere. Present for approval, revise if needed.
 
 ### 5. Generate Plan
 Read `scrummaster/workflow.md` for task structure (TDD, commit strategy). Every

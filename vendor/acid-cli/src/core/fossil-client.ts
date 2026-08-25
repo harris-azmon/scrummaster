@@ -311,6 +311,7 @@ async function runPush(
 					requirement.deprecated ? "1" : "0",
 					"last_seen_commit",
 					spec.meta.last_seen_commit,
+					...(spec.feature.epic_id ? ["epic_id", spec.feature.epic_id] : []),
 				]);
 				specsCreated += 1;
 			} else {
@@ -325,6 +326,7 @@ async function runPush(
 					requirement.deprecated ? "1" : "0",
 					"last_seen_commit",
 					spec.meta.last_seen_commit,
+					...(spec.feature.epic_id ? ["epic_id", spec.feature.epic_id] : []),
 				]);
 				specsUpdated += 1;
 			}
