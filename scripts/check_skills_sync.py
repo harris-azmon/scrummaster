@@ -18,11 +18,11 @@ TEMPLATES_DIR = ROOT / "scrummaster-core" / "src" / "scrummaster_core" / "templa
 MANIFEST_PATH = ROOT / "skills" / "manifest.json"
 SCHEMA_PATH = ROOT / "skills" / "manifest.schema.json"
 
-# skills/ and conductor-vscode/skills/ are checked for existence only (see
-# _check_skill_presence below), not generator parity: skills/*/SKILL.md is now
-# canonical, hand-authored content (adopted from upstream's plugin format), not
-# something rendered from conductor-core's Jinja templates. .antigravity/skills
-# is gitignored (local-only), so it's never present in a fresh checkout.
+# skills/ is checked for existence only (see _check_skill_presence below),
+# not generator parity: skills/*/SKILL.md is now canonical, hand-authored
+# content (adopted from upstream's plugin format), not something rendered
+# from scrummaster-core's Jinja templates. .antigravity/skills is
+# gitignored (local-only), so it's never present in a fresh checkout.
 REPO_SKILL_PRESENCE_DIRS = [
     ROOT / "skills",
     ROOT / ".antigravity" / "skills",
