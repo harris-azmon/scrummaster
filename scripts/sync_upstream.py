@@ -363,8 +363,8 @@ def main():
     parser = argparse.ArgumentParser(description="Sync changes from upstream repositories")
     parser.add_argument(
         "--target",
-        default="edithatogo/conductor-next",
-        help="Target repository (default: edithatogo/conductor-next)",
+        default="harris-azmon/conductor",
+        help="Target repository (default: harris-azmon/conductor)",
     )
     parser.add_argument(
         "--upstream",
