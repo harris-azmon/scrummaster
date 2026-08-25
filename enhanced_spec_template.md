@@ -1,8 +1,8 @@
-# Track Specification: [Track Title]
+# Story Specification: [Story Title]
 
 ## Summary
 
-[Provide a brief overview of what this track aims to accomplish. This should be a high-level description that explains the purpose and goals of the track.]
+[Provide a brief overview of what this story aims to accomplish. This should be a high-level description that explains the purpose and goals of the story.]
 
 ## Goals
 
@@ -94,7 +94,7 @@
 
 ### Internal Dependencies
 
-- [Other tracks or features this track relies on]
+- [Other stories or features this story relies on]
 
 ### External Dependencies
 
@@ -102,7 +102,7 @@
 
 ### Blocking Dependencies
 
-- [What other tracks this track blocks]
+- [What other stories this story blocks]
 
 ### Timeline Dependencies
 
@@ -123,7 +123,7 @@
 
 ## Non-Goals
 
-- [What this track will NOT address]
+- [What this story will NOT address]
 - [Out of scope items]
 - [Future enhancements to be considered separately]
 

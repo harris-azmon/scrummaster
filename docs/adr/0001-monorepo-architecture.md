@@ -1,8 +1,7 @@
 # ADR 0001: Monorepo Architecture for Multi-Platform Support
 
 ## Status
-
-Accepted
+Superseded by [ADR 0002](0002-scrummaster-fork.md)
 
 ## Context
 

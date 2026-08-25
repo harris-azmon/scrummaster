@@ -1,28 +1,26 @@
 # Context Hygiene & Memory Safety
 
-This guide defines a minimal, repeatable context bundle for Conductor projects and safe practices to prevent context drift.
+This guide defines a minimal, repeatable context bundle for Scrummaster projects and safe practices to prevent context drift.
 
 ## Canonical Context Bundle
 
 Include these files by default:
-
-- `conductor/product.md`
-- `conductor/product-guidelines.md` (if present)
-- `conductor/tech-stack.md`
-- `conductor/workflow.md`
-- `conductor/tracks.md`
-- `conductor/code_styleguides/*` (only active languages)
-- Current track:
-  - `conductor/tracks/<track_id>/spec.md`
-  - `conductor/tracks/<track_id>/plan.md`
-  - `conductor/tracks/<track_id>/metadata.json`
+- `scrummaster/product.md`
+- `scrummaster/product-guidelines.md` (if present)
+- `scrummaster/tech-stack.md`
+- `scrummaster/workflow.md`
+- `scrummaster/epics.md`
+- `scrummaster/code_styleguides/*` (only active languages)
+- Current story:
+  - `scrummaster/epics/<epic_id>/stories/<story_id>/spec.md`
+  - `scrummaster/epics/<epic_id>/stories/<story_id>/plan.md`
+  - `scrummaster/epics/<epic_id>/stories/<story_id>/metadata.json`
 
 ## Default Exclusions
 
 Exclude these unless explicitly needed:
-
-- `conductor/tracks/archive/**`
-- `.git/**`, `.hg/**`, `.svn/**`
+- `scrummaster/epics/*/stories/archive/**`
+- `.fslckout`, `_FOSSIL_`, `.git/**`, `.hg/**`, `.svn/**`
 - `.agent/**` (generated workflows/skills)
 - `node_modules/**`, `dist/**`, `build/**`, `.venv/**`, `.tox/**`, `.mypy_cache/**`
 - Large lockfiles or dependency caches
@@ -35,8 +33,9 @@ Exclude these unless explicitly needed:
 ## Safe Memory Practices
 
 - Prefer linking to large files rather than inlining them in context.
-- Keep the active track small; move completed work to `archive/`.
-- Summarize long discussions into track notes or concise bullet lists.
+- Keep the active story small; move completed work to `archive/`.
+- Summarize long discussions into story notes or concise bullet lists, and
+  attach the summary as a Fossil technote for the story.
 - Avoid committing generated artifacts to the context bundle.
 
 ## Tooling

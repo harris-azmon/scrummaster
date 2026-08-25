@@ -80,19 +80,6 @@ def test_scrummaster_update_help() -> bool:
     return False
 
 
-def test_sync_upstream_help() -> bool:
-    """Test that sync_upstream.py shows help correctly."""
-    print("\nTEST Testing sync_upstream.py --help...")
-
-    code, stdout, _stderr = run_command([sys.executable, "scripts/sync_upstream.py", "--help"])
-
-    if code == 0 and "Sync from upstream repositories" in stdout:
-        print("PASS sync_upstream.py --help works")
-        return True
-    print("FAIL sync_upstream.py --help failed")
-    return False
-
-
 def test_triage_issues_help() -> bool:
     """Test that triage_issues.py shows help correctly."""
     print("\nTEST Testing triage_issues.py --help...")
@@ -162,7 +149,6 @@ def main() -> int:
         ("scrummaster_update.py --help", test_scrummaster_update_help),
         ("verify_installation.py", test_verify_installation),
         ("validate_docs.py", test_validate_docs),
-        ("sync_upstream.py --help", test_sync_upstream_help),
         ("triage_issues.py --help", test_triage_issues_help),
     ]
 

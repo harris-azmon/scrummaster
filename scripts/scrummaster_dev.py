@@ -24,8 +24,7 @@ def sync() -> None:
 
 
 @cli.command()
-@click.option("--require-vsix", is_flag=True, help="Fail if VSIX is missing.")
-def verify(require_vsix) -> None:
+def verify() -> None:
     """Run all validation and verification scripts."""
     print("--- Running Platform Validations ---")
     python = sys.executable
@@ -37,9 +36,6 @@ def verify(require_vsix) -> None:
         [python, "scripts/validate_antigravity.py"],
         [python, "scripts/check_skills_sync.py"],
     ]
-
-    if require_vsix:
-        cmds.insert(0, [python, "scripts/validate_artifacts.py", "--require-vsix"])
 
     all_passed = True
     for cmd in cmds:
@@ -58,7 +54,7 @@ def verify(require_vsix) -> None:
 
 @cli.command()
 def build() -> None:
-    """Build core and VS Code extension."""
+    """Build core."""
     print("--- Building Scrummaster ---")
 
     # Build core
@@ -66,11 +62,6 @@ def build() -> None:
     subprocess.run(
         ["bash", "scripts/build_core.sh"] if os.name != "nt" else ["powershell", "scripts/build_core.sh"], check=True
     )
-
-    # Build VSIX
-    print("Building VS Code extension...")
-    vsix_script = "scripts/build_vsix.ps1" if os.name == "nt" else "scripts/build_vsix.sh"
-    subprocess.run(["powershell" if os.name == "nt" else "bash", vsix_script], check=True)
 
     print("✅ Build complete.")
 
@@ -86,8 +77,8 @@ def doctor() -> None:
         "Workflow": ROOT / "scrummaster/workflow.md",
         "Stories": ROOT / "scrummaster/stories.md",
         "Scrummaster Core": ROOT / "scrummaster-core/src/scrummaster_core",
-        "Gemini Adapter": ROOT / "scrummaster-gemini/src/scrummaster_gemini",
-        "VS Code Adapter": ROOT / "scrummaster-vscode/src",
+        "MCP VCS Server": ROOT / "mcp/src",
+        "MCP Server": ROOT / "mcp-server/src",
     }
 
     all_ok = True

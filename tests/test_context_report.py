@@ -10,39 +10,39 @@ def _write(path: Path, content: str) -> None:
 
 def test_context_report_resolves_track(tmp_path):
     repo_root = tmp_path
-    conductor_dir = repo_root / "conductor"
-    _write(conductor_dir / "product.md", "product")
-    _write(conductor_dir / "tech-stack.md", "stack")
-    _write(conductor_dir / "workflow.md", "workflow")
-    tracks_entry = "- [~] **Track: Test**\n*Link: [./conductor/tracks/t1/](./conductor/tracks/t1/)*\n"
-    _write(conductor_dir / "tracks.md", tracks_entry)
+    scrummaster_dir = repo_root / "scrummaster"
+    _write(scrummaster_dir / "product.md", "product")
+    _write(scrummaster_dir / "tech-stack.md", "stack")
+    _write(scrummaster_dir / "workflow.md", "workflow")
+    stories_entry = "- [~] **Story: Test**\n*Link: [./scrummaster/stories/t1/](./scrummaster/stories/t1/)*\n"
+    _write(scrummaster_dir / "stories.md", stories_entry)
 
-    track_dir = conductor_dir / "tracks" / "t1"
-    _write(track_dir / "spec.md", "spec")
-    _write(track_dir / "plan.md", "plan")
-    _write(track_dir / "metadata.json", "{}")
+    story_dir = scrummaster_dir / "stories" / "t1"
+    _write(story_dir / "spec.md", "spec")
+    _write(story_dir / "plan.md", "plan")
+    _write(story_dir / "metadata.json", "{}")
 
     thresholds = Thresholds(1, 3, 10, 20)
     report = build_context_report(repo_root, None, thresholds)
 
-    assert report["track_id"] == "t1"
+    assert report["story_id"] == "t1"
     assert report["missing"] == []
     assert report["total_bytes"] > 0
 
 
 def test_context_report_flags_sizes(tmp_path):
     repo_root = tmp_path
-    conductor_dir = repo_root / "conductor"
-    _write(conductor_dir / "product.md", "x" * 2)
-    _write(conductor_dir / "tech-stack.md", "x")
-    _write(conductor_dir / "workflow.md", "x")
-    tracks_entry = "- [ ] **Track: Test**\n*Link: [./conductor/tracks/t2/](./conductor/tracks/t2/)*\n"
-    _write(conductor_dir / "tracks.md", tracks_entry)
+    scrummaster_dir = repo_root / "scrummaster"
+    _write(scrummaster_dir / "product.md", "x" * 2)
+    _write(scrummaster_dir / "tech-stack.md", "x")
+    _write(scrummaster_dir / "workflow.md", "x")
+    stories_entry = "- [ ] **Story: Test**\n*Link: [./scrummaster/stories/t2/](./scrummaster/stories/t2/)*\n"
+    _write(scrummaster_dir / "stories.md", stories_entry)
 
-    track_dir = conductor_dir / "tracks" / "t2"
-    _write(track_dir / "spec.md", "x")
-    _write(track_dir / "plan.md", "x")
-    _write(track_dir / "metadata.json", "{}")
+    story_dir = scrummaster_dir / "stories" / "t2"
+    _write(story_dir / "spec.md", "x")
+    _write(story_dir / "plan.md", "x")
+    _write(story_dir / "metadata.json", "{}")
 
     thresholds = Thresholds(
         warn_file_bytes=1,

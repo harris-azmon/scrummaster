@@ -60,7 +60,7 @@ def test_sync_aix_and_skillshare(tmp_path, monkeypatch):
     assert (skillshare_dir / "conductor-test" / "SKILL.md").exists()
 
     # Check AIX output
-    assert (aix_dir / "conductor.md").exists()
-    aix_content = (aix_dir / "conductor.md").read_text()
+    assert (aix_dir / "scrummaster.md").exists()
+    aix_content = (aix_dir / "scrummaster.md").read_text()
     assert "## Command: /conductor-test" in aix_content
     assert "Test template content" in aix_content

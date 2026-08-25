@@ -1,6 +1,6 @@
 # Troubleshooting Guide
 
-This guide helps diagnose and resolve common issues with Conductor installation and usage.
+This guide helps diagnose and resolve common issues with Scrummaster installation and usage.
 
 ## Installation Issues
 
@@ -10,7 +10,7 @@ This guide helps diagnose and resolve common issues with Conductor installation 
 
 **Solution**: Ensure all prerequisites are installed:
 
-- Git (>= 2.0)
+- Fossil SCM (>= 2.0)
 - Python (>= 3.9)
 - Node.js (>= 18)
 - npm (>= 8)
@@ -18,7 +18,7 @@ This guide helps diagnose and resolve common issues with Conductor installation 
 Check with:
 
 ```bash
-git --version
+fossil version
 python --version
 node --version
 npm --version
@@ -83,39 +83,20 @@ npm --version
 
 ### Python Components Not Found
 
-**Problem**: Python modules like `conductor_core` are not found after installation.
+**Problem**: Python modules like `scrummaster_core` are not found after installation.
 
 **Solution**:
 
 1. Check if installed with pip:
 
    ```bash
-   pip list | grep conductor
+   pip list | grep scrummaster
    ```
 
 2. Install manually if needed:
 
    ```bash
-   pip install ./conductor-core
-   pip install ./conductor-gemini
-   ```
-
-### VS Code Extension Not Working
-
-**Problem**: VS Code extension doesn't appear after installation.
-
-**Solution**:
-
-1. Check if VS Code is installed and accessible from command line:
-
-   ```bash
-   code --version
-   ```
-
-2. Install manually:
-
-   ```bash
-   code --install-extension conductor.vsix
+   pip install ./scrummaster-core
    ```
 
 ### Claude Code Commands Missing
@@ -210,7 +191,7 @@ npm --version
 2. Check for Homebrew and install dependencies:
 
    ```bash
-   brew install python node git
+   brew install python node fossil
    ```
 
 ## Verification Steps
@@ -225,7 +206,7 @@ mise --version
 mise ls
 
 # Verify Python packages
-python -c "import conductor_core; print('Core version:', conductor_core.__version__)"
+python -c "import scrummaster_core; print('Core version:', scrummaster_core.__version__)"
 ```
 
 ### Run Diagnostic Commands
@@ -235,7 +216,7 @@ python -c "import conductor_core; print('Core version:', conductor_core.__versio
 mise doctor
 
 # Verify all components
-python scripts/conductor_install.py --verify
+python scripts/scrummaster_install.py --verify
 ```
 
 ## Getting Help

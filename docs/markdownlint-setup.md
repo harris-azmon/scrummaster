@@ -1,6 +1,6 @@
 # Markdownlint Setup Guide
 
-This guide explains how to set up and use markdownlint for documentation validation in the conductor-next project.
+This guide explains how to set up and use markdownlint for documentation validation in the Scrummaster project.
 
 ## Quick Start
 

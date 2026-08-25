@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
   <metadata>
-    <id>conductor</id>
-    <version>0.2.0</version>
+    <id>scrummaster</id>
+    <version>0.1.0</version>
     <packageSourceUrl>https://github.com/harris-azmon/conductor</packageSourceUrl>
     <owners>Edith Atogo</owners>
-    <title>Conductor</title>
+    <title>Scrummaster</title>
     <authors>Edith Atogo</authors>
-    <description>Context-Driven Development tool for AI-assisted workflows. Conductor enables Context-Driven Development for AI coding assistants. It turns your AI assistant into a proactive project manager that follows a protocol to specify, plan, and implement software features and bug fixes.</description>
+    <description>Context-Driven Development tool for AI-assisted workflows. Scrummaster enables Context-Driven Development for AI coding assistants. It turns your AI assistant into a proactive project manager that follows a protocol to specify, plan, and implement software features and bug fixes, tracked as Fossil tickets against epics and stories.</description>
     <summary>Context-Driven Development tool for AI-assisted workflows</summary>
     <language>en-US</language>
     <projectUrl>https://github.com/harris-azmon/conductor</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/harris-azmon/conductor/main/assets/conductor-icon.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/harris-azmon/conductor/main/assets/scrummaster-icon.png</iconUrl>
     <copyright>Copyright © 2026 Edith Atogo</copyright>
     <licenseUrl>https://github.com/harris-azmon/conductor/blob/main/LICENSE</licenseUrl>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <tags>ai development cli automation context-driven project-management workflow</tags>
+    <tags>ai development cli automation context-driven project-management workflow fossil</tags>
     <dependencies>
-      <dependency id="git" />
+      <dependency id="fossil" />
       <dependency id="python" version="3.9.0" />
       <dependency id="nodejs" version="18.0.0" />
     </dependencies>

@@ -34,25 +34,18 @@ jobs:
         with:
           node-version: '20'
 
-      # 1. Build conductor-core (PyPI)
-      - name: Build conductor-core
+      # 1. Build scrummaster-core (PyPI)
+      - name: Build scrummaster-core
         run: |
-          cd conductor-core
+          cd scrummaster-core
           python -m pip install --upgrade build
           python -m build
 
-      # 2. Build VS Code Extension (VSIX)
-      - name: Build VSIX
-        run: |
-          cd conductor-vscode
-          npm ci
-          npx vsce package -o ../conductor.vsix
-
-      # 3. Create Legacy TAR archive
+      # 2. Create Legacy TAR archive
       - name: Create TAR archive
-        run: tar -czvf conductor-release.tar.gz --exclude='.git' --exclude='.github' .
+        run: tar -czvf scrummaster-release.tar.gz --exclude='.git' --exclude='.github' .
 
-      # 4. Upload all assets
+      # 3. Upload all assets
       - name: Ensure GitHub Release Exists
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -70,12 +63,11 @@ jobs:
           if [ -z "$TAG" ]; then TAG="${{ inputs.tag_name }}"; fi
           if [ -z "$TAG" ]; then TAG="${{ github.ref_name }}"; fi
           gh release upload $TAG \
-            conductor-release.tar.gz \
-            conductor.vsix \
-            conductor-core/dist/*.tar.gz \
-            conductor-core/dist/*.whl
+            scrummaster-release.tar.gz \
+            scrummaster-core/dist/*.tar.gz \
+            scrummaster-core/dist/*.whl
 
-      - name: Publish conductor-core to PyPI
+      - name: Publish scrummaster-core to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: conductor-core/dist
+          packages-dir: scrummaster-core/dist

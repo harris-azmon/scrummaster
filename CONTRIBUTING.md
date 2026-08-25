@@ -37,9 +37,7 @@ information on using pull requests.
 This project enforces the "Elite Code Quality" standard to ensure maximum reliability and maintainability.
 
 #### 1. 100% Code Coverage
-
-- All code in `conductor-core` MUST have 100% unit test coverage.
-- All adapter code (e.g., `conductor-gemini`) MUST maintain at least 99% coverage.
+- All code in `scrummaster-core` MUST have 100% unit test coverage.
 - Use `# pragma: no cover` sparingly and ONLY with a comment explaining why (e.g., OS-specific branches).
 
 #### 2. Strict Static Typing

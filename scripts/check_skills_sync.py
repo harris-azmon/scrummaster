@@ -26,7 +26,6 @@ SCHEMA_PATH = ROOT / "skills" / "manifest.schema.json"
 REPO_SKILL_PRESENCE_DIRS = [
     ROOT / "skills",
     ROOT / ".antigravity" / "skills",
-    ROOT / "scrummaster-vscode" / "skills",
 ]
 # .agent/workflows and .agent/skills are gitignored (local-only, synced by
 # scripts/install_local.py on demand), so they never exist in a fresh checkout.

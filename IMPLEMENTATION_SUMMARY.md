@@ -1,5 +1,14 @@
 # Implementation Summary: Conductor-Next
 
+> **Historical record.** This document predates the Scrummaster fork and
+> describes an earlier, separate "conductor-next" initiative. Several of the
+> scripts and workflows listed below (the upstream sync bot, the repository
+> rename tooling, the VS Code/Gemini-specific installer flags) have since
+> been removed or superseded as part of forking this project into
+> Scrummaster — see `README.md` and `CONTRIBUTING.md` for the current setup.
+> Kept here for historical context rather than rewritten, so it doesn't
+> misrepresent what was actually built at the time.
+
 ## Overview
 
 This document summarizes the complete implementation of the conductor-next project enhancement, covering all phases from documentation standards to the universal installer and upstream sync bot.

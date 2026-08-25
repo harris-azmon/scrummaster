@@ -1,4 +1,4 @@
-name: conductor
+name: scrummaster
 channels:
   - conda-forge
   - defaults

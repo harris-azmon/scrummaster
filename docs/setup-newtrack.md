@@ -1,42 +1,44 @@
-# Setup & NewTrack UX Guide
+# Setup & New Story UX Guide
 
-This guide documents the canonical setup and newTrack experience across adapters.
+This guide documents the canonical setup and new-story experience across adapters.
 
 ## Setup (Greenfield)
 
 1. Run setup:
-   - Gemini/Qwen: `/conductor:setup`
-   - Claude/Codex/OpenCode: `/conductor-setup` or `$conductor-setup`
-2. Conductor creates:
-   - `conductor/product.md`, `product-guidelines.md`, `tech-stack.md`
-   - `conductor/workflow.md`, `conductor/tracks.md`, `conductor/setup_state.json`
-   - `conductor/tracks/<track_id>/{spec.md,plan.md,metadata.json,index.md}`
+   - Gemini/Qwen: `/scrummaster:setup`
+   - Claude/Codex/OpenCode: `/scrummaster-setup` or `$scrummaster-setup`
+2. Scrummaster creates:
+   - `scrummaster/product.md`, `product-guidelines.md`, `tech-stack.md`
+   - `scrummaster/workflow.md`, `scrummaster/epics.md`, `scrummaster/setup_state.json`
+   - `scrummaster/epics/<epic_id>/stories/<story_id>/{spec.md,plan.md,metadata.json,index.md}`
+   - A Fossil ticket per ACID
 
 ## Setup (Brownfield)
 
-Conductor detects existing code, scans relevant files, and documents the existing tech stack without proposing changes.
+Scrummaster detects existing code, scans relevant files, and documents the existing tech stack without proposing changes.
 
-## NewTrack
+## New Epic and New Story
 
 Example:
-
 ```bash
-/conductor:newTrack "Add billing dashboard"
+/scrummaster:newepic "Billing"
+/scrummaster:newstory "Add billing dashboard"
 ```
 
 Expected artifacts:
-
-- `conductor/tracks/<track_id>/spec.md`
-- `conductor/tracks/<track_id>/plan.md`
-- `conductor/tracks/<track_id>/metadata.json`
-- `conductor/tracks/<track_id>/index.md`
-- Track entry appended to `conductor/tracks.md`
+- `scrummaster/epics/<epic_id>/stories/<story_id>/spec.md`
+- `scrummaster/epics/<epic_id>/stories/<story_id>/plan.md`
+- `scrummaster/epics/<epic_id>/stories/<story_id>/metadata.json`
+- `scrummaster/epics/<epic_id>/stories/<story_id>/index.md`
+- Story entry appended to `scrummaster/epics.md`
+- One Fossil ticket per ACID in `spec.md`
 
 ## Metadata Fields
 
 ```json
 {
-  "track_id": "<track_id>",
+  "story_id": "<story_id>",
+  "epic_id": "<epic_id>",
   "type": "feature",
   "status": "new",
   "created_at": "YYYY-MM-DDTHH:MM:SSZ",
@@ -51,7 +53,8 @@ See `docs/skill-command-syntax.md` for the per-tool command syntax.
 
 ## Troubleshooting
 
-- **Setup resumes unexpectedly:** Check `conductor/setup_state.json` and reset `last_successful_step` if you need to restart.
-- **Track ID collision:** If a short name already exists, choose a different description or resume the existing track.
-- **Missing metadata.json:** Ensure the track directory is writable and re-run `/conductor:newTrack`.
-- **Files not appearing in UI:** Verify the adapter’s workflow/skill location and rerun sync scripts.
+- **Setup resumes unexpectedly:** Check `scrummaster/setup_state.json` and reset `last_successful_step` if you need to restart.
+- **Story ID collision:** If a short name already exists, choose a different description or resume the existing story.
+- **Missing metadata.json:** Ensure the story directory is writable and re-run `/scrummaster:newstory`.
+- **Files not appearing in UI:** Verify the adapter's workflow/skill location and rerun sync scripts.
+- **Fossil ticket not created:** Confirm the repo has an open Fossil checkout (`fossil info`) and that `templates/fossil/ticket_schema.sql` has been applied.

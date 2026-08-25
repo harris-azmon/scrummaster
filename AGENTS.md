@@ -1,13 +1,14 @@
-# Conductor Agents
+# Scrummaster Agents
 
-This repository contains the core Conductor system that enables Context-Driven Development for AI coding assistants. The system is designed to work across multiple AI platforms and development environments.
+This repository contains the core Scrummaster system that enables Context-Driven Development for AI coding assistants. The system is designed to work across multiple AI platforms and development environments.
 
 ## Core Architecture
 
-- **`conductor-core`**: Platform-agnostic core library (Python). Contains the protocol logic, Pydantic models, and prompt templates.
-- **`conductor-gemini`**: The Gemini CLI adapter.
-- **`conductor-vscode`**: The VS Code extension (TypeScript).
-- **`conductor-claude`**: Claude Code integration.
+- **`scrummaster-core`**: Platform-agnostic core library (Python). Contains the protocol logic, Pydantic models, VCS adapters (Fossil, Git, Jujutsu), and prompt templates.
+- **`mcp`**: VCS-abstraction MCP server (TypeScript), including the `FossilVcs` adapter.
+- **`mcp-server`**: A small, unrelated MCP server exposing agent-loop hooks (`ralph_start`/`ralph_end`).
+- **`vendor/acid-cli`**: A vendored, fossil-retargeted fork of `acai-sh/cli` providing the `acid` CLI for ACID tracking and one-way Trello export.
+- **`.claude`**: Claude Code's own commands/skills directory. Intentionally excluded from this fork — still describes the earlier Conductor/git/tracks model. See `docs/adr/0002-scrummaster-fork.md`.
 
 ## Universal Installer
 
@@ -34,7 +35,7 @@ mise install harris-azmon/conductor
 ### Agent Skills Compatible CLIs
 
 - Claude CLI
-- OpenCode
+- OpenCode (primary CLI target — see `docs/adr/0002-scrummaster-fork.md`)
 - Codex
 - Agent Skills specification compatible tools
 
@@ -42,16 +43,17 @@ mise install harris-azmon/conductor
 
 - Gemini CLI / Qwen Code
 - Claude Code
-- VS Code / Antigravity
+- Antigravity
 - GitHub Copilot Chat
 
 ## Key Features
 
 - **Platform Source of Truth**: All protocol prompts are centralized in the core library and synchronized to adapters.
 - **Plan before you build**: Create specs and plans that guide the agent.
-- **Smart revert**: Git-aware revert command that understands logical units of work.
-- **High Quality Bar**: 95% test coverage requirement enforced for core modules.
-- **Multi-VCS Support**: Git, Jujutsu, and other version control systems.
+- **Traceable requirements**: Every acceptance criterion gets a stable ACID, mapped 1:1 to a Fossil ticket.
+- **Smart revert**: Fossil-aware revert command that understands logical units of work (epics, stories, phases, tasks).
+- **High Quality Bar**: 100% test coverage requirement enforced for `scrummaster-core`.
+- **VCS Support**: Fossil (default), Git, and Jujutsu.
 - **Cross-Platform**: Works consistently across different tools and operating systems.
 
 ## Usage
@@ -59,24 +61,25 @@ mise install harris-azmon/conductor
 ### 1. Set Up the Project
 
 ```bash
-/conductor:setup
+/scrummaster:setup
 ```
 
-### 2. Start a New Track
+### 2. Start a New Epic and Story
 
 ```bash
-/conductor:newTrack "Add a feature"
+/scrummaster:newepic "Billing"
+/scrummaster:newstory "Add a feature"
 ```
 
-### 3. Implement the Track
+### 3. Implement the Story
 
 ```bash
-/conductor:implement
+/scrummaster:implement
 ```
 
 ## Installation Methods
 
-Conductor supports multiple installation methods:
+Scrummaster supports multiple installation methods:
 
 - **mise**: Cross-platform package manager
 - **Smithery**: Modern package manager for CLI tools
@@ -91,8 +94,9 @@ Conductor supports multiple installation methods:
 The system is built with:
 
 - Python 3.9+ for core logic
-- Node.js 16+ for VS Code extension
-- TypeScript for VS Code extension
+- Node.js 16+ for the MCP servers
+- TypeScript for the MCP servers
+- Fossil SCM for version control
 - Various CI/CD tools for automation
 
 ## License
@@ -106,3 +110,4 @@ Licensed under Apache License 2.0.
 - [QUICKSTART.md](QUICKSTART.md): Quick start guide
 - [TROUBLESHOOTING.md](TROUBLESHOOTING.md): Troubleshooting guide
 - [MARKETPLACE_INTEGRATION.md](MARKETPLACE_INTEGRATION.md): Marketplace integration details
+- [docs/adr/0002-scrummaster-fork.md](docs/adr/0002-scrummaster-fork.md): Why and how this fork diverges from Conductor

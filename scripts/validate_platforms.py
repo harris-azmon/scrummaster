@@ -48,9 +48,9 @@ def run_validation() -> None:
         "commands/scrummaster/revert.toml": "revert.j2",
     }
 
-    # NOTE: .claude/ is intentionally excluded from sync — it stays untouched
-    # and still "conductor"-branded by explicit product decision; it must
-    # never be overwritten with scrummaster templates.
+    # NOTE: .claude/ is intentionally excluded here — it stays untouched and
+    # still "conductor"-branded by explicit product decision, so it is never
+    # synced from or validated against the scrummaster templates.
 
     all_valid = True
 

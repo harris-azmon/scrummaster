@@ -34,7 +34,6 @@ OPENCODE_DIR = Path.home() / ".opencode" / "skills"
 COPILOT_DIR = Path.home() / ".config" / "github-copilot"
 AIX_DIR = Path.home() / ".config" / "aix"
 SKILLSHARE_DIR = Path.home() / ".config" / "skillshare" / "skills"
-VSCODE_SKILLS_DIR = ROOT / "scrummaster-vscode" / "skills"
 GEMINI_EXTENSION_PATH = ROOT / "gemini-extension.json"
 QWEN_EXTENSION_PATH = ROOT / "qwen-extension.json"
 
@@ -46,37 +45,6 @@ def _clean_antigravity_global(target_base_dir: Path, skills: Iterable[dict]) -> 
     for workflow in target_base_dir.glob("scrummaster*.md"):
         if workflow.name not in allowed:
             workflow.unlink()
-
-
-def update_vscode_package_json(skills: Iterable[dict]) -> None:
-    vscode_package_json = ROOT / "scrummaster-vscode" / "package.json"
-    if not vscode_package_json.exists():
-        return
-
-    data = json.loads(vscode_package_json.read_text(encoding="utf-8"))
-
-    # Ensure contributes.commands exists
-    if "contributes" not in data:
-        data["contributes"] = {}
-    if "commands" not in data["contributes"]:
-        data["contributes"]["commands"] = []
-
-    # Update commands
-    existing_commands = {cmd["command"]: cmd for cmd in data["contributes"]["commands"]}
-    for skill in skills:
-        if not skill.get("enabled", {}).get("vscode", False):
-            continue
-
-        cmd_id = f"scrummaster.{skill['id']}"
-        existing_commands[cmd_id] = {
-            "command": cmd_id,
-            "title": f"Scrummaster: {skill['id'].replace('_', ' ').title()}",
-            "category": "Scrummaster",
-        }
-
-    data["contributes"]["commands"] = sorted(existing_commands.values(), key=lambda x: x["command"])
-
-    vscode_package_json.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
 def _perform_sync(target_base_dir: Path, skills: Iterable[dict], *, flat: bool = False) -> None:
@@ -210,10 +178,6 @@ def sync_skills() -> None:
 
         # Sync to AIX
         _perform_consolidated_sync(AIX_DIR / "scrummaster.md", skills, TEMPLATES_DIR)
-
-    # Sync to VS Code Extension (Packaged)
-    _perform_sync(VSCODE_SKILLS_DIR, skills)
-    update_vscode_package_json(skills)
 
     if not to_repo_only:
         # Sync to Copilot (Consolidated instructions)

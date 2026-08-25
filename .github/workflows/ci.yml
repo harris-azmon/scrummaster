@@ -21,7 +21,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           environment-file: environment.yml
-          activate-environment: conductor
+          activate-environment: scrummaster
           mamba-version: "*"
           channels: conda-forge,defaults
 
@@ -30,51 +30,24 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install JS dependencies
-        run: cd conductor-vscode && npm ci
-
-      - name: Install conductor-core and conductor-gemini
-        shell: bash -l {0}
-        run: |
-          pip install -e ./conductor-core -e ./conductor-gemini
-
       - name: Run Core Tests
         shell: bash -l {0}
         run: |
-          cd conductor-core && pytest --cov=conductor_core --cov-report=xml --cov-fail-under=100
-
-      - name: Run Gemini Tests
-        shell: bash -l {0}
-        run: |
-          cd conductor-gemini && pytest --cov=conductor_gemini --cov-report=xml --cov-fail-under=99
-
-      - name: Run VS Code Tests
-        run: |
-          cd conductor-vscode && npm test
+          cd scrummaster-core && pytest --cov=scrummaster_core --cov-report=xml --cov-fail-under=100
 
       - name: Static Analysis
         shell: bash -l {0}
         run: |
           ruff check .
           ruff format --check .
-          cd conductor-core && mypy --strict src
-          cd ../conductor-gemini && mypy --strict src
-
-      - name: Run Smoke Test
-        shell: bash -l {0}
-        run: |
-          python scripts/smoke_test.py
+          cd scrummaster-core && mypy --strict src
 
       - name: Build Core
         shell: bash -l {0}
         run: |
           ./scripts/build_core.sh
 
-      - name: Build VS Code Extension
-        run: |
-          ./scripts/build_vsix.sh
-
       - name: Validate Artifacts
         shell: bash -l {0}
         run: |
-          python scripts/conductor_dev.py verify --require-vsix
+          python scripts/scrummaster_dev.py verify

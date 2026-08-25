@@ -37,12 +37,6 @@
       "example": "@scrummaster /setup",
       "needs_confirmation": true
     },
-    "vscode": {
-      "artifact": "scrummaster-vscode/skills/<skill>/SKILL.md",
-      "command_style": "at-mention + slash",
-      "example": "@scrummaster /setup",
-      "needs_confirmation": true
-    },
     "copilot": {
       "artifact": "~/.config/github-copilot/scrummaster.md",
       "command_style": "slash-dash",
@@ -87,7 +81,6 @@
         "codex": "$scrummaster-info",
         "opencode": "/scrummaster-info",
         "antigravity": "@scrummaster /info",
-        "vscode": "@scrummaster /info",
         "copilot": "/scrummaster-info",
         "aix": "/scrummaster-info",
         "skillshare": "/scrummaster-info"
@@ -99,7 +92,6 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true
@@ -117,7 +109,6 @@
         "codex": "$scrummaster-setup",
         "opencode": "/scrummaster-setup",
         "antigravity": "@scrummaster /setup",
-        "vscode": "@scrummaster /setup",
         "copilot": "/scrummaster-setup",
         "aix": "/scrummaster-setup",
         "skillshare": "/scrummaster-setup"
@@ -129,7 +120,6 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true
@@ -147,7 +137,6 @@
         "codex": "$scrummaster-newepic",
         "opencode": "/scrummaster-newepic",
         "antigravity": "@scrummaster /newepic",
-        "vscode": "@scrummaster /newepic",
         "copilot": "/scrummaster-newepic",
         "aix": "/scrummaster-newepic",
         "skillshare": "/scrummaster-newepic"
@@ -159,7 +148,6 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true
@@ -177,7 +165,6 @@
         "codex": "$scrummaster-new-story",
         "opencode": "/scrummaster-new-story",
         "antigravity": "@scrummaster /new-story",
-        "vscode": "@scrummaster /new-story",
         "copilot": "/scrummaster-new-story",
         "aix": "/scrummaster-new-story",
         "skillshare": "/scrummaster-new-story"
@@ -189,7 +176,6 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true
@@ -207,7 +193,6 @@
         "codex": "$scrummaster-implement",
         "opencode": "/scrummaster-implement",
         "antigravity": "@scrummaster /implement",
-        "vscode": "@scrummaster /implement",
         "copilot": "/scrummaster-implement",
         "aix": "/scrummaster-implement",
         "skillshare": "/scrummaster-implement"
@@ -219,7 +204,6 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true
@@ -237,7 +221,6 @@
         "codex": "$scrummaster-status",
         "opencode": "/scrummaster-status",
         "antigravity": "@scrummaster /status",
-        "vscode": "@scrummaster /status",
         "copilot": "/scrummaster-status",
         "aix": "/scrummaster-status",
         "skillshare": "/scrummaster-status"
@@ -249,7 +232,6 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true
@@ -267,7 +249,6 @@
         "codex": "$scrummaster-revert",
         "opencode": "/scrummaster-revert",
         "antigravity": "@scrummaster /revert",
-        "vscode": "@scrummaster /revert",
         "copilot": "/scrummaster-revert",
         "aix": "/scrummaster-revert",
         "skillshare": "/scrummaster-revert"
@@ -279,7 +260,6 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true
@@ -297,7 +277,6 @@
         "codex": "$scrummaster-review",
         "opencode": "/scrummaster-review",
         "antigravity": "@scrummaster /review",
-        "vscode": "@scrummaster /review",
         "copilot": "/scrummaster-review",
         "aix": "/scrummaster-review",
         "skillshare": "/scrummaster-review"
@@ -309,7 +288,6 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true

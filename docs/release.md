@@ -1,35 +1,28 @@
 # Release Packaging Guide
 
-This repository publishes releases via **GitHub Releases**. That is the canonical distribution point for the VSIX and bundled artifacts.
+This repository publishes releases via **GitHub Releases**. That is the canonical distribution point for the bundled artifacts.
 
 ## Recommended Release Flow
 
 1. Ensure artifacts are current:
-
    ```bash
    python scripts/sync_skills.py
-   python scripts/validate_artifacts.py --require-vsix
+   python scripts/validate_artifacts.py
    ```
-
-2. Build the VSIX (if not already built):
-
+2. Build the core package (if not already built):
    ```bash
-   ./scripts/build_vsix.sh
-   # or on Windows:
-   ./scripts/build_vsix.ps1
+   ./scripts/build_core.sh
    ```
-
 3. Create a GitHub Release:
    - Use the existing release automation (`release-please`) or create a tag manually.
-   - The workflows will upload `conductor.vsix` and `conductor-release.tar.gz` to the release.
+   - The workflows will upload `scrummaster-release.tar.gz` and the `scrummaster-core` distribution files to the release.
 
 ## Automation References
 
 - `.github/workflows/release-please.yml` (creates release + uploads assets)
-- `.github/workflows/package-and-upload-assets.yml` (packages VSIX + tarball)
+- `.github/workflows/package-and-upload-assets.yml` (packages core + tarball)
 
-## Tooling Note: npx vs Python/PowerShell
+## Tooling Note
 
-Python/PowerShell remains the primary local automation path.
-Node tooling (`npx vsce package`) is used only for VSIX packaging. A Node‑based CLI
-wrapper could be added later, but it is not required for releases.
+Python remains the primary local automation path for packaging and release
+scripts. Node tooling is limited to building `mcp` and `mcp-server`.
