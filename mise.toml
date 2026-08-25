@@ -6,8 +6,8 @@ uv = "latest"
 [tasks]
 # Sync tasks
 sync-upstream = { run = "python scripts/sync_upstream.py" }
-sync-gemini = { run = "python scripts/sync_upstream.py --source gemini-cli-extensions" }
-sync-conductor2 = { run = "python scripts/sync_upstream.py --source jnorthrup" }
+sync-gemini = { run = "python scripts/sync_upstream.py --upstream gemini-cli-extensions/conductor" }
+sync-conductor2 = { run = "python scripts/sync_upstream.py --upstream jnorthrup/conductor2" }
 
 # Build tasks
 build-all = { depends = ["build-core", "build-gemini", "build-vscode"], run = "echo 'All builds complete'" }

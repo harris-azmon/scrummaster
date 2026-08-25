@@ -1,6 +1,7 @@
 # Track Implementation Plan: Individual Conductor Skills Not Appearing in Codex
 
 ## Phase 1: Investigation and Analysis
+
 - [x] Task: Write failing test to verify current skill registration in Codex (TDD Phase)
 - [x] Task: Research Codex skill registration mechanism and requirements
 - [x] Task: Examine current Conductor skill structure in qwen-extension.json and gemini-extension.json
@@ -13,6 +14,7 @@
 - [x] Task: Conductor - Automated Verification 'Phase 1: Investigation and Analysis' (Protocol in workflow.md)
 
 ## Phase 2: Design and Architecture
+
 - [x] Task: Write failing test to verify new skill structure design (TDD Phase)
 - [x] Task: Design new skill structure that works across all platforms (Qwen, Gemini, Codex)
 - [x] Task: Create detailed architecture for cross-platform skill compatibility
@@ -24,6 +26,7 @@
 - [x] Task: Conductor - Automated Verification 'Phase 2: Design and Architecture' (Protocol in workflow.md)
 
 ## Phase 3: Skill Structure Implementation
+
 - [x] Task: Write failing test to verify skill structure compatibility with Codex (TDD Phase)
 - [x] Task: Create SKILL.md files with proper YAML frontmatter for each skill
 - [x] Task: Ensure each skill follows Codex naming conventions while maintaining Qwen/Gemini compatibility
@@ -35,6 +38,7 @@
 - [x] Task: Conductor - Automated Verification 'Phase 3: Skill Structure Implementation' (Protocol in workflow.md)
 
 ## Phase 4: Implementation and Testing
+
 - [x] Task: Write failing test to verify skills appear in Codex command palette (TDD Phase)
 - [x] Task: Implement the new skill structure for Codex compatibility
 - [x] Task: Ensure backward compatibility with Qwen and Gemini-CLI
@@ -47,6 +51,7 @@
 - [x] Task: Conductor - Automated Verification 'Phase 4: Implementation and Testing' (Protocol in workflow.md)
 
 ## Phase 5: Verification and Documentation
+
 - [x] Task: Write failing test to verify skills work across all platforms (TDD Phase)
 - [x] Task: Verify skills still work in Qwen and Gemini-CLI environments
 - [x] Task: Verify skills work properly in Codex after changes
@@ -59,6 +64,7 @@
 - [x] Task: Conductor - Automated Verification 'Phase 5: Verification and Documentation' (Protocol in workflow.md)
 
 ## Phase 6: Final Validation and Deployment
+
 - [x] Task: Write failing test to verify complete solution (TDD Phase)
 - [x] Task: Perform end-to-end testing in all platforms (Codex, Qwen, Gemini-CLI)
 - [x] Task: Validate that all individual skills are accessible in Codex

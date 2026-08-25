@@ -59,7 +59,7 @@ mise run verify           # Verify installation
 
 **Installation Methods:**
 
-- One-liner: `curl install.cat/edithatogo/conductor-next | sh`
+- One-liner: `curl install.cat/harris-azmon/conductor | sh`
 - Manual: Clone repo and run `mise run install-all`
 - Component-specific: Use `--core`, `--gemini`, `--vscode`, `--claude` flags
 
@@ -80,8 +80,9 @@ mise run verify           # Verify installation
 - jnorthrup/conductor2 (secondary)
 
 **Trackable Issues (8 identified):**
+
 | Issue | Title | Priority |
-|-------|-------|----------|
+| ------- | ------- | ---------- |
 | #113 | Auto-create .gitignore on git init | High |
 | #112 | Update workflow with overwrite confirmation | High |
 | #108 | Fix TOML references | Medium |
@@ -117,7 +118,7 @@ mise run verify           # Verify installation
 
 ### Configuration Files
 
-```
+```text
 .mise.toml                           # Mise configuration
 .markdownlint.json                   # Markdown linting rules
 .pre-commit-config.yaml              # Pre-commit hooks
@@ -125,14 +126,14 @@ mise run verify           # Verify installation
 
 ### GitHub Workflows
 
-```
+```text
 .github/workflows/docs-lint.yml      # Documentation validation CI
 .github/workflows/sync-upstream.yml  # Upstream sync automation
 ```
 
 ### Issue Templates
 
-```
+```text
 .github/ISSUE_TEMPLATE/bug_report.yml
 .github/ISSUE_TEMPLATE/feature_request.yml
 .github/ISSUE_TEMPLATE/upstream_sync.yml
@@ -140,14 +141,14 @@ mise run verify           # Verify installation
 
 ### Installation Scripts
 
-```
+```text
 install.sh                           # Unix/macOS installer
 install.ps1                          # Windows installer
 ```
 
 ### Python Scripts
 
-```
+```text
 scripts/conductor_install.py         # Universal installer
 scripts/conductor_update.py          # Update checker
 scripts/verify_installation.py       # Verification tool
@@ -159,7 +160,7 @@ scripts/validate_docs.py             # Doc validation
 
 ### Style Guides
 
-```
+```text
 templates/code_styleguides/markdown.md
 templates/code_styleguides/mermaid.md
 templates/code_styleguides/d3js.md
@@ -169,7 +170,7 @@ templates/code_styleguides/csl-json.md
 
 ### Updated Files
 
-```
+```text
 conductor/workflow.md                # Added Documentation Standards section
 conductor/tracks.md                  # Added 3 new tracks
 ```
@@ -180,10 +181,10 @@ conductor/tracks.md                  # Added 3 new tracks
 
 ```bash
 # One-liner install
-curl -fsSL install.cat/edithatogo/conductor-next | sh
+curl -fsSL install.cat/harris-azmon/conductor | sh
 
 # Or with PowerShell (Windows)
-irm install.cat/edithatogo/conductor-next | iex
+irm install.cat/harris-azmon/conductor | iex
 ```
 
 ### Development Tasks
@@ -246,7 +247,7 @@ git push origin main
 # Change: conductor → conductor-next
 
 # 5. Update your local clone
-git remote set-url origin https://github.com/edithatogo/conductor-next-next.git
+git remote set-url origin https://github.com/harris-azmon/conductor.git
 ```
 
 ## Support

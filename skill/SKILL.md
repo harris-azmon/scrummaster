@@ -18,7 +18,7 @@ Conductor is a Context-Driven Development (CDD) framework that transforms AI age
 
 When initialized, Conductor creates this structure in the project:
 
-```
+```text
 conductor/
 ├── product.md              # Product vision and goals
 ├── product-guidelines.md   # UX/brand guidelines
@@ -37,7 +37,7 @@ conductor/
 ## Available Commands
 
 | Command | Purpose |
-|---------|---------|
+| --------- | --------- |
 | **Setup** | Initialize Conductor in a project (new or existing) |
 | **New Track** | Create a new feature/bug track with spec and plan |
 | **Implement** | Execute tasks from a track's plan following TDD workflow |
@@ -49,7 +49,7 @@ conductor/
 The detailed protocols are in TOML format. Read the `prompt` field from each file:
 
 | Action | Protocol File |
-|--------|---------------|
+| -------- | --------------- |
 | Setup project | `commands/conductor/setup.toml` |
 | Create new track | `commands/conductor/newTrack.toml` |
 | Implement tasks | `commands/conductor/implement.toml` |

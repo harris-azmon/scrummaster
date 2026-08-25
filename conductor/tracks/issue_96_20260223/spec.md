@@ -13,11 +13,13 @@ This track implements the feature/fix requested in the upstream issue.
 ## Requirements
 
 ### Functional Requirements
+
 - Implement solution for issue #96
 - Follow conductor track conventions
 - Integrate with existing conductor workflows
 
 ### Non-Functional Requirements
+
 - Maintain backward compatibility
 - Follow existing code style
 - Include documentation
@@ -32,5 +34,5 @@ This track implements the feature/fix requested in the upstream issue.
 
 ## References
 
-- Upstream Issue: https://github.com/gemini-cli-extensions/conductor/issues/96
-- Conductor Next: https://github.com/edithatogo/conductor-next
+- Upstream Issue: <https://github.com/gemini-cli-extensions/conductor/issues/96>
+- Conductor Next: <https://github.com/edithatogo/conductor-next>

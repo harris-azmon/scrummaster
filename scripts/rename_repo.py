@@ -8,13 +8,13 @@ This script helps coordinate the repository rename by:
 4. Creating migration guide for users
 """
 
-import os
+from __future__ import annotations
+
+import json
 import re
 import sys
-import json
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional, List, Dict, Tuple
 
 
 class RenameCoordinator:
@@ -25,8 +25,8 @@ class RenameCoordinator:
         old_name: str = "conductor",
         new_name: str = "conductor-next",
         old_owner: str = "edithatogo",
-        exclude_patterns: Optional[List[str]] = None,
-    ):
+        exclude_patterns: list[str] | None = None,
+    ) -> None:
         """Initialize rename coordinator.
 
         Args:
@@ -72,7 +72,7 @@ class RenameCoordinator:
                 return True
         return False
 
-    def scan_for_references(self) -> Dict[str, List[Tuple[int, str]]]:
+    def scan_for_references(self) -> dict[str, list[tuple[int, str]]]:
         """Scan codebase for old repository references.
 
         Returns:
@@ -96,7 +96,7 @@ class RenameCoordinator:
             rf"pip install {self.old_name}",
             rf"npm install.*{self.old_name}",
             # Documentation references
-            rf"conductor (?:CLI|tool|extension)",
+            r"conductor (?:CLI|tool|extension)",
             # Git remote URLs
             rf"git@github\.com:{self.old_owner}/{self.old_name}\.git",
             rf"https://github\.com/{self.old_owner}/{self.old_name}\.git",
@@ -113,9 +113,9 @@ class RenameCoordinator:
 
             # Only scan text files
             try:
-                with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                with open(file_path, encoding="utf-8", errors="ignore") as f:
                     lines = f.readlines()
-            except (IOError, OSError):
+            except OSError:
                 continue
 
             files_scanned += 1
@@ -135,7 +135,7 @@ class RenameCoordinator:
 
         return results
 
-    def generate_replacement_map(self) -> Dict[str, str]:
+    def generate_replacement_map(self) -> dict[str, str]:
         """Generate map of old strings to new strings.
 
         Returns:
@@ -145,16 +145,18 @@ class RenameCoordinator:
             # URLs
             f"github.com/{self.old_owner}/{self.old_name}": f"github.com/{self.old_owner}/{self.new_name}",
             f"github.com/{self.old_owner}/{self.old_name}.git": f"github.com/{self.old_owner}/{self.new_name}.git",
-            f"git@github.com:{self.old_owner}/{self.old_name}.git": f"git@github.com:{self.old_owner}/{self.new_name}.git",
+            f"git@github.com:{self.old_owner}/{self.old_name}.git": (
+                f"git@github.com:{self.old_owner}/{self.new_name}.git"
+            ),
             # Commands
             f"pip install {self.old_name}": f"pip install {self.new_name}",
             f"npm install -g {self.old_name}": f"npm install -g {self.new_name}",
             f"npx {self.old_name}": f"npx {self.new_name}",
             # Documentation
-            f"Conductor-Next CLI": f"Conductor-Next CLI",
-            f"conductor-next CLI": f"conductor-next CLI",
-            f"conductor-next tool": f"conductor-next tool",
-            f"conductor-next extension": f"conductor-next extension",
+            "Conductor-Next CLI": "Conductor-Next CLI",
+            "conductor-next CLI": "conductor-next CLI",
+            "conductor-next tool": "conductor-next tool",
+            "conductor-next extension": "conductor-next extension",
         }
 
     def update_file(self, file_path: Path, dry_run: bool = True) -> int:
@@ -170,13 +172,12 @@ class RenameCoordinator:
         replacement_map = self.generate_replacement_map()
 
         try:
-            with open(file_path, "r", encoding="utf-8") as f:
+            with open(file_path, encoding="utf-8") as f:
                 content = f.read()
-        except (IOError, OSError) as e:
+        except OSError as e:
             print(f"[WARN] Could not read {file_path}: {e}")
             return 0
 
-        original_content = content
         replacements = 0
 
         for old_str, new_str in replacement_map.items():
@@ -191,13 +192,13 @@ class RenameCoordinator:
             try:
                 with open(file_path, "w", encoding="utf-8") as f:
                     f.write(content)
-            except (IOError, OSError) as e:
+            except OSError as e:
                 print(f"[ERROR] Could not write {file_path}: {e}")
                 return 0
 
         return replacements
 
-    def update_all_files(self, dry_run: bool = True) -> Dict[str, int]:
+    def update_all_files(self, dry_run: bool = True) -> dict[str, int]:
         """Update all files with new repository references.
 
         Args:
@@ -366,7 +367,8 @@ git remote set-url origin https://github.com/{self.old_owner}/{self.new_name}.gi
 
 ### Issue: Old bookmarks still work
 
-**Note:** GitHub will redirect old URLs to the new repository, but it's best to update your bookmarks to use the new URL directly.
+**Note:** GitHub will redirect old URLs to the new repo, but it's best to update
+your bookmarks to use the new URL directly.
 
 ## Timeline
 
@@ -438,13 +440,11 @@ Thank you for your continued support!
 """
 
 
-def main():
+def main() -> int:
     """Main entry point."""
     import argparse
 
-    parser = argparse.ArgumentParser(
-        description="Coordinate repository rename from conductor to conductor-next"
-    )
+    parser = argparse.ArgumentParser(description="Coordinate repository rename from conductor to conductor-next")
     parser.add_argument(
         "--old-name",
         default="conductor",
@@ -501,14 +501,14 @@ def main():
 
     args = parser.parse_args()
 
-    print("="*60)
+    print("=" * 60)
     print("Repository Rename Coordinator")
-    print("="*60)
+    print("=" * 60)
     print(f"Old: {args.old_name}")
     print(f"New: {args.new_name}")
     print(f"Owner: {args.owner}")
     print(f"Mode: {'DRY RUN' if args.dry_run else 'LIVE'}")
-    print("="*60)
+    print("=" * 60)
 
     coordinator = RenameCoordinator(
         old_name=args.old_name,
@@ -554,9 +554,9 @@ def main():
     # Generate announcement
     if args.generate_announcement:
         announcement = coordinator.generate_announcement()
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("ANNOUNCEMENT TEMPLATE")
-        print("="*60)
+        print("=" * 60)
         print(announcement)
 
     return 0

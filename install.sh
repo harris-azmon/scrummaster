@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # Conductor Universal Installer for Unix/macOS
-# One-liner install: curl -fsSL install.cat/edithatogo/conductor-next | sh
+# One-liner install: curl -fsSL install.cat/harris-azmon/conductor | sh
 #
 
 set -e
@@ -14,8 +14,8 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
 # Configuration
-REPO_URL="https://github.com/edithatogo/conductor-next-next.git"
-INSTALL_DIR="${HOME}/.local/share/conductor-next"
+REPO_URL="https://github.com/harris-azmon/conductor.git"
+INSTALL_DIR="${HOME}/.local/share/conductor"
 CONDUCTOR_VERSION="0.2.0"
 
 # Logging functions
@@ -82,7 +82,7 @@ install_mise() {
 
 # Clone or update repository
 clone_repository() {
-    log_info "Setting up conductor-next repository..."
+    log_info "Setting up conductor repository..."
 
     if [ -d "$INSTALL_DIR" ]; then
         log_info "Repository already exists at $INSTALL_DIR, updating..."
@@ -161,7 +161,7 @@ print_summary() {
     echo "========================================"
     echo ""
     echo -e "${GREEN}✓${NC} mise installed and configured"
-    echo -e "${GREEN}✓${NC} conductor-next cloned to $INSTALL_DIR"
+    echo -e "${GREEN}✓${NC} conductor cloned to $INSTALL_DIR"
     echo -e "${GREEN}✓${NC} All components installed"
     echo ""
     echo "Next steps:"
@@ -177,7 +177,7 @@ print_summary() {
     echo "Documentation:"
     echo "  $INSTALL_DIR/README.md"
     echo ""
-    log_success "Enjoy using conductor-next!"
+    log_success "Enjoy using conductor!"
 }
 
 # Main installation flow

@@ -9,7 +9,7 @@ def validate_manifest(manifest_path: Path, schema_path: Path) -> None:
     schema = _load_json(schema_path)
 
     try:
-        import jsonschema  # type: ignore
+        import jsonschema  # type: ignore[import-untyped]
 
         jsonschema.validate(instance=manifest, schema=schema)
     except ImportError:
@@ -32,11 +32,11 @@ def _basic_validate(manifest: dict[str, Any], schema: dict[str, Any]) -> None:
             raise ValueError(f"Manifest missing required key: {key}")
 
     if not isinstance(manifest.get("manifest_version"), int):
-        raise ValueError("manifest_version must be an integer")
+        raise TypeError("manifest_version must be an integer")
     if not isinstance(manifest.get("tools"), dict):
-        raise ValueError("tools must be an object")
+        raise TypeError("tools must be an object")
     if not isinstance(manifest.get("skills"), list):
-        raise ValueError("skills must be an array")
+        raise TypeError("skills must be an array")
 
 
 def _parse_frontmatter(path: Path) -> dict[str, str]:

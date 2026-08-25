@@ -4,7 +4,7 @@ import pytest
 from conductor_core.project_manager import ProjectManager
 
 
-@pytest.fixture()
+@pytest.fixture
 def pm(tmp_path):
     return ProjectManager(tmp_path)
 

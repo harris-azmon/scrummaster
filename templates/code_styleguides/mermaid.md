@@ -233,7 +233,7 @@ flowchart TB
     API --> Service2
 ```
 
-```
+```text
 
 ### Using Diagram References
 
@@ -247,7 +247,7 @@ flowchart LR
     A --> C[Server 2]
 ```
 
-```
+```text
 
 ## Accessibility
 

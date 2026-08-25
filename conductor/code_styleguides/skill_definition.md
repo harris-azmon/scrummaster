@@ -6,7 +6,7 @@ This guide defines the standards for creating and maintaining Conductor skills.
 
 Skills should be defined in `conductor-core` and synchronized to platform adapters.
 
-```
+```text
 skills/
 └── <skill_id>/
     ├── SKILL.md          # User-facing documentation and triggers
@@ -24,6 +24,7 @@ skills/
 Every skill MUST be defined in the central `skills/manifest.json`.
 
 Required fields:
+
 - `id`: Unique identifier for the skill.
 - `name`: Human-readable name.
 - `description`: Short summary of purpose.
@@ -34,6 +35,7 @@ Required fields:
 ## 4. Documentation (SKILL.md)
 
 Each skill must have a `SKILL.md` file following the standard template.
+
 - **Frontmatter:** Must contain `name`, `description`, and `triggers`.
 - **Content:** Should explain the skill's purpose, how to use it, and its outputs.
 

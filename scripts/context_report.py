@@ -135,17 +135,17 @@ def main() -> int:
     report = build_context_report(repo_root, args.track_id, thresholds)
 
     track_label = report["track_id"] or "none"
-    print(f"Context report (track: {track_label})")  # noqa: T201
+    print(f"Context report (track: {track_label})")
     for item in report["files"]:
         rel_path = item.path.relative_to(repo_root)
-        print(f"{item.status}  {_format_bytes(item.size_bytes)}  {rel_path}")  # noqa: T201
+        print(f"{item.status}  {_format_bytes(item.size_bytes)}  {rel_path}")
 
-    print(f"TOTAL  {_format_bytes(report['total_bytes'])}  {report['total_status']}")  # noqa: T201
+    print(f"TOTAL  {_format_bytes(report['total_bytes'])}  {report['total_status']}")
 
     if report["missing"]:
-        print("Missing required context files:")  # noqa: T201
+        print("Missing required context files:")
         for path in report["missing"]:
-            print(f"- {path.relative_to(repo_root)}")  # noqa: T201
+            print(f"- {path.relative_to(repo_root)}")
     return 0
 
 

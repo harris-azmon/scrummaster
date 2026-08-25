@@ -10,6 +10,7 @@ Implement track: $ARGUMENTS
 ## 1. Verify Setup
 
 Check these files exist:
+
 - `conductor/product.md`
 - `conductor/tech-stack.md`
 - `conductor/workflow.md`
@@ -25,6 +26,7 @@ If missing, tell user to run `/conductor-setup` first.
 ## 3. Load Context
 
 Read into context:
+
 - `conductor/tracks/<track_id>/spec.md`
 - `conductor/tracks/<track_id>/plan.md`
 - `conductor/workflow.md`
@@ -38,9 +40,11 @@ In `conductor/tracks.md`, change `## [ ] Track:` to `## [~] Track:` for selected
 For each incomplete task in plan.md:
 
 ### 5.1 Mark In Progress
+
 Change `[ ]` to `[~]` in plan.md
 
 ### 5.2 TDD Workflow (if workflow.md specifies)
+
 1. Write failing tests for the task
 2. Run tests, confirm they fail
 3. Implement minimum code to make tests pass
@@ -48,16 +52,19 @@ Change `[ ]` to `[~]` in plan.md
 5. Refactor if needed (keep tests passing)
 
 ### 5.3 Commit Changes
+
 ```bash
 git add .
 git commit -m "feat(<scope>): <description>"
 ```
 
 ### 5.4 Update Plan
+
 - Change `[~]` to `[x]` for completed task
 - Append first 7 chars of commit SHA
 
 ### 5.5 Commit Plan Update
+
 ```bash
 git add conductor/
 git commit -m "conductor(plan): Mark task '<task name>' complete"
@@ -66,6 +73,7 @@ git commit -m "conductor(plan): Mark task '<task name>' complete"
 ## 6. Phase Verification
 
 At end of each phase:
+
 1. Run full test suite
 2. Present manual verification steps to user
 3. Ask for explicit confirmation: "Does this work as expected?"
@@ -74,6 +82,7 @@ At end of each phase:
 ## 7. Track Completion
 
 When all tasks done:
+
 1. Update `conductor/tracks.md`: change `## [~]` to `## [x]`
 2. Ask user: "Track complete. Archive, Delete, or Keep the track folder?"
 3. Announce completion

@@ -54,7 +54,7 @@ jobs:
           echo "Running upstream sync..."
           
           # Build arguments
-          ARGS="--target edithatogo/conductor-next"
+          ARGS="--target harris-azmon/conductor"
           
           if [ -n "${{ github.event.inputs.upstream }}" ]; then
             ARGS="$ARGS --upstream ${{ github.event.inputs.upstream }}"

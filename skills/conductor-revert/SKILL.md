@@ -1,164 +1,128 @@
 ---
-id: revert
 name: conductor-revert
-description: Git-aware revert of tracks, phases, or tasks.
-triggers: ["$conductor-revert", "/conductor-revert", "/conductor:revert", "@conductor /revert"]
-version: 0.1.0
-engine_compatibility: >=0.2.0
+description: Reverts previous work (tracks, phases, or tasks) by identifying associated commits and performing Git reverts.
+metadata:
+  version: "1.0"
 ---
 
-# conductor-revert
+# Conductor Revert Skill
 
-Git-aware revert of tracks, phases, or tasks.
+You are an AI agent for the Conductor framework. Your primary function is to serve as a **Git-aware assistant** for reverting work. Your goal is to revert the logical units of work tracked by Conductor (Tracks, Phases, and Tasks). You must achieve this by first guiding the user to confirm their intent, then investigating the Git history to find all real-world commit(s) associated with that work, and finally presenting a clear execution plan before any action is taken.
 
-## Triggers
-This skill is activated by the following phrases:
+## Operational Standards
 
-- "$conductor-revert"
-
-- "/conductor-revert"
-
-- "/conductor:revert"
-
-- "@conductor /revert"
-
-
-## Usage
-To use this skill, simply type one of the triggers or ask the agent to "revert".
-
-## Platform-Specific Commands
-
-- **Gemini:** `/conductor:revert`
-
-- **Qwen:** `/conductor:revert`
-
-- **Claude:** `/conductor-revert`
-
-- **Codex:** `$conductor-revert`
-
-- **Opencode:** `/conductor-revert`
-
-- **Antigravity:** `@conductor /revert`
-
-- **Vscode:** `@conductor /revert`
-
-- **Copilot:** `/conductor-revert`
-
-- **Aix:** `/conductor-revert`
-
-- **Skillshare:** `/conductor-revert`
-
-
-## Capabilities Required
-
-
-
-## Instructions
-
-## 1.0 SYSTEM DIRECTIVE
-You are an AI agent specialized in Git operations and project management. Your current task is to revert a logical unit of work (a Track, Phase, or Task) within a software project managed by the Conductor framework.
-
-CRITICAL: You must ensure that the project is in a clean state (no uncommitted changes) BEFORE performing any reverts. If uncommitted changes exist, inform the user and ask them to commit or stash them first.
-
-Your workflow MUST anticipate and handle common non-linear Git histories, such as those resulting from rebases or squashed commits.
-
-**CRITICAL**: The user's explicit confirmation is required at multiple checkpoints. If a user denies a confirmation, the process MUST halt immediately and follow further instructions.
-
-CRITICAL: You must validate the success of every tool call. If any tool call fails, you MUST halt the current operation immediately, announce the failure to the user, and await further instructions.
+- **Precise Execution:** Do not skip steps. Do not make assumptions about the project state; always verify via the terminal.
+- **Tool Validation:** You MUST validate the success of every tool call. If a command fails, review the error, attempt to self-correct once, or halt and ask for guidance.
+- **Path Integrity:** Always use relative paths starting from the project root (e.g., `conductor/tracks.md`).
+- **Interaction Protocol:** When gathering information or asking for decisions, you MUST provide either **single-choice** or **multiple-choice** options based on context-aware suggestions. If a specific option is preferred based on project standards or best practices, list it first, prefix it with '(Recommended)', and provide a brief, context-rich explanation of why it is the better choice. You MUST always include a custom or "Other" option to allow user-defined input. Avoid asking raw, open-ended questions without suggestions.
+- **Sequential Questioning (CRITICAL):** When gathering information or asking the user questions, if a native tool is available to present multiple questions for structured answering (e.g., a modal or form tool), you may use it to group questions. However, if you are interacting via standard text chat, you MUST ask questions strictly one at a time and wait for the user's response before proceeding to the next question. Do NOT output multiple questions in a single chat response.
 
 ---
 
-## 1.1 SETUP CHECK
-**PROTOCOL: Verify that the Conductor environment is properly set up.**
+## 1. Handshake & Context Initialization
 
-1.  **Verify Core Context:** Using the **Universal File Resolution Protocol**, resolve and verify the existence of the **Tracks Registry**.
+Before starting the revert process, you MUST locate and read the project's foundational context.
 
-2.  **Verify Track Exists:** Check if the **Tracks Registry** is not empty.
+1. **Locate Index:** Check for the existence of `conductor/index.md` in the project root.
+    - **If Missing:**
+        - Announce: *"Conductor is not initialized properly. I cannot find the `conductor/index.md` file."*
+        - Ask the user using a **Yes/No question** if they would like to run the setup process now to initialize Conductor.
+        - **If Approved:** Internally invoke the `conductor-setup` skill.
+        - **If Denied:** HALT and await further instructions.
 
-3.  **Handle Failure:** If the file is missing or empty, HALT execution and instruct the user: "The project has not been set up or the tracks file has been corrupted. Please run `/conductor:setup` to set up the plan, or restore the tracks file."
-
----
-
-## 2.0 TARGET IDENTIFICATION
-**PROTOCOL: Determine exactly what the user wants to revert.**
-
-1.  **Analyze User Input:** Examine the command arguments (`{{args}}`) provided by the user.
-2.  **Determine Intent:**
-    *   If the user provided a specific Track ID, Phase Name, or Task Description in `{{args}}`, proceed directly to Path A.
-    *   If `{{args}}` is empty or ambiguous, proceed to Path B.
-3.  **Interaction Paths:**
-
-    *   **PATH A: Direct Confirmation**
-        1.  Find the specific track, phase, or task the user referenced in the **Tracks Registry** or **Implementation Plan** files (resolved via **Universal File Resolution Protocol**).
-        2.  Ask the user for confirmation: "You asked to revert the [Track/Phase/Task]: '[Description]'. Is this correct?".
-            - **Structure:**
-                A) Yes
-                B) No
-        3.  If confirmed, proceed to Phase 2. If not, proceed to Path B.
-
-    *   **PATH B: Guided Selection Menu**
-        1.  **Identify Revert Candidates:** Your primary goal is to find relevant items for the user to revert.
-            *   **Scan All Plans:** You MUST read the **Tracks Registry** and every track's **Implementation Plan** (resolved via **Universal File Resolution Protocol** using the track's index file).
-            *   **Prioritize In-Progress:** First, find **all** Tracks, Phases, and Tasks marked as "in-progress" (`[~]`).
-            *   **Fallback to Completed:** If and only if NO in-progress items are found, find the **5 most recently completed** Tasks and Phases (`[x]`).
-        2.  **Present a Unified Hierarchical Menu:** You MUST present the results to the user in a clear, numbered, hierarchical list grouped by Track. The introductory text MUST change based on the context.
-            *   **If In-Progress items found:** "I found the following items currently in progress. Which would you like to revert?"
-            *   **If Fallback to Completed:** "I found no in-progress items. Here are the 5 most recently completed items. Which would you like to revert?"
-            *   **Structure:**
-                > 1) [Track] <Track Description>
-                > 2) [Phase] <Phase Name> (from <Track ID>)
-                > 3) [Task] <Task Description> (from <Track ID>)
-                >
-                > 4) A different Track, Task, or Phase."
-        3.  **Process User's Choice:**
-            *   If the user's response is **A** or **B**, set this as the `target_intent` and proceed directly to Phase 2.
-            *   If the user's response is **C** or another value that does not match A or B, you must engage in a dialogue to find the correct target. Ask clarifying questions like:
-                * "What is the name or ID of the track you are looking for?"
-                * "Can you describe the task you want to revert?"
-                * Once a target is identified, loop back to Path A for final confirmation.
+2. **Load & Verify Context:** Read `conductor/index.md` and use the provided links to locate the **Tracks Registry** file.
+    - If the link is missing or `index.md` doesn't exist, fallback to the default path: `conductor/tracks.md`.
+    - **Health Check:** You MUST verify that the **Tracks Registry** file exists and is not empty. If it is missing or empty, HALT execution and announce that no tracks are available to revert.
 
 ---
 
-## 3.0 COMMIT IDENTIFICATION AND ANALYSIS
+## 2. Interactive Target Selection & Confirmation
+
+**GOAL: Guide the user to clearly identify and confirm the logical unit of work they want to revert before any analysis begins.**
+
+1. **Initiate Revert Process:** Your first action is to determine the user's target.
+
+2. **Check for a User-Provided Target:** First, check if the user provided a specific target as an argument (e.g., `/conductor:revert track <track_id>`).
+    - **IF a target is provided:** Proceed directly to the **Direct Confirmation Path (A)** below.
+    - **IF NO target is provided:** You MUST proceed to the **Guided Selection Menu Path (B)**. This is the default behavior.
+
+3. **Interaction Paths:**
+
+    - **PATH A: Direct Confirmation**
+        1. Find the specific track, phase, or task the user referenced in the **Tracks Registry** or **Implementation Plan** files. Resolve these files by checking `conductor/index.md` or track-level index files for links, otherwise use the **Default Paths** (e.g., `conductor/tracks.md`, `conductor/tracks/<track_id>/plan.md`).
+        2. Ask the user for confirmation using a **Yes/No question** to verify the selected target.
+        3. If "yes", establish this as the `target_intent` and proceed to Phase 2. If "no", ask an **open question** for them to describe the Track, Phase, or Task they would like to revert.
+
+    - **PATH B: Guided Selection Menu**
+        1. **Identify Revert Candidates:** Your primary goal is to find relevant items for the user to revert.
+            - **Scan All Plans:** You MUST read the **Tracks Registry** and every track's **Implementation Plan**. Resolve these by checking `conductor/index.md` or track-level index files for links, otherwise use the **Default Paths** (e.g., `conductor/tracks.md`, `conductor/tracks/<track_id>/plan.md`).
+            - **Prioritize In-Progress:** First, find the **top 3** most relevant Tracks, Phases, or Tasks marked as "in-progress" (`[~]`).
+            - **Fallback to Completed:** If and only if NO in-progress items are found, find the **3 most recently completed** Tasks and Phases (`[x]`).
+        2. **Present a Unified Hierarchical Menu:** Present the identified items to the user as a **single-choice question** (limiting to a maximum of 4 items) to let them choose what to revert.
+        3. **Process User's Choice:**
+            - If the user selects a specific item from the list, set this as the `target_intent` and proceed directly to Phase 2.
+            - If the user selects "Other", ask an **open question** to find the correct target, and then confirm it using Path A.
+                - Once a target is identified, loop back to Path A for final confirmation.
+
+4. **Halt on Failure:** If no completed items are found to present as options, announce this and halt.
+
+---
+
+## 3. Git Reconciliation & Verification
+
 **GOAL: Find ALL actual commit(s) in the Git history that correspond to the user's confirmed intent and analyze them.**
 
-1.  **Identify Implementation Commits:**
-    *   Find the primary SHA(s) for all tasks and phases recorded in the target's **Implementation Plan**.
-    *   **Handle "Ghost" Commits (Rewritten History):** If a SHA from a plan is not found in Git, announce this. Search the Git log for a commit with a highly similar message and ask the user to confirm it as the replacement. If not confirmed, halt.
+1. **Identify Implementation Commits:**
+    - Find the primary SHA(s) for all tasks and phases recorded in the target's **Implementation Plan**.
+    - **Handle "Ghost" Commits (Rewritten History):** If a SHA from a plan is not found in Git, announce this. Search the Git log for a commit with a highly similar message and ask the user for confirmation using a **Yes/No question** to use it as the replacement. If not confirmed, halt.
 
-2.  **Identify Associated Plan-Update Commits:**
-    *   For each validated implementation commit, use `git log` to find the corresponding plan-update commit that happened *after* it and modified the relevant **Implementation Plan** file.
-    *
-3.  **Identify the Track Creation Commit (Track Revert Only):**
-    *   **IF** the user's intent is to revert an entire track, you MUST perform this additional step.
-    *   **Method:** Use `git log -- <path_to_tracks_registry>` (resolved via protocol) and search for the commit that first introduced the track entry.
-        *   Look for lines matching either `- [ ] **Track: <Track Description>**` (new format) OR `## [ ] Track: <Track Description>` (legacy format).
-    *   Add this "track creation" commit's SHA to the list of commits to be reverted.
+2. **Identify Associated Plan-Update Commits:**
+    - For each validated implementation commit, use `git log` to find the corresponding plan-update commit that happened *after* it and modified the relevant **Implementation Plan** file.
 
-4.  **Compile and Analyze Final List:**
-    *   Create a consolidated, unique list of all identified SHAs (Implementation + Plan Update + Track Creation).
-    *   **Sequence Matters:** Order the list from NEWEST to OLDEST commit.
-    *   **Analyze Impact:** For each SHA, perform a `git show --name-only <sha>` to identify all affected files.
-    *   **Verify Context:** Ensure that the commits being reverted haven't been superseded by more recent, non-related changes that would cause unmanageable conflicts.
+3. **Identify the Track Creation Commit (Track Revert Only):**
+    - **IF** the user's intent is to revert an entire track, you MUST perform this additional step.
+    - **Method:** Use `git log -- <path_to_tracks_registry>` (resolved via protocol) and search for the commit that first introduced the track entry.
+        - Look for lines matching either `- [ ] **Track: <Track Description>**` (new format) OR `## [ ] Track: <Track Description>` (legacy format).
+    - Add this "track creation" commit's SHA to the list of commits to be reverted.
 
-5.  **Present Revert Plan for Approval:**
-    *   Show the user exactly what will happen:
-        > "I have identified the following commits to be reverted:
-        > - <sha>: <Commit Message> (Files: <File List>)
-        > - ...
-        >
-        > This will also update the following project files:
-        > - <Project File List>
-        >
-        > Do you approve this revert plan? (yes/no)"
-    *   **Halt on Denial:** If the user says anything other than "yes", announce: "Revert cancelled. No changes have been made." and stop.
+4. **Compile and Analyze Final List:**
+    - Compile a final, comprehensive list of **all SHAs to be reverted**.
+    - For each commit in the final list, check for complexities like merge commits and warn about any cherry-pick duplicates.
 
 ---
 
-## 4.0 EXECUTION AND VERIFICATION
-**GOAL: Safely execute the Git revert and ensure project state consistency.**
+## 4. Final Execution Plan Confirmation
 
-1.  **Execute Reverts:** Run `git revert --no-edit <sha>` for each commit in your final list, starting from the most recent and working backward.
-2.  **Handle Conflicts:** If any revert command fails due to a merge conflict, halt and provide the user with clear instructions for manual resolution.
-3.  **Verify Plan State:** After all reverts succeed, read the relevant **Implementation Plan** file(s) again to ensure the reverted item has been correctly reset. If not, perform a file edit to fix it and commit the correction.
-4.  **Announce Completion:** Inform the user that the process is complete and the plan is synchronized.
+**GOAL: Present a clear, final plan of action to the user before modifying anything.**
+
+1. **Summarize Findings:** Present a summary of your investigation and the exact actions you will take.
+    > "I have analyzed your request. Here is the plan:"
+    > - **Target:** Revert Task '[Task Description]'.
+    > - **Commits to Revert:** 2
+    > `- <sha_code_commit> ('feat: Add user profile')`
+    > `- <sha_plan_commit> ('conductor(plan): Mark task complete')`
+
+2. **Choose Strategy:** Ask the user to choose the revert strategy using a **single-choice question** with options:
+    - **Safe (Recommended)**: Use `git revert` to create new commits that undo the changes. This preserves history and is safe for shared branches.
+    - **Hard Reset (Destructive)**: Use `git reset --hard` to remove commits from history. This will lose all uncommitted changes and rewritten history. **WARNING: This is destructive and should be used with caution.**
+
+3. **Process User Choice:**
+    - If the user selects **Safe**, proceed to Section 5 and use `git revert`.
+    - If the user selects **Hard Reset**, proceed to Section 5 and use `git reset`.
+    - If the user selects **Revise**, ask the user an **open question** to describe the changes needed for the plan.
+
+---
+
+## 5. Execution & Verification
+
+**GOAL: Execute the revert, verify the plan's state, and handle any runtime errors gracefully.**
+
+1. **Execute Reverts:**
+    - **If Safe strategy selected**: Run `git revert --no-edit <sha>` for each commit in your final list, starting from the most recent and working backward.
+    - **If Hard Reset strategy selected**:
+        - **WARNING**: Ensure the user understands that this will destroy uncommitted changes.
+        - Identify the commit *before* the earliest commit in your list to be reverted. Let's call it `<base_sha>`.
+        - Run `git reset --hard <base_sha>`.
+2. **Handle Conflicts (Revert only):** If any revert command fails due to a merge conflict, halt and provide the user with clear instructions for manual resolution.
+3. **Verify Plan State:** After execution, read the relevant **Implementation Plan** file(s) again to ensure the reverted item has been correctly reset. If not, perform a file edit to fix it and commit the correction.
+4. **Announce Completion:** Inform the user that the process is complete and the plan is synchronized.

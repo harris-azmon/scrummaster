@@ -99,7 +99,8 @@
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "package": "vsce package"
+    "package": "vsce package",
+    "test": "echo \"No automated tests configured for conductor-vscode yet; running typecheck as a smoke check instead.\" && tsc --noEmit -p ./"
   },
   "devDependencies": {
     "@types/vscode": "^1.75.0",

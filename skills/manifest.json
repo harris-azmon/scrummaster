@@ -109,7 +109,7 @@
       "id": "setup",
       "template": "setup",
       "name": "conductor-setup",
-      "description": "Initialize project with Conductor context-driven development. Sets up product.md, tech-stack.md, and workflow.md.",
+      "description": "Scaffolds the project and sets up the Conductor environment. Use this whenever a project needs to be initialized or if the Conductor configuration is missing.",
       "commands": {
         "gemini": "/conductor:setup",
         "qwen": "/conductor:setup",
@@ -138,19 +138,19 @@
     {
       "id": "new_track",
       "template": "new_track",
-      "name": "conductor-newtrack",
-      "description": "Create a new feature/bug track with spec and plan.",
+      "name": "conductor-new-track",
+      "description": "Plans a new track (feature or bug fix), generates spec/plan documents, and updates the registry.",
       "commands": {
-        "gemini": "/conductor:newTrack",
-        "qwen": "/conductor:newTrack",
-        "claude": "/conductor-newtrack",
-        "codex": "$conductor-newtrack",
-        "opencode": "/conductor-newtrack",
-        "antigravity": "@conductor /newTrack",
-        "vscode": "@conductor /newTrack",
-        "copilot": "/conductor-newtrack",
-        "aix": "/conductor-newtrack",
-        "skillshare": "/conductor-newtrack"
+        "gemini": "/conductor:new-track",
+        "qwen": "/conductor:new-track",
+        "claude": "/conductor-new-track",
+        "codex": "$conductor-new-track",
+        "opencode": "/conductor-new-track",
+        "antigravity": "@conductor /new-track",
+        "vscode": "@conductor /new-track",
+        "copilot": "/conductor-new-track",
+        "aix": "/conductor-new-track",
+        "skillshare": "/conductor-new-track"
       },
       "enabled": {
         "gemini": true,
@@ -169,7 +169,7 @@
       "id": "implement",
       "template": "implement",
       "name": "conductor-implement",
-      "description": "Execute tasks from a track's plan following the TDD workflow.",
+      "description": "Executes the tasks defined in the specified track's plan. Use this to start or continue working on a feature, bug fix, or chore.",
       "commands": {
         "gemini": "/conductor:implement",
         "qwen": "/conductor:implement",
@@ -199,7 +199,7 @@
       "id": "status",
       "template": "status",
       "name": "conductor-status",
-      "description": "Display project progress overview.",
+      "description": "Displays the current progress of the project by parsing the Tracks Registry and individual track plans.",
       "commands": {
         "gemini": "/conductor:status",
         "qwen": "/conductor:status",
@@ -229,7 +229,7 @@
       "id": "revert",
       "template": "revert",
       "name": "conductor-revert",
-      "description": "Git-aware revert of tracks, phases, or tasks.",
+      "description": "Reverts previous work (tracks, phases, or tasks) by identifying associated commits and performing Git reverts.",
       "commands": {
         "gemini": "/conductor:revert",
         "qwen": "/conductor:revert",
@@ -241,6 +241,36 @@
         "copilot": "/conductor-revert",
         "aix": "/conductor-revert",
         "skillshare": "/conductor-revert"
+      },
+      "enabled": {
+        "gemini": true,
+        "qwen": true,
+        "claude": true,
+        "codex": true,
+        "opencode": true,
+        "antigravity": true,
+        "vscode": true,
+        "copilot": true,
+        "aix": true,
+        "skillshare": true
+      }
+    },
+    {
+      "id": "review",
+      "template": "review",
+      "name": "conductor-review",
+      "description": "Reviews the completed track work against guidelines and the plan. Acts as a Principal Software Engineer to ensure quality and compliance.",
+      "commands": {
+        "gemini": "/conductor:review",
+        "qwen": "/conductor:review",
+        "claude": "/conductor-review",
+        "codex": "$conductor-review",
+        "opencode": "/conductor-review",
+        "antigravity": "@conductor /review",
+        "vscode": "@conductor /review",
+        "copilot": "/conductor-review",
+        "aix": "/conductor-review",
+        "skillshare": "/conductor-review"
       },
       "enabled": {
         "gemini": true,

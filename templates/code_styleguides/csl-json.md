@@ -17,7 +17,7 @@ It provides a unified format that can be formatted into any citation style (APA,
 
 ### File Naming
 
-```
+```text
 references.json          # Default name for single file
 bibliography.json        # Alternative name
 refs-2026-02.json       # With date suffix
@@ -343,7 +343,7 @@ Every CSL-JSON entry must have:
 ## Field Reference Table
 
 | Field | Description | Example |
-|-------|-------------|---------|
+| ------- | ------------- | --------- |
 | `id` | Unique identifier (citation key) | `"smith2024"` |
 | `type` | Document type | `"article-journal"` |
 | `title` | Title of work | `"Article Title"` |
@@ -373,53 +373,51 @@ Every CSL-JSON entry must have:
 ```python
 import json
 
+
 def biblatex_to_csl(biblatex_entry):
     """Convert BibLaTeX entry to CSL-JSON."""
 
     type_mapping = {
-        'article': 'article-journal',
-        'book': 'book',
-        'inbook': 'chapter',
-        'incollection': 'chapter',
-        'inproceedings': 'paper-conference',
-        'conference': 'paper-conference',
-        'techreport': 'report',
-        'mastersthesis': 'thesis',
-        'phdthesis': 'thesis',
-        'misc': 'document',
-        'online': 'webpage',
-        'software': 'software'
+        "article": "article-journal",
+        "book": "book",
+        "inbook": "chapter",
+        "incollection": "chapter",
+        "inproceedings": "paper-conference",
+        "conference": "paper-conference",
+        "techreport": "report",
+        "mastersthesis": "thesis",
+        "phdthesis": "thesis",
+        "misc": "document",
+        "online": "webpage",
+        "software": "software",
     }
 
-    csl = {
-        'id': biblatex_entry.get('key', ''),
-        'type': type_mapping.get(biblatex_entry.get('type'), 'document')
-    }
+    csl = {"id": biblatex_entry.get("key", ""), "type": type_mapping.get(biblatex_entry.get("type"), "document")}
 
     # Map fields
     field_mapping = {
-        'title': 'title',
-        'author': 'author',
-        'editor': 'editor',
-        'booktitle': 'container-title',
-        'journal': 'container-title',
-        'publisher': 'publisher',
-        'address': 'publisher-place',
-        'volume': 'volume',
-        'number': 'issue',
-        'pages': 'page',
-        'doi': 'DOI',
-        'isbn': 'ISBN',
-        'url': 'URL',
-        'year': 'issued',
-        'abstract': 'abstract'
+        "title": "title",
+        "author": "author",
+        "editor": "editor",
+        "booktitle": "container-title",
+        "journal": "container-title",
+        "publisher": "publisher",
+        "address": "publisher-place",
+        "volume": "volume",
+        "number": "issue",
+        "pages": "page",
+        "doi": "DOI",
+        "isbn": "ISBN",
+        "url": "URL",
+        "year": "issued",
+        "abstract": "abstract",
     }
 
     for bib_field, csl_field in field_mapping.items():
         if bib_field in biblatex_entry:
             value = biblatex_entry[bib_field]
-            if csl_field == 'issued':
-                csl[csl_field] = {'date-parts': [[int(value)]]}
+            if csl_field == "issued":
+                csl[csl_field] = {"date-parts": [[int(value)]]}
             else:
                 csl[csl_field] = value
 
@@ -451,6 +449,7 @@ pandoc references.json -f csljson -t biblatex -o references.bib
 import xml.etree.ElementTree as ET
 import json
 
+
 def endnote_to_csl(xml_file):
     """Convert EndNote XML to CSL-JSON."""
     tree = ET.parse(xml_file)
@@ -458,36 +457,33 @@ def endnote_to_csl(xml_file):
 
     references = []
 
-    for record in root.findall('.//record'):
+    for record in root.findall(".//record"):
         ref = {
-            'id': record.find('rec-number').text if record.find('rec-number') is not None else '',
-            'type': 'article-journal'  # Default, map based on reference type
+            "id": record.find("rec-number").text if record.find("rec-number") is not None else "",
+            "type": "article-journal",  # Default, map based on reference type
         }
 
         # Extract title
-        titles = record.find('titles')
+        titles = record.find("titles")
         if titles is not None:
-            title = titles.find('title')
+            title = titles.find("title")
             if title is not None:
-                ref['title'] = title.text
+                ref["title"] = title.text
 
         # Extract authors
-        authors_elem = record.find('authors')
+        authors_elem = record.find("authors")
         if authors_elem is not None:
             authors = []
-            for author in authors_elem.findall('author'):
-                name_parts = author.text.split(',')
+            for author in authors_elem.findall("author"):
+                name_parts = author.text.split(",")
                 if len(name_parts) == 2:
-                    authors.append({
-                        'family': name_parts[0].strip(),
-                        'given': name_parts[1].strip()
-                    })
+                    authors.append({"family": name_parts[0].strip(), "given": name_parts[1].strip()})
             if authors:
-                ref['author'] = authors
+                ref["author"] = authors
 
         references.append(ref)
 
-    return {'references': references}
+    return {"references": references}
 ```
 
 ## Validation
@@ -506,16 +502,13 @@ CSL_SCHEMA = {
             "type": "array",
             "items": {
                 "type": "object",
-                "properties": {
-                    "id": {"type": "string"},
-                    "type": {"type": "string"},
-                    "title": {"type": "string"}
-                },
-                "required": ["id", "type"]
-            }
+                "properties": {"id": {"type": "string"}, "type": {"type": "string"}, "title": {"type": "string"}},
+                "required": ["id", "type"],
+            },
         }
-    }
+    },
 }
+
 
 def validate_csl_json(data):
     """Validate CSL-JSON against schema."""
@@ -532,18 +525,18 @@ def validate_csl_json(data):
 def check_required_fields(csl_entry):
     """Check if entry has all required fields based on type."""
     required_by_type = {
-        'article-journal': ['id', 'type', 'title', 'container-title', 'author', 'issued'],
-        'book': ['id', 'type', 'title', 'author', 'publisher', 'issued'],
-        'chapter': ['id', 'type', 'title', 'container-title', 'author', 'issued'],
-        'paper-conference': ['id', 'type', 'title', 'container-title', 'author', 'issued'],
-        'report': ['id', 'type', 'title', 'author', 'publisher', 'issued'],
-        'webpage': ['id', 'type', 'title', 'URL', 'accessed'],
-        'software': ['id', 'type', 'title', 'author', 'issued'],
-        'thesis': ['id', 'type', 'title', 'author', 'publisher', 'genre', 'issued']
+        "article-journal": ["id", "type", "title", "container-title", "author", "issued"],
+        "book": ["id", "type", "title", "author", "publisher", "issued"],
+        "chapter": ["id", "type", "title", "container-title", "author", "issued"],
+        "paper-conference": ["id", "type", "title", "container-title", "author", "issued"],
+        "report": ["id", "type", "title", "author", "publisher", "issued"],
+        "webpage": ["id", "type", "title", "URL", "accessed"],
+        "software": ["id", "type", "title", "author", "issued"],
+        "thesis": ["id", "type", "title", "author", "publisher", "genre", "issued"],
     }
 
-    doc_type = csl_entry.get('type', 'document')
-    required = required_by_type.get(doc_type, ['id', 'type'])
+    doc_type = csl_entry.get("type", "document")
+    required = required_by_type.get(doc_type, ["id", "type"])
 
     missing = [field for field in required if field not in csl_entry]
 
@@ -595,7 +588,7 @@ suppress-bibliography: false
 ### Common CSL Styles
 
 | Style | File | Use Case |
-|-------|------|----------|
+| ------- | ------ | ---------- |
 | APA 7th | `apa.csl` | Social sciences |
 | MLA 9th | `modern-language-association.csl` | Humanities |
 | Chicago 17th | `chicago-author-date.csl` | History, general |
@@ -667,17 +660,13 @@ from citeproc.source.json import CiteProcJSON
 bib_source = CiteProcJSON(json_data)
 
 # Load style
-bib_style = CitationStylesStyle('apa', validate=False)
+bib_style = CitationStylesStyle("apa", validate=False)
 
 # Create bibliography
-bibliography = CitationStylesBibliography(
-    bib_style,
-    bib_source,
-    formatter.html
-)
+bibliography = CitationStylesBibliography(bib_style, bib_source, formatter.html)
 
 # Format citation
-citation = Citation([CitationItem('smith2024')])
+citation = Citation([CitationItem("smith2024")])
 bibliography.register(citation)
 print(bibliography.cite(citation))
 ```

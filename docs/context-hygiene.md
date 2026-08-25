@@ -5,6 +5,7 @@ This guide defines a minimal, repeatable context bundle for Conductor projects a
 ## Canonical Context Bundle
 
 Include these files by default:
+
 - `conductor/product.md`
 - `conductor/product-guidelines.md` (if present)
 - `conductor/tech-stack.md`
@@ -19,6 +20,7 @@ Include these files by default:
 ## Default Exclusions
 
 Exclude these unless explicitly needed:
+
 - `conductor/tracks/archive/**`
 - `.git/**`, `.hg/**`, `.svn/**`
 - `.agent/**` (generated workflows/skills)

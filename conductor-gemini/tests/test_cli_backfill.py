@@ -9,7 +9,7 @@ from conductor_core.errors import ValidationError
 from conductor_gemini.cli import main
 
 
-@pytest.fixture()
+@pytest.fixture
 def repo_dir(tmp_path):
     git.Repo.init(tmp_path)
     return tmp_path
@@ -87,17 +87,23 @@ def test_archive_exception(repo_dir):
 
 
 def test_main_invocation_help():
-    with patch("sys.argv", ["conductor", "--help"]):
-        with pytest.raises(SystemExit) as e:
-            from conductor_gemini import cli
+    from conductor_gemini import cli
 
-            cli.main()
-        assert e.value.code == 0
+    with patch("sys.argv", ["conductor", "--help"]), pytest.raises(SystemExit) as e:
+        cli.main()
+    assert e.value.code == 0
 
 
 def test_cli_run_main_block(repo_dir):
-    # Using runpy to execute the file as __main__
-    cli_path = os.path.join("conductor-gemini", "src", "conductor_gemini", "cli.py")
+    # Using runpy to execute the file as __main__. Resolve relative to this
+    # test file rather than assuming a cwd, since CI runs pytest from within
+    # the conductor-gemini/ directory while other invocations may not.
+    cli_path = os.path.join(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+        "src",
+        "conductor_gemini",
+        "cli.py",
+    )
     with patch("sys.argv", ["conductor", "--help"]):
         with pytest.raises(SystemExit) as e:
             runpy.run_path(cli_path, run_name="__main__")

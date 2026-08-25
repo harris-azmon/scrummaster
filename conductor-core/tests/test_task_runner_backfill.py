@@ -5,7 +5,7 @@ from conductor_core.project_manager import ProjectManager
 from conductor_core.task_runner import TaskRunner
 
 
-@pytest.fixture()
+@pytest.fixture
 def tr(tmp_path):
     pm = ProjectManager(tmp_path)
     pm.initialize_project("Goal")
@@ -15,7 +15,7 @@ def tr(tmp_path):
 
 def test_get_track_to_implement_no_tracks_file(tr, tmp_path):
     (tmp_path / "conductor" / "tracks.md").unlink()
-    with pytest.raises(FileNotFoundError, match="tracks.md not found"):
+    with pytest.raises(FileNotFoundError, match=r"tracks\.md not found"):
         tr.get_track_to_implement()
 
 
@@ -37,7 +37,7 @@ def test_update_track_status_not_found(tr):
 
 
 def test_update_task_status_missing_plan(tr):
-    with pytest.raises(FileNotFoundError, match="plan.md not found"):
+    with pytest.raises(FileNotFoundError, match=r"plan\.md not found"):
         tr.update_task_status("any_id", "task", "x")
 
 
@@ -58,12 +58,12 @@ def test_checkpoint_phase_not_found(tr, tmp_path):
 
 
 def test_checkpoint_phase_missing_plan(tr):
-    with pytest.raises(FileNotFoundError, match="plan.md not found"):
+    with pytest.raises(FileNotFoundError, match=r"plan\.md not found"):
         tr.checkpoint_phase("any_id", "Phase 1", "1234567")
 
 
 def test_archive_track_not_found(tr):
-    with pytest.raises(FileNotFoundError, match="Track directory .* not found"):
+    with pytest.raises(FileNotFoundError, match=r"Track directory .* not found"):
         tr.archive_track("missing_id")
 
 

@@ -14,18 +14,22 @@ This document maps the Conductor protocol commands to their native syntax across
 ## Notes on Platform-Specific Behavior
 
 ### Gemini CLI / Qwen
+
 - Uses standard slash-command syntax.
 - Commands are explicitly mapped in `gemini-extension.json` or `qwen-extension.json`.
 
 ### VS Code / Antigravity
+
 - Integrated as a Chat Participant.
 - Uses the `@conductor` handle followed by a slash command.
 - Can leverage active editor context and selections.
 
 ### Claude CLI / OpenCode
+
 - Relies on natural language triggers defined in `SKILL.md`.
 - No fixed slash commands; uses intent detection.
 
 ### Codex / Agent Skills
+
 - Similar to Claude CLI; intent-based activation.
 - Uses `SKILL.md` for discovery and protocol definition.

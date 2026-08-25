@@ -8,10 +8,10 @@ Conductor can be installed through multiple methods to suit different environmen
 
 ```bash
 # Install using mise (cross-platform)
-mise install edithatogo/conductor-next
+mise install harris-azmon/conductor
 
 # Or run directly
-curl -fsSL install.cat/edithatogo/conductor-next | sh
+curl -fsSL install.cat/harris-azmon/conductor | sh
 ```
 
 ### Via Smithery (Coming Soon)
@@ -28,7 +28,7 @@ smithery install conductor
 #### pip (Python)
 
 ```bash
-pip install conductor-next-core conductor-gemini
+pip install conductor-core conductor-gemini
 ```
 
 #### npm (Node.js)
@@ -43,7 +43,7 @@ npm install -g @conductor/vscode-extension
 
 ```bash
 # Coming soon
-brew tap edithatogo/conductor
+brew tap harris-azmon/conductor
 brew install conductor
 ```
 
@@ -58,7 +58,7 @@ choco install conductor
 
 ```powershell
 # Coming soon
-scoop bucket add conductor https://github.com/edithatogo/scoop-conductor
+scoop bucket add conductor https://github.com/harris-azmon/scoop-conductor
 scoop install conductor
 ```
 
@@ -66,15 +66,15 @@ scoop install conductor
 
 #### GitHub Releases
 
-1. Visit [GitHub Releases](https://github.com/edithatogo/conductor-next-next/releases)
+1. Visit [GitHub Releases](https://github.com/harris-azmon/conductor/releases)
 2. Download the appropriate binary for your platform
 3. Extract and add to PATH
 
 #### From Source
 
 ```bash
-git clone https://github.com/edithatogo/conductor-next-next.git
-cd conductor-next
+git clone https://github.com/harris-azmon/conductor.git
+cd conductor
 ./install.sh  # Unix/macOS
 # or
 ./install.ps1  # Windows

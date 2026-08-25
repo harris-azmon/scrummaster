@@ -14,7 +14,7 @@ def test_context_report_resolves_track(tmp_path):
     _write(conductor_dir / "product.md", "product")
     _write(conductor_dir / "tech-stack.md", "stack")
     _write(conductor_dir / "workflow.md", "workflow")
-    tracks_entry = "- [~] **Track: Test**\n" "*Link: [./conductor/tracks/t1/](./conductor/tracks/t1/)*\n"
+    tracks_entry = "- [~] **Track: Test**\n*Link: [./conductor/tracks/t1/](./conductor/tracks/t1/)*\n"
     _write(conductor_dir / "tracks.md", tracks_entry)
 
     track_dir = conductor_dir / "tracks" / "t1"
@@ -36,7 +36,7 @@ def test_context_report_flags_sizes(tmp_path):
     _write(conductor_dir / "product.md", "x" * 2)
     _write(conductor_dir / "tech-stack.md", "x")
     _write(conductor_dir / "workflow.md", "x")
-    tracks_entry = "- [ ] **Track: Test**\n" "*Link: [./conductor/tracks/t2/](./conductor/tracks/t2/)*\n"
+    tracks_entry = "- [ ] **Track: Test**\n*Link: [./conductor/tracks/t2/](./conductor/tracks/t2/)*\n"
     _write(conductor_dir / "tracks.md", tracks_entry)
 
     track_dir = conductor_dir / "tracks" / "t2"

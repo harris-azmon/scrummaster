@@ -6,5 +6,6 @@
 - No file diffs were produced; adapters appear in sync with canonical setup/newTrack guidance.
 
 ## Notes
+
 - Adapter prompts are sourced from core templates and regenerated via sync tooling.
 - Future UX changes should update templates first, then re-run sync to propagate.

@@ -8,7 +8,7 @@ class JujutsuService:
     with actual Jujutsu commands via subprocess calls.
     """
 
-    def __init__(self, repo_path: str):
+    def __init__(self, repo_path: str) -> None:
         self.path = repo_path
         # In a real implementation, we would check if jujutsu is available
         # and initialize the jujutsu repository

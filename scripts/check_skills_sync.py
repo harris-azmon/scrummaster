@@ -1,5 +1,4 @@
 import argparse
-import json
 import os
 import sys
 from pathlib import Path
@@ -19,21 +18,22 @@ TEMPLATES_DIR = ROOT / "conductor-core" / "src" / "conductor_core" / "templates"
 MANIFEST_PATH = ROOT / "skills" / "manifest.json"
 SCHEMA_PATH = ROOT / "skills" / "manifest.schema.json"
 
-REPO_SKILL_DIRS = [
+# skills/ and conductor-vscode/skills/ are checked for existence only (see
+# _check_skill_presence below), not generator parity: skills/*/SKILL.md is now
+# canonical, hand-authored content (adopted from upstream's plugin format), not
+# something rendered from conductor-core's Jinja templates. .antigravity/skills
+# is gitignored (local-only), so it's never present in a fresh checkout.
+REPO_SKILL_PRESENCE_DIRS = [
     ROOT / "skills",
-    ROOT / ".antigravity" / "skills",
     ROOT / "conductor-vscode" / "skills",
 ]
+# .agent/workflows and .agent/skills are gitignored (local-only, synced by
+# scripts/install_local.py on demand), so they never exist in a fresh checkout.
 ANTIGRAVITY_WORKSPACE_DIR = ROOT / ".agent" / "workflows"
 ANTIGRAVITY_GLOBAL_DIR = Path.home() / ".gemini" / "antigravity" / "global_workflows"
 ANTIGRAVITY_SKILLS_WORKSPACE_DIR = ROOT / ".agent" / "skills"
 ANTIGRAVITY_SKILLS_GLOBAL_DIR = Path.home() / ".gemini" / "antigravity" / "skills"
 VSIX_PATH = ROOT / "conductor.vsix"
-
-EXTENSION_PATHS = {
-    "gemini": ROOT / "gemini-extension.json",
-    "qwen": ROOT / "qwen-extension.json",
-}
 
 
 def _check_skill_dir(skills: list[dict], templates_dir: Path, target_dir: Path, *, fix: bool) -> list[str]:
@@ -58,25 +58,17 @@ def _check_skill_dir(skills: list[dict], templates_dir: Path, target_dir: Path, 
     return mismatches
 
 
-def _check_extensions(manifest: dict, *, fix: bool) -> list[str]:
-    mismatches: list[str] = []
-    extensions = manifest.get("extensions", {})
-    for tool_name, target_path in EXTENSION_PATHS.items():
-        expected = extensions.get(tool_name)
-        if not expected:
-            mismatches.append(f"Missing extension metadata: {tool_name}")
-            continue
-        if not target_path.exists():
-            mismatches.append(f"Missing: {target_path}")
-            if fix:
-                target_path.write_text(json.dumps(expected, indent=2) + "\n", encoding="utf-8")
-            continue
-        actual = json.loads(target_path.read_text(encoding="utf-8"))
-        if actual != expected:
-            mismatches.append(f"Mismatch: {target_path}")
-            if fix:
-                target_path.write_text(json.dumps(expected, indent=2) + "\n", encoding="utf-8")
-    return mismatches
+def _check_skill_presence(skills: list[dict], target_dir: Path) -> list[str]:
+    """Verify every manifest skill has a SKILL.md file in target_dir (existence only,
+    not content parity - see the REPO_SKILL_PRESENCE_DIRS comment above)."""
+    if not target_dir.exists():
+        return [f"Missing directory: {target_dir}"]
+    missing = []
+    for skill in skills:
+        skill_file = target_dir / skill["name"] / "SKILL.md"
+        if not skill_file.exists():
+            missing.append(f"Missing: {skill_file}")
+    return missing
 
 
 def _check_antigravity_workflows(
@@ -134,11 +126,16 @@ def main() -> int:
     skills = list(iter_skills(manifest))
 
     mismatches: list[str] = []
-    for target_dir in REPO_SKILL_DIRS:
-        mismatches.extend(_check_skill_dir(skills, TEMPLATES_DIR, target_dir, fix=args.fix))
+    for target_dir in REPO_SKILL_PRESENCE_DIRS:
+        mismatches.extend(_check_skill_presence(skills, target_dir))
 
+    # .agent/workflows is gitignored (local-only), so it's optional unless
+    # explicitly requested - it never exists in a fresh checkout.
+    workspace_required = args.check_global or os.environ.get("CONDUCTOR_VALIDATE_GLOBAL_ANTIGRAVITY") == "1"
     mismatches.extend(
-        _check_antigravity_workflows(skills, TEMPLATES_DIR, ANTIGRAVITY_WORKSPACE_DIR, fix=args.fix, optional=False)
+        _check_antigravity_workflows(
+            skills, TEMPLATES_DIR, ANTIGRAVITY_WORKSPACE_DIR, fix=args.fix, optional=not workspace_required
+        )
     )
     global_required = args.check_global or os.environ.get("CONDUCTOR_VALIDATE_GLOBAL_ANTIGRAVITY") == "1"
     mismatches.extend(
@@ -151,7 +148,6 @@ def main() -> int:
         )
     )
 
-    mismatches.extend(_check_extensions(manifest, fix=args.fix))
     mismatches.extend(_check_vsix_artifact(VSIX_PATH, require=args.require_vsix))
 
     check_skills = args.check_antigravity_skills or os.environ.get("CONDUCTOR_VALIDATE_ANTIGRAVITY_SKILLS") == "1"
@@ -160,8 +156,8 @@ def main() -> int:
         mismatches.extend(_check_skill_dir(skills, TEMPLATES_DIR, ANTIGRAVITY_SKILLS_GLOBAL_DIR, fix=args.fix))
 
     if mismatches:
-        for _item in mismatches:
-            pass
+        for item in mismatches:
+            print(item)
         return 1
 
     return 0

@@ -4,6 +4,8 @@
 Tests the installation and verification scripts to ensure they work correctly.
 """
 
+from __future__ import annotations
+
 import subprocess
 import sys
 from pathlib import Path
@@ -28,86 +30,80 @@ def test_verify_installation() -> bool:
     """Test the verify installation script."""
     print("\nTEST Testing verify_installation.py...")
 
-    code, stdout, stderr = run_command([sys.executable, "scripts/verify_installation.py"])
+    code, _stdout, stderr = run_command([sys.executable, "scripts/verify_installation.py"])
 
     if code == 0:
         print("PASS verify_installation.py works correctly")
         return True
-    else:
-        print(f"WARN  verify_installation.py returned exit code {code}")
-        print(f"   stderr: {stderr[:200]}")
-        return False
+    print(f"WARN  verify_installation.py returned exit code {code}")
+    print(f"   stderr: {stderr[:200]}")
+    return False
 
 
 def test_validate_docs() -> bool:
     """Test the documentation validation script."""
     print("\nTEST Testing validate_docs.py...")
 
-    code, stdout, stderr = run_command([sys.executable, "scripts/validate_docs.py"])
+    code, _stdout, stderr = run_command([sys.executable, "scripts/validate_docs.py"])
 
     # This may fail on validation errors, but script should run
     if "Running documentation validation" in stderr or code in [0, 1]:
         print("PASS validate_docs.py runs correctly")
         return True
-    else:
-        print(f"FAIL validate_docs.py failed: {stderr[:200]}")
-        return False
+    print(f"FAIL validate_docs.py failed: {stderr[:200]}")
+    return False
 
 
 def test_conductor_install_help() -> bool:
     """Test that conductor_install.py shows help correctly."""
     print("\nTEST Testing conductor_install.py --help...")
 
-    code, stdout, stderr = run_command([sys.executable, "scripts/conductor_install.py", "--help"])
+    code, stdout, _stderr = run_command([sys.executable, "scripts/conductor_install.py", "--help"])
 
     if code == 0 and "Install conductor components" in stdout:
         print("PASS conductor_install.py --help works")
         return True
-    else:
-        print("FAIL conductor_install.py --help failed")
-        return False
+    print("FAIL conductor_install.py --help failed")
+    return False
 
 
 def test_conductor_update_help() -> bool:
     """Test that conductor_update.py shows help correctly."""
     print("\nTEST Testing conductor_update.py --help...")
 
-    code, stdout, stderr = run_command([sys.executable, "scripts/conductor_update.py", "--help"])
+    code, stdout, _stderr = run_command([sys.executable, "scripts/conductor_update.py", "--help"])
 
     if code == 0 and "Check for and apply conductor updates" in stdout:
         print("PASS conductor_update.py --help works")
         return True
-    else:
-        print("FAIL conductor_update.py --help failed")
-        return False
+    print("FAIL conductor_update.py --help failed")
+    return False
 
 
 def test_sync_upstream_help() -> bool:
     """Test that sync_upstream.py shows help correctly."""
     print("\nTEST Testing sync_upstream.py --help...")
 
-    code, stdout, stderr = run_command([sys.executable, "scripts/sync_upstream.py", "--help"])
+    code, stdout, _stderr = run_command([sys.executable, "scripts/sync_upstream.py", "--help"])
 
     if code == 0 and "Sync from upstream repositories" in stdout:
         print("PASS sync_upstream.py --help works")
         return True
-    else:
-        print("FAIL sync_upstream.py --help failed")
-        return False
+    print("FAIL sync_upstream.py --help failed")
+    return False
 
 
 def test_triage_issues_help() -> bool:
     """Test that triage_issues.py shows help correctly."""
     print("\nTEST Testing triage_issues.py --help...")
 
-    code, stdout, stderr = run_command([sys.executable, "scripts/triage_issues.py", "--help"])
+    code, stdout, _stderr = run_command([sys.executable, "scripts/triage_issues.py", "--help"])
 
     if code == 0 and "Triage GitHub issues" in stdout:
         print("PASS triage_issues.py --help works")
         return True
-    else:
-        print("FAIL triage_issues.py --help failed")
-        return False
+    print("FAIL triage_issues.py --help failed")
+    return False
 
 
 def test_mise_toml_exists() -> bool:
@@ -123,9 +119,8 @@ def test_mise_toml_exists() -> bool:
     if "[tools]" in content and "[tasks]" in content:
         print("PASS mise.toml exists and looks valid")
         return True
-    else:
-        print("WARN  mise.toml exists but may be missing sections")
-        return True  # Still pass, just warn
+    print("WARN  mise.toml exists but may be missing sections")
+    return True  # Still pass, just warn
 
 
 def test_install_scripts_exist() -> bool:

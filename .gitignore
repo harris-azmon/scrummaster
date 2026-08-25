@@ -210,7 +210,6 @@ __marimo__/
 
 # Conductor
 tmp/
-/.gemini/tmp/
 *.vsix
 *.tar.gz
 .tmp_test.txt
@@ -221,7 +220,6 @@ node_modules/
 # Tool-specific directories (should not be in remote repo)
 /.claude/
 /.gemini/
-/.claude-plugin/
 /.antigravity/
 /.agent/
 /.qwen/

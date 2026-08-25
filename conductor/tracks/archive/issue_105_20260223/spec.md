@@ -11,11 +11,13 @@ The Conductor extension's interactive commands (`setup`, `newTrack`, `review`, `
 ## Problem Statement
 
 **Current Behavior:**
+
 - Agent manually instructs users to type specific keywords (e.g., "Type A or B", "Reply with yes/no")
 - Agent must parse natural language responses, leading to errors
 - Long interaction flows require many individual turns, slowing down the process
 
 **Expected Behavior:**
+
 - All interactions use the AskUser tool
 - Yes/No questions use `yesno` type
 - Menu selections use `choice` type (single or multi-select)
@@ -63,6 +65,6 @@ The Conductor extension's interactive commands (`setup`, `newTrack`, `review`, `
 
 ## References
 
-- Upstream Issue: https://github.com/gemini-cli-extensions/conductor/issues/105
+- Upstream Issue: <https://github.com/gemini-cli-extensions/conductor/issues/105>
 - Related: google-gemini/gemini-cli#17689
-- AskUser Tool Documentation: https://github.com/google-gemini/gemini-cli
+- AskUser Tool Documentation: <https://github.com/google-gemini/gemini-cli>

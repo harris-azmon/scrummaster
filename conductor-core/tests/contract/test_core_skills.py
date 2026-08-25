@@ -6,7 +6,7 @@ from conductor_core.project_manager import ProjectManager
 from conductor_core.task_runner import TaskRunner
 
 
-@pytest.fixture()
+@pytest.fixture
 def mock_pm(tmp_path):
     pm = ProjectManager(tmp_path)
     # Create necessary files for PM to be considered "set up"

@@ -4,7 +4,7 @@ This document outlines coding standards and best practices for D3.js (Data-Drive
 
 ## Project Structure and Organization
 
-```
+```text
 project/
 ├── src/
 │   ├── components/          # Reusable visualization components

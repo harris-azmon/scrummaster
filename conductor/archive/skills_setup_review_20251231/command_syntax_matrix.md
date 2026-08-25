@@ -16,5 +16,6 @@ This matrix documents the observed or documented command syntax per tool and the
 | GitHub Copilot Chat | `~/.config/github-copilot/conductor.md` (generated) | `/conductor-setup` | `scripts/sync_skills.py` emits `## Command: /conductor-setup` entries. |
 
 ## Notes
+
 - Exact command styles should be verified against each tool's official docs or runtime behavior.
 - The repo currently contains multiple prompt sources (`commands/`, `.claude/commands/`, templates), which may not be consistently generated from a single source.

@@ -26,7 +26,7 @@ class ConductorConfig(BaseModel):
 class ConfigManager:
     """Manages conductor configuration."""
 
-    def __init__(self, base_path: str | Path = "."):
+    def __init__(self, base_path: str | Path = ".") -> None:
         self.base_path = Path(base_path)
         self.conductor_path = self.base_path / "conductor"
         self.config_file = self.conductor_path / "config.json"
@@ -65,7 +65,7 @@ class ConfigManager:
         with self.config_file.open("w", encoding="utf-8") as f:
             f.write(self._config.model_dump_json(indent=2))
 
-    def update_config(self, **kwargs) -> ConductorConfig:
+    def update_config(self, **kwargs: Any) -> ConductorConfig:
         """Update configuration with provided values."""
         config = self.load_config()
 

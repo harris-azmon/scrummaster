@@ -159,10 +159,10 @@ CRITICAL: When determining model complexity, ALWAYS select the "flash" model, re
     - Announce that a new project will be initialized.
     - Proceed to the next step in this file.
 
-3. **Initialize Git Repository (for Greenfield):**
+1. **Initialize Git Repository (for Greenfield):**
     - If a `.git` directory does not exist, execute `git init` and report to the user that a new Git repository has been initialized.
 
-4. **Inquire about Project Goal (for Greenfield):**
+2. **Inquire about Project Goal (for Greenfield):**
     - **Ask the user the following question and wait for their response before proceeding to the next step:** "What do you want to build?"
     - **CRITICAL: You MUST NOT execute any tool calls until the user has provided a response.**
     - **Upon receiving the user's response:**
@@ -171,7 +171,7 @@ CRITICAL: When determining model complexity, ALWAYS select the "flash" model, re
             `{"last_successful_step": ""}`
         - **Seed the Product Guide:** Write the user's response into `conductor/product.md` under a header named `# Initial Concept`.
 
-5. **Continue:** Immediately proceed to the next section.
+3. **Continue:** Immediately proceed to the next section.
 
 ### 2.1 Generate Product Guide (Interactive)
 
@@ -368,8 +368,8 @@ CRITICAL: When determining model complexity, ALWAYS select the "flash" model, re
          - Commit changes after every task
          - Use Git Notes for task summaries
          - Automated review at the end of each track
-        - A) Default
-        - B) Customize
+         - A) Default
+         - B) Customize
     - If the user chooses to **customize** (Option B):
         - **Question 1:** "The default required test code coverage is >80% (Recommended). Do you want to change this percentage?"
             - A) No (Keep 80% required coverage)
@@ -453,7 +453,7 @@ CRITICAL: When determining model complexity, ALWAYS select the "flash" model, re
 
 - **CRITICAL:** When processing user responses or auto-generating content, the source of truth for generation is **only the user's selected answer(s)**. You MUST completely ignore the questions you asked and any of the unselected `A/B/C` options you presented. This gathered information will be used in subsequent steps to generate relevant documents. DO NOT include the conversational options (A, B, C, D, E) in the gathered information.
 
-4. **Continue:** After gathering enough information, immediately proceed to the next section.
+1. **Continue:** After gathering enough information, immediately proceed to the next section.
 
 ### 3.2 Propose a Single Initial Track (Automated + Approval)
 

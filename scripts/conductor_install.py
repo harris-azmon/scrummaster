@@ -11,13 +11,14 @@ Usage:
     python scripts/conductor_install.py [--all] [--component COMPONENT]
 """
 
+from __future__ import annotations
+
 import argparse
 import platform
 import shutil
 import subprocess
 import sys
 from pathlib import Path
-from typing import Optional
 
 
 class Colors:
@@ -52,19 +53,18 @@ class ConductorInstaller:
         system = platform.system()
         if system == "Darwin":
             return "macos"
-        elif system == "Linux":
+        if system == "Linux":
             return "linux"
-        elif system == "Windows":
+        if system == "Windows":
             return "windows"
-        else:
-            return system.lower()
+        return system.lower()
 
     def detect_arch(self) -> str:
         """Detect system architecture"""
         machine = platform.machine().lower()
         if machine in ["amd64", "x86_64"]:
             return "x64"
-        elif machine in ["arm64", "aarch64"]:
+        if machine in ["arm64", "aarch64"]:
             return "arm64"
         return machine
 
@@ -72,7 +72,7 @@ class ConductorInstaller:
         """Check if a command is available"""
         return shutil.which(command) is not None
 
-    def run_command(self, cmd: list[str], cwd: Optional[Path] = None, check: bool = True) -> tuple[int, str, str]:
+    def run_command(self, cmd: list[str], cwd: Path | None = None, check: bool = True) -> tuple[int, str, str]:
         """Run a shell command"""
         try:
             result = subprocess.run(
@@ -137,7 +137,7 @@ class ConductorInstaller:
             self.log("Using pip for installation...")
             cmd = [sys.executable, "-m", "pip", "install", str(core_path)]
 
-        code, stdout, stderr = self.run_command(cmd)
+        code, _stdout, stderr = self.run_command(cmd)
         if code != 0:
             raise Exception(f"Installation failed: {stderr}")
 
@@ -158,7 +158,7 @@ class ConductorInstaller:
         else:
             cmd = [sys.executable, "-m", "pip", "install", str(gemini_path)]
 
-        code, stdout, stderr = self.run_command(cmd)
+        code, _stdout, stderr = self.run_command(cmd)
         if code != 0:
             raise Exception(f"Installation failed: {stderr}")
 
@@ -176,17 +176,16 @@ class ConductorInstaller:
             return True
 
         # Check if .vsix exists, if not try to build it
-        if not vsix_path.exists():
-            if vscode_path.exists():
-                self.log("Building VS Code extension...")
-                # Install npm dependencies
-                self.run_command(["npm", "install"], cwd=vscode_path, check=False)
-                # Build extension
-                code, stdout, stderr = self.run_command(["npm", "run", "package"], cwd=vscode_path, check=False)
-                if code != 0:
-                    self.log(f"[WARN]  Failed to build extension: {stderr}", Colors.YELLOW)
-                    self.skipped.append("vscode")
-                    return True
+        if not vsix_path.exists() and vscode_path.exists():
+            self.log("Building VS Code extension...")
+            # Install npm dependencies
+            self.run_command(["npm", "install"], cwd=vscode_path, check=False)
+            # Build extension
+            code, _stdout, stderr = self.run_command(["npm", "run", "package"], cwd=vscode_path, check=False)
+            if code != 0:
+                self.log(f"[WARN]  Failed to build extension: {stderr}", Colors.YELLOW)
+                self.skipped.append("vscode")
+                return True
 
         if not vsix_path.exists():
             self.log("[WARN]  conductor.vsix not found, skipping", Colors.YELLOW)
@@ -194,7 +193,7 @@ class ConductorInstaller:
             return True
 
         # Install extension
-        code, stdout, stderr = self.run_command(
+        code, _stdout, stderr = self.run_command(
             ["code", "--install-extension", str(vsix_path), "--force" if force else ""],
             check=False,
         )
@@ -204,7 +203,7 @@ class ConductorInstaller:
         if force:
             cmd.append("--force")
 
-        code, stdout, stderr = self.run_command(cmd, check=False)
+        code, _stdout, stderr = self.run_command(cmd, check=False)
 
         if code != 0:
             raise Exception(f"Extension install failed: {stderr}")
@@ -310,7 +309,7 @@ class ConductorInstaller:
 
         self.log("\n" + "=" * 60, Colors.BLUE)
 
-    def install_all(self, components: Optional[list[str]] = None, force: bool = False) -> bool:
+    def install_all(self, components: list[str] | None = None, force: bool = False) -> bool:
         """Install all or specified components"""
         self.log("\n[START] Conductor Universal Installer", Colors.BLUE)
         self.log("=" * 60, Colors.BLUE)

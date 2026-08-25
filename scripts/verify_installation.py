@@ -74,7 +74,7 @@ class InstallationVerifier:
         self.log("\n[SCAN] System Requirements", Colors.BLUE)
 
         # Check Python version
-        code, stdout, stderr = self.run_command([sys.executable, "--version"])
+        code, stdout, _stderr = self.run_command([sys.executable, "--version"])
         if code == 0:
             version = stdout.strip()
             self.check_pass(f"Python: {version}")
@@ -82,14 +82,14 @@ class InstallationVerifier:
             self.check_fail("Python: Not found")
 
         # Check Git
-        code, stdout, stderr = self.run_command(["git", "--version"])
+        code, stdout, _stderr = self.run_command(["git", "--version"])
         if code == 0:
             self.check_pass(f"Git: {stdout.strip()}")
         else:
             self.check_fail("Git: Not found")
 
         # Check Node.js (optional)
-        code, stdout, stderr = self.run_command(["node", "--version"])
+        code, stdout, _stderr = self.run_command(["node", "--version"])
         if code == 0:
             self.check_pass(f"Node.js: {stdout.strip()}")
         else:
@@ -116,7 +116,7 @@ class InstallationVerifier:
         self.log("\n[SCAN] Conductor Gemini", Colors.BLUE)
 
         # Check if module can be imported
-        code, stdout, stderr = self.run_command([sys.executable, "-c", "import conductor_gemini; print('OK')"])
+        code, _stdout, stderr = self.run_command([sys.executable, "-c", "import conductor_gemini; print('OK')"])
         if code == 0:
             self.check_pass("conductor-gemini: Installed")
         else:
@@ -125,7 +125,7 @@ class InstallationVerifier:
                 self.log(f"    Error: {stderr}")
 
         # Check CLI entry point
-        code, stdout, stderr = self.run_command(["conductor-gemini", "--help"], check=False)
+        code, _stdout, stderr = self.run_command(["conductor-gemini", "--help"], check=False)
         if code == 0:
             self.check_pass("conductor-gemini CLI: Available")
         else:
@@ -136,7 +136,7 @@ class InstallationVerifier:
         self.log("\n[SCAN] VS Code Extension", Colors.BLUE)
 
         # Check if VS Code is installed
-        code, stdout, stderr = self.run_command(["code", "--version"], check=False)
+        code, stdout, _stderr = self.run_command(["code", "--version"], check=False)
         if code != 0:
             self.check_warn("VS Code: Not installed (optional)")
             return
@@ -144,7 +144,7 @@ class InstallationVerifier:
         self.check_pass("VS Code: Installed")
 
         # Check if extension is installed
-        code, stdout, stderr = self.run_command(["code", "--list-extensions"], check=False)
+        code, stdout, _stderr = self.run_command(["code", "--list-extensions"], check=False)
         if code == 0:
             extensions = stdout.lower()
             if "conductor" in extensions:
@@ -185,7 +185,7 @@ class InstallationVerifier:
         self.log("\n[SCAN] Mise Configuration", Colors.BLUE)
 
         # Check if mise is installed
-        code, stdout, stderr = self.run_command(["mise", "--version"], check=False)
+        code, stdout, _stderr = self.run_command(["mise", "--version"], check=False)
         if code == 0:
             version = stdout.strip()
             self.check_pass(f"mise: v{version}")
@@ -201,7 +201,7 @@ class InstallationVerifier:
             self.check_warn("mise.toml: Not found in current directory")
 
         # Check mise tasks
-        code, stdout, stderr = self.run_command(["mise", "tasks", "ls"], check=False)
+        code, stdout, _stderr = self.run_command(["mise", "tasks", "ls"], check=False)
         if code == 0:
             tasks = stdout.strip().split("\n")
             conductor_tasks = [t for t in tasks if "conductor" in t.lower()]
@@ -296,10 +296,9 @@ class InstallationVerifier:
             else:
                 self.log("  [DONE] Installation is complete and healthy!\n", Colors.GREEN)
             return True
-        else:
-            self.log(f"\n  [FAIL] {self.checks_failed} critical check(s) failed", Colors.RED)
-            self.log("  Please review the errors above and reinstall if necessary\n")
-            return False
+        self.log(f"\n  [FAIL] {self.checks_failed} critical check(s) failed", Colors.RED)
+        self.log("  Please review the errors above and reinstall if necessary\n")
+        return False
 
 
 def main() -> int:

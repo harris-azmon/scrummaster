@@ -8,27 +8,26 @@ This script fetches changes from upstream repositories:
 It detects merge conflicts and creates draft PRs when needed.
 """
 
+from __future__ import annotations
+
+import json
 import os
 import sys
-import json
-import hashlib
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
 
 import requests
-from github import Github, Auth
+from github import Auth, Github
 
 
 class UpstreamSyncError(Exception):
     """Base exception for upstream sync errors."""
-    pass
 
 
 class GitHubClient:
     """GitHub API client for repository operations."""
 
-    def __init__(self, token: Optional[str] = None):
+    def __init__(self, token: str | None = None) -> None:
         """Initialize GitHub client.
 
         Args:
@@ -36,9 +35,7 @@ class GitHubClient:
         """
         self.token = token or os.environ.get("GITHUB_TOKEN")
         if not self.token:
-            raise UpstreamSyncError(
-                "GitHub token required. Set GITHUB_TOKEN environment variable."
-            )
+            raise UpstreamSyncError("GitHub token required. Set GITHUB_TOKEN environment variable.")
         self.auth = Auth.Token(self.token)
         self.gh = Github(auth=self.auth)
         self.api_base = "https://api.github.com"
@@ -136,7 +133,7 @@ class GitHubClient:
 class SyncState:
     """Track sync state and history."""
 
-    def __init__(self, state_file: Path):
+    def __init__(self, state_file: Path) -> None:
         """Initialize sync state tracker.
 
         Args:
@@ -148,7 +145,7 @@ class SyncState:
     def _load_state(self) -> dict:
         """Load state from file or create new."""
         if self.state_file.exists():
-            with open(self.state_file, "r") as f:
+            with open(self.state_file) as f:
                 return json.load(f)
         return {
             "last_sync": None,
@@ -156,13 +153,13 @@ class SyncState:
             "sync_log": [],
         }
 
-    def save(self):
+    def save(self) -> None:
         """Save state to file."""
         self.state_file.parent.mkdir(parents=True, exist_ok=True)
         with open(self.state_file, "w") as f:
             json.dump(self.state, f, indent=2)
 
-    def update_sync(self, upstream: str, commit_sha: str, status: str):
+    def update_sync(self, upstream: str, commit_sha: str, status: str) -> None:
         """Update sync state for an upstream.
 
         Args:
@@ -175,12 +172,14 @@ class SyncState:
             "commit_sha": commit_sha,
             "status": status,
         }
-        self.state["sync_log"].append({
-            "timestamp": datetime.now(timezone.utc).isoformat(),
-            "upstream": upstream,
-            "commit_sha": commit_sha,
-            "status": status,
-        })
+        self.state["sync_log"].append(
+            {
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+                "upstream": upstream,
+                "commit_sha": commit_sha,
+                "status": status,
+            }
+        )
         # Keep only last 100 log entries
         self.state["sync_log"] = self.state["sync_log"][-100:]
         self.save()
@@ -189,7 +188,7 @@ class SyncState:
 class UpstreamSyncBot:
     """Main sync bot orchestrator."""
 
-    def __init__(self, target_repo: str, upstreams: list[str], state_file: Path):
+    def __init__(self, target_repo: str, upstreams: list[str], state_file: Path) -> None:
         """Initialize sync bot.
 
         Args:
@@ -231,18 +230,14 @@ class UpstreamSyncBot:
             True if conflicts detected
         """
         try:
-            comparison = self.client.compare_branches(
-                self.target_repo, upstream, target_branch, target_branch
-            )
+            comparison = self.client.compare_branches(self.target_repo, upstream, target_branch, target_branch)
             # If status is 'diverged' or has merge conflicts
             return comparison.get("status") == "diverged"
         except Exception as e:
             print(f"[WARN] Could not compare branches: {e}")
             return True
 
-    def create_sync_pr(
-        self, upstream: str, upstream_sha: str, target_branch: str = "main"
-    ) -> Optional[dict]:
+    def create_sync_pr(self, upstream: str, upstream_sha: str, target_branch: str = "main") -> dict | None:
         """Create a PR for upstream changes.
 
         Args:
@@ -254,7 +249,7 @@ class UpstreamSyncBot:
             PR data if created, None otherwise
         """
         # Create a branch name with timestamp
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         upstream_name = upstream.replace("/", "-")
         branch_name = f"sync/{upstream_name}_{timestamp}"
 
@@ -264,7 +259,7 @@ class UpstreamSyncBot:
         # 3. Create PR
 
         title = f"Sync from {upstream}"
-        body = f"""## Upstream Sync
+        f"""## Upstream Sync
 
 Automated sync from [{upstream}](https://github.com/{upstream})
 
@@ -306,9 +301,9 @@ Automated sync from [{upstream}](https://github.com/{upstream})
         }
 
         for upstream in self.upstreams:
-            print(f"\n{'='*60}")
+            print(f"\n{'=' * 60}")
             print(f"[SYNC] Processing upstream: {upstream}")
-            print(f"{'='*60}")
+            print(f"{'=' * 60}")
 
             try:
                 # Fetch upstream
@@ -321,34 +316,40 @@ Automated sync from [{upstream}](https://github.com/{upstream})
                 has_conflicts = self.check_merge_conflicts(upstream)
 
                 if has_conflicts:
-                    print(f"[CONFLICT] Merge conflicts detected")
+                    print("[CONFLICT] Merge conflicts detected")
                     # Create draft PR for manual resolution
                     pr = self.create_sync_pr(upstream, upstream_sha)
                     self.state.update_sync(upstream, upstream_sha, "conflict")
-                    results["upstreams"].append({
-                        "name": upstream,
-                        "sha": upstream_sha,
-                        "status": "conflict",
-                        "pr": pr,
-                    })
+                    results["upstreams"].append(
+                        {
+                            "name": upstream,
+                            "sha": upstream_sha,
+                            "status": "conflict",
+                            "pr": pr,
+                        }
+                    )
                 else:
-                    print(f"[OK] No conflicts detected")
+                    print("[OK] No conflicts detected")
                     # In production, would auto-merge here
                     self.state.update_sync(upstream, upstream_sha, "success")
-                    results["upstreams"].append({
-                        "name": upstream,
-                        "sha": upstream_sha,
-                        "status": "success",
-                    })
+                    results["upstreams"].append(
+                        {
+                            "name": upstream,
+                            "sha": upstream_sha,
+                            "status": "success",
+                        }
+                    )
 
             except Exception as e:
                 print(f"[ERROR] Failed to sync {upstream}: {e}")
                 self.state.update_sync(upstream, "", "failed")
-                results["upstreams"].append({
-                    "name": upstream,
-                    "status": "failed",
-                    "error": str(e),
-                })
+                results["upstreams"].append(
+                    {
+                        "name": upstream,
+                        "status": "failed",
+                        "error": str(e),
+                    }
+                )
 
         # Save state
         self.state.save()
@@ -356,15 +357,15 @@ Automated sync from [{upstream}](https://github.com/{upstream})
         return results
 
 
-def main():
+def main() -> int | None:
     """Main entry point."""
     import argparse
 
     parser = argparse.ArgumentParser(description="Sync changes from upstream repositories")
     parser.add_argument(
         "--target",
-        default="edithatogo/conductor-next",
-        help="Target repository (default: edithatogo/conductor-next)",
+        default="harris-azmon/conductor",
+        help="Target repository (default: harris-azmon/conductor)",
     )
     parser.add_argument(
         "--upstream",
@@ -389,14 +390,14 @@ def main():
 
     args = parser.parse_args()
 
-    print("="*60)
+    print("=" * 60)
     print("Upstream Sync Bot")
-    print("="*60)
+    print("=" * 60)
     print(f"Target: {args.target}")
     print(f"Upstreams: {', '.join(args.upstream)}")
     print(f"State file: {args.state_file}")
     print(f"Dry run: {args.dry_run}")
-    print("="*60)
+    print("=" * 60)
 
     if args.dry_run:
         print("[DRY RUN] No changes will be made")
@@ -406,9 +407,9 @@ def main():
         bot = UpstreamSyncBot(args.target, args.upstream, args.state_file)
         results = bot.sync()
 
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("Sync Summary")
-        print("="*60)
+        print("=" * 60)
         for upstream_result in results["upstreams"]:
             status = upstream_result.get("status", "unknown")
             name = upstream_result.get("name", "unknown")

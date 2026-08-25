@@ -45,7 +45,7 @@ def render_skill_content(skill: dict, templates_dir: Path) -> str:
     triggers = list(skill.get("commands", {}).values())
 
     # Ensure unique triggers
-    triggers = sorted(list(set(triggers)))
+    triggers = sorted(set(triggers))
 
     skill_data = {
         "id": skill["id"],
@@ -62,14 +62,13 @@ def render_skill_content(skill: dict, templates_dir: Path) -> str:
     if "triggers" in skill:
         skill_data["triggers"] = skill["triggers"]
 
-    summary = template.render(skill=skill_data)
+    return template.render(skill=skill_data)
 
     # Note: Do NOT append raw instruction template content.
     # The SKILL.md.j2 template is designed as a standalone skill definition
     # for Amp and other platforms. Raw template content includes its own
     # frontmatter which would corrupt the output. For consolidated formats
     # (Antigravity workflows, Copilot), use render_antigravity_workflow_content.
-    return summary
 
 
 def render_antigravity_workflow_content(skill: dict, templates_dir: Path) -> str:

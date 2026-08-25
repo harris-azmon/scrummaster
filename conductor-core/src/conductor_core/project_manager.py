@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import contextlib
 import hashlib
 import json
 import os
@@ -7,6 +8,7 @@ import re
 import time
 from datetime import datetime, timezone
 from pathlib import Path
+from typing import Any
 
 from .models import Track, TrackStatus
 
@@ -93,10 +95,8 @@ class ProjectManager:
                 except Exception:
                     os.close(fd)
                     # Clean up the file if write failed
-                    try:
+                    with contextlib.suppress(OSError):
                         os.unlink(lock_file)
-                    except OSError:
-                        pass
                     return False
             except OSError:
                 # Lock file already exists, wait and retry
@@ -167,7 +167,7 @@ class ProjectManager:
 
         return "\n".join(report + summary_header)
 
-    def update_track_metadata(self, track_id: str, updates: dict) -> dict:
+    def update_track_metadata(self, track_id: str, updates: dict[str, Any]) -> dict[str, Any]:
         """Merge updates into a track's metadata.json and return the result."""
         track_dir = self.conductor_path / "tracks" / track_id
         metadata_path = track_dir / "metadata.json"
@@ -176,7 +176,7 @@ class ProjectManager:
 
         metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
 
-        def _merge(target: dict, incoming: dict) -> dict:
+        def _merge(target: dict[str, Any], incoming: dict[str, Any]) -> dict[str, Any]:
             for key, value in incoming.items():
                 if isinstance(value, dict) and isinstance(target.get(key), dict):
                     target[key] = _merge(target[key], value)

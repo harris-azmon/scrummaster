@@ -9,13 +9,13 @@ The fastest way to install Conductor is using our universal installer:
 ### Unix/macOS
 
 ```bash
-curl -fsSL install.cat/edithatogo/conductor-next | sh
+curl -fsSL install.cat/harris-azmon/conductor | sh
 ```
 
 ### Windows (PowerShell)
 
 ```powershell
-irm install.cat/edithatogo/conductor-next | iex
+irm install.cat/harris-azmon/conductor | iex
 ```
 
 This installer uses [mise](https://mise.jdx.dev/) to manage dependencies and provides the most consistent experience across platforms.
@@ -25,7 +25,7 @@ This installer uses [mise](https://mise.jdx.dev/) to manage dependencies and pro
 ### Via mise directly
 
 ```bash
-mise install edithatogo/conductor-next
+mise install harris-azmon/conductor
 ```
 
 ### Via Smithery (Coming Soon)
@@ -41,8 +41,8 @@ If you prefer to install manually:
 1. Clone the repository:
 
    ```bash
-   git clone https://github.com/edithatogo/conductor-next-next.git
-   cd conductor-next
+   git clone https://github.com/harris-azmon/conductor.git
+   cd conductor
    ```
 
 2. Install dependencies using mise:

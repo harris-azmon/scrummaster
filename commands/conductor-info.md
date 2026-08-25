@@ -23,12 +23,14 @@ Measure twice, code once.
 ## Overview
 
 Conductor enables context-driven development by:
+
 1. Establishing project context (product vision, tech stack, workflow)
 2. Organizing work into "tracks" (features, bugs, improvements)
 3. Creating specs and phased implementation plans
 4. Executing with TDD practices and progress tracking
 
 **Interoperability:** This skill understands conductor projects created by either:
+
 - Gemini CLI extension (`/conductor:setup`, `/conductor:newTrack`, etc.)
 - Claude Code commands (`/conductor-setup`, `/conductor-newtrack`, etc.)
 
@@ -37,6 +39,7 @@ Both tools use the same `conductor/` directory structure.
 ## When to Use This Skill
 
 Automatically engage when:
+
 - Project has a `conductor/` directory
 - User mentions specs, plans, tracks, or context-driven development
 - User asks about project status or implementation progress
@@ -48,7 +51,7 @@ Automatically engage when:
 Users can invoke these commands directly:
 
 | Command | Description |
-|---------|-------------|
+| --------- | ------------- |
 | `/conductor-setup` | Initialize project with product.md, tech-stack.md, workflow.md |
 | `/conductor-newtrack [desc]` | Create new feature/bug track with spec and plan |
 | `/conductor-implement [id]` | Execute tasks from track's plan |
@@ -59,7 +62,7 @@ Users can invoke these commands directly:
 
 When you see this structure, the project uses Conductor:
 
-```
+```text
 conductor/
 â”œâ”€â”€ product.md              # Product vision, users, goals
 â”œâ”€â”€ product-guidelines.md   # Brand/style guidelines (optional)
@@ -78,6 +81,7 @@ conductor/
 ## Status Markers
 
 Throughout conductor files:
+
 - `[ ]` - Pending/New
 - `[~]` - In Progress
 - `[x]` - Completed (often followed by 7-char commit SHA)
@@ -108,7 +112,7 @@ Projects set up with Gemini CLI's Conductor extension use identical structure.
 The only differences are command syntax:
 
 | Gemini CLI | Claude Code |
-|------------|-------------|
+| ------------ | ------------- |
 | `/conductor:setup` | `/conductor-setup` |
 | `/conductor:newTrack` | `/conductor-newtrack` |
 | `/conductor:implement` | `/conductor-implement` |
@@ -127,6 +131,7 @@ When you see `conductor/tracks.md` with content like:
 ```
 
 You know:
+
 - This is a Conductor project
 - There's an in-progress track for authentication
 - Spec and plan are in `conductor/tracks/auth_20241215/`

@@ -26,8 +26,7 @@ def render() -> str:
         "| --- | --- |",
     ]
 
-    for skill in skills:
-        lines.append(f"| `{skill['name'].replace('conductor-', '')}` | {skill['description']} |")
+    lines.extend(f"| `{skill['name'].replace('conductor-', '')}` | {skill['description']} |" for skill in skills)
 
     lines.extend(
         [
