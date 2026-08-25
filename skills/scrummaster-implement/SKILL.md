@@ -45,7 +45,7 @@ Adhere to this sequence to identify and select the story to be implemented.
 1.  **Check for User Input:** First, check if the user provided a story name in their request.
 
 2.  **Locate and Parse Epics Index:**
-    -   Locate the **Epics Index** (Default: `scrummaster/epics.md`). Before trusting it, refresh it from fossil ticket state (`fossil ticket list`) since tickets, not the file, are authoritative.
+    -   Locate the **Epics Index** (Default: `scrummaster/epics.md`). Before trusting it, refresh it from fossil ticket state (`fossil sql "SELECT tkt_uuid, epic_id, story_id, acid, status FROM ticket"`) since tickets, not the file, are authoritative.
     -   Read and parse the index to identify all stories (across all epics), their status (`[ ]`, `[~]`, `[x]`), and their folder links.
     -   **CRITICAL:** If the index is empty or missing, announce that no stories are available to implement and HALT.
 
@@ -75,7 +75,7 @@ Adhere to this sequence to execute the selected story.
     -   Identify the story folder from the epics index to get the `<epic_id>` and `<story_id>`.
     -   Resolve and read the **Specification** and **Implementation Plan** for the selected story (Check the story's `index.md` for links, or use default paths).
     -   Resolve and read the **Workflow** document (Check `scrummaster/index.md` for the link, or use default path).
-    -   List this story's fossil tickets and their current status: `fossil ticket list story_id "<story_id>"`.
+    -   List this story's fossil tickets and their current status: `fossil sql "SELECT tkt_uuid, acid, status FROM ticket WHERE story_id='<story_id>'"`.
     -   If you fail to read any of these files, halt and inform the user.
     -   Check for installed skills in `.agents/skills/` and `~/.agents/extensions/scrummaster/skills/`.
     -   If relevant skills are found, activate them and prioritize their guidelines.
@@ -87,7 +87,7 @@ Adhere to this sequence to execute the selected story.
     -   When a task's ACID(s) are satisfied (implementation + passing tests), close the corresponding ticket(s): `fossil ticket change <ticket_id> status Closed`.
 
 5.  **Finalize Story:**
-    -   After all tasks are completed, verify every one of this story's ACID tickets is `Closed` (`fossil ticket list story_id "<story_id>"`) before marking the story done — reopen and follow up on any that were missed.
+    -   After all tasks are completed, verify every one of this story's ACID tickets is `Closed` (`fossil sql "SELECT tkt_uuid, acid, status FROM ticket WHERE story_id='<story_id>'"`) before marking the story done — reopen and follow up on any that were missed.
     -   Update the story status to `[x]` in the **Epics Index**.
     -   Stage the **Epics Index** file and commit: `chore(scrummaster): Mark story '<story_description>' as complete`.
     -   Announce that the story is fully complete.

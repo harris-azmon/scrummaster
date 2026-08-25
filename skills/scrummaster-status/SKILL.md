@@ -44,7 +44,7 @@ Before starting the status overview process, you MUST locate and read the projec
 Follow this sequence to provide a status overview.
 
 ### 2.1 Read Project Plan
-1.  **Refresh From Fossil:** Query authoritative ACID/story state first: `fossil ticket list`. The **Epics Index** file is a generated view of this — treat any discrepancy in favor of the ticket state.
+1.  **Refresh From Fossil:** Query authoritative ACID/story state first: `fossil sql "SELECT tkt_uuid, epic_id, story_id, acid, status FROM ticket"`. The **Epics Index** file is a generated view of this — treat any discrepancy in favor of the ticket state.
 2.  **Locate and Read:** Read the content of the **Epics Index**. Check `scrummaster/index.md` for the link, otherwise use the Default Path: `scrummaster/epics.md`.
 3.  **Locate and Read Epics and Stories:**
     -   Parse the **Epics Index** to identify all epics, their registered stories, and story paths.
@@ -55,7 +55,7 @@ Follow this sequence to provide a status overview.
 1.  **Parse Content:**
     -   Identify major project phases/sections (e.g., top-level markdown headings).
     -   Identify individual tasks and their current status by looking for checkbox markers: `[x]` for completed, `[~]` for in-progress, and `[ ]` for pending.
-    -   Cross-check task completion against each story's ACID ticket statuses (`fossil ticket list story_id "<story_id>"`) — a story isn't truly complete until its ACID tickets are all `Closed`, even if every plan.md checkbox is `[x]`.
+    -   Cross-check task completion against each story's ACID ticket statuses (`fossil sql "SELECT tkt_uuid, acid, status FROM ticket WHERE story_id='<story_id>'"`) — a story isn't truly complete until its ACID tickets are all `Closed`, even if every plan.md checkbox is `[x]`.
 2.  **Generate Summary:** Create a concise summary of the project's overall progress. This should include:
     -   The total number of epics and stories per epic.
     -   The total number of major phases.

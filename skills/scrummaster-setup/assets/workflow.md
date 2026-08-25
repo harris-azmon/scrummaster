@@ -75,10 +75,12 @@ All tasks follow a strict lifecycle:
     -   **Step 9.3: Attach Note:** Fossil has no direct equivalent of `git notes`
         (an in-place annotation on one commit); attach the summary as a technote
         tagged with the commit hash instead, so it stays discoverable from the
-        commit:
-        `bash # The note content from the previous step is passed via -m.
-        fossil technote create --mimetype text/x-markdown -m "<note content>" \
-          --tag "checkin:<commit_hash>"`
+        commit. There is no dedicated `fossil technote` subcommand — technotes
+        are created via `fossil wiki create` with `-t` (see
+        `templates/vcs_workflows/fossil.md` → `store_commit_metadata`):
+        `bash # The note content from the previous step is piped via stdin.
+        printf '%s' "<note content>" | fossil wiki create "<commit_hash>: task summary" - \
+          -t now --technote-tags "checkin:<commit_hash>" -M text/x-markdown`
 
 10. **Get and Record Task Commit Hash:**
 
@@ -200,9 +202,10 @@ that also concludes a phase in `plan.md`.
     -   **Step 7.1: Draft Note Content:** Create a detailed verification report
         including the automated test command, the manual verification steps, and
         the user's confirmation.
-    -   **Step 7.2: Attach Note:** `fossil technote create --mimetype
-        text/x-markdown -m "<report>" --tag "checkin:<target_commit_hash>"`
-        against the target commit identified in step 6.
+    -   **Step 7.2: Attach Note:** `printf '%s' "<report>" | fossil wiki create
+        "<target_commit_hash>: verification report" - -t now --technote-tags
+        "checkin:<target_commit_hash>" -M text/x-markdown` against the target
+        commit identified in step 6.
 
 8.  **Get and Record Phase Checkpoint Hash:**
 

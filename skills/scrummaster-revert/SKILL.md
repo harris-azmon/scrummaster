@@ -77,7 +77,7 @@ Before starting the revert process, you MUST locate and read the project's found
 
 1.  **Identify Implementation Commits:**
     *   Find the primary commit hash(es) for all tasks and phases recorded in the target's **Implementation Plan**.
-    *   **Handle "Ghost" Commits:** If a hash from a plan is not found (`fossil info <hash>` fails), announce this. Search `fossil timeline --grep "<message fragment>"` for a commit with a highly similar message and ask the user for confirmation using a **Yes/No question** to use it as the replacement. If not confirmed, halt.
+    *   **Handle "Ghost" Commits:** If a hash from a plan is not found (`fossil info <hash>` fails), announce this. Search `fossil search --all "<message fragment>"` (fossil's full-text timeline search — `fossil timeline` itself has no `--grep` flag) for a commit with a highly similar message and ask the user for confirmation using a **Yes/No question** to use it as the replacement. If not confirmed, halt.
 
 2.  **Identify Associated Plan-Update Commits:**
     *   For each validated implementation commit, use `fossil finfo <path_to_plan.md>` to find the corresponding plan-update commit that happened *after* it and modified the relevant **Implementation Plan** file.
@@ -89,7 +89,7 @@ Before starting the revert process, you MUST locate and read the project's found
     *   Add this "story creation" commit's hash to the list of commits to be reverted.
 
 4.  **Identify Affected ACID Tickets (Story Revert Only):**
-    *   List the story's fossil tickets: `fossil ticket list story_id "<story_id>"`. These will need to be reopened once the revert executes.
+    *   List the story's fossil tickets: `fossil sql "SELECT tkt_uuid, acid, status FROM ticket WHERE story_id='<story_id>'"`. These will need to be reopened once the revert executes.
 
 5.  **Compile and Analyze Final List:**
     *   Compile a final, comprehensive list of **all commit hashes to be reverted**.
@@ -124,17 +124,22 @@ Before starting the revert process, you MUST locate and read the project's found
 ## 5. Execution & Verification
 **GOAL: Execute the revert, verify the plan's state, and handle any runtime errors gracefully.**
 
-1.  **Execute Reverts:**
+1.  **Execute Reverts:** `fossil patch` is a distinct fossil-specific *binary*
+    patch format for transferring uncommitted changes between machines — it
+    cannot apply an arbitrary historical `fossil diff`. Use the standard POSIX
+    `patch` tool against fossil's unified-diff output instead:
     - **If Per-Commit Inverse Patch selected**: For each commit in your final list, newest first:
       ```bash
-      fossil diff --from <hash> --to <parent_of_hash> | fossil patch apply -
+      fossil diff --from <hash> --to <parent_of_hash> > /tmp/revert.patch
+      patch -p0 < /tmp/revert.patch
       fossil commit -m "revert: <original message>"
       ```
     - **If Squash Revert selected**:
         - Identify the commit *before* the earliest commit in your list to be reverted. Let's call it `<base_hash>`.
         - Generate and apply one bulk inverse patch, then commit once:
           ```bash
-          fossil diff --from current --to <base_hash> | fossil patch apply -
+          fossil diff --from current --to <base_hash> > /tmp/revert.patch
+          patch -p0 < /tmp/revert.patch
           fossil commit -m "revert: squash-revert to <base_hash>"
           ```
 2.  **Reopen ACID Tickets:** For each ticket identified in Section 3, run `fossil ticket change <ticket_id> status Open`.

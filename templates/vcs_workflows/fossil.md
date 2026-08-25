@@ -74,25 +74,28 @@ error_handlers:
 ### store_commit_metadata
 # Purpose: Attaches a detailed note (task summary or phase verification report) to
 # a commit. Fossil has no direct equivalent of `git notes` (a note attached
-# in-place to a specific commit); the closest native constructs are technotes
-# (timestamped events, not commit-attached) and check-in comments. Scrummaster uses
-# a **technote tagged with the commit hash** so the note is still discoverable from
-# the commit via `fossil tag find` / `fossil technote list`.
+# in-place to a specific commit); the closest native construct is a **technote**
+# (a timestamped wiki-family entry, not literally attached to a commit).
+# Scrummaster tags the technote with the commit hash so the note stays
+# discoverable from the commit. There is no dedicated `fossil technote` CLI
+# subcommand — technotes are created through `fossil wiki create` with the
+# `-t|--technote` flag (verified against fossil 2.23); content comes from a
+# FILE argument or stdin (`-`), not a `-m` flag.
 # Placeholders:
 #   - {{hash}}: The hash of the commit to annotate.
-#   - {{message}}: The detailed summary/report to attach.
-command: fossil technote create --mimetype text/x-markdown -m "{{message}}" --tag "checkin:{{hash}}"
+#   - {{message}}: The detailed summary/report to attach (piped via stdin).
+command: printf '%s' "{{message}}" | fossil wiki create "{{hash}}: task summary" - -t now --technote-tags "checkin:{{hash}}" -M text/x-markdown
 success_code: 0
 error_handlers:
   - exit_code: "*"
     agent_action: "Failed to create the technote for commit '{{hash}}'. This might indicate the repository isn't open, or a permissions issue."
 
 ### get_commit_metadata
-# Purpose: Retrieves the technote(s) attached to a specific commit hash via its tag.
+# Purpose: Retrieves the technote attached to a specific commit hash via its tag.
 # Placeholders:
 #   - {{hash}}: The commit hash to search for.
 # Expected Output: The technote content if found, otherwise empty.
-command: fossil technote list --tag "checkin:{{hash}}"
+command: fossil wiki export -t "checkin:{{hash}}" -
 success_code: 0
 error_handlers:
   - exit_code: 1
@@ -110,19 +113,23 @@ error_handlers:
 #   - {{parent_hash}}: The hash of {{hash}}'s parent (get via `fossil info {{hash}}`
 #     and read the "parent:" line; for a merge commit, ask the user which parent to
 #     revert against, mirroring git's `-m` requirement).
-command: fossil diff --from {{hash}} --to {{parent_hash}} | fossil patch apply -
+# NOTE: `fossil patch` is a distinct, fossil-specific *binary* patch format for
+# transferring a check-out's *uncommitted* changes between machines — it cannot
+# apply an arbitrary historical `fossil diff`. Use the standard POSIX `patch`
+# tool against fossil's (git-compatible) unified-diff output instead (verified
+# against fossil 2.23):
+command: fossil diff --from {{hash}} --to {{parent_hash}} > /tmp/revert.patch && patch -p0 < /tmp/revert.patch && fossil commit -m "revert: {{message}}"
 success_code: 0
 error_handlers:
   - exit_code: 1
-    stderr_contains: "does not apply"
-    agent_action: "The inverse patch for commit '{{hash}}' did not apply cleanly (the working checkout has diverged too far). Resolve the conflicting hunks manually, then run `fossil commit` to finalize the revert."
+    stderr_contains: "FAILED"
+    agent_action: "The inverse patch for commit '{{hash}}' did not apply cleanly (the working checkout has diverged too far). Resolve the conflicting hunks manually (check for *.rej files), then run `fossil commit` to finalize the revert."
   - exit_code: 1
-    stderr_contains: "unknown check-in"
+    stderr_contains: "cannot resolve name"
     agent_action: "The commit hash '{{hash}}' was not found in the repository history. The revert could not be started."
   - exit_code: "*"
     stderr_contains: "merge"
     agent_action: "The commit '{{hash}}' is a merge check-in. Ask the user which parent to revert against (mirrors git's 'revert -m <parent-number>'), then re-run with the chosen {{parent_hash}}."
-# After a successful apply, finalize with: fossil commit -m "revert: <original message>"
 
 ### get_commit_history_for_file
 # Purpose: Retrieves the commit history for a specific file.
@@ -138,11 +145,13 @@ error_handlers:
 
 ### search_commit_history
 # Purpose: Searches the entire commit history for commits whose messages match a
-# specific pattern.
+# specific pattern. `fossil timeline` has no `--grep` flag (verified against
+# fossil 2.23) — use the dedicated `fossil search` command instead, which
+# full-text searches check-in comments and other timeline event text.
 # Placeholders:
-#   - {{pattern}}: The pattern to search for in commit comments.
-# Expected Output: The standard `fossil timeline` output for any matching commits.
-command: fossil timeline --grep "{{pattern}}"
+#   - {{pattern}}: The pattern (space-separated words) to search for in commit comments.
+# Expected Output: Matching timeline entries, most relevant first.
+command: fossil search --all "{{pattern}}"
 success_code: 0
 error_handlers: []
 

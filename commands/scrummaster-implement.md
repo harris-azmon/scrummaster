@@ -28,7 +28,7 @@ Read into context:
 - `scrummaster/epics/<epic_id>/stories/<story_id>/spec.md`
 - `scrummaster/epics/<epic_id>/stories/<story_id>/plan.md`
 - `scrummaster/workflow.md`
-- This story's ACID ticket states: `fossil ticket list story_id "<story_id>"`
+- This story's ACID ticket states: `fossil sql "SELECT tkt_uuid, acid, status FROM ticket WHERE story_id='<story_id>'"`
 
 ## 4. Update Story Status
 
@@ -75,12 +75,12 @@ At end of each phase:
 1. Run full test suite
 2. Present manual verification steps to user
 3. Ask for explicit confirmation: "Does this work as expected?"
-4. Create checkpoint commit: `scrummaster(checkpoint): Phase <name> complete`, and attach the verification report as a fossil technote (`fossil technote create --mimetype text/x-markdown -m "<report>" --tag "checkin:<hash>"`)
+4. Create checkpoint commit: `scrummaster(checkpoint): Phase <name> complete`, and attach the verification report as a fossil technote (`printf '%s' "<report>" | fossil wiki create "<hash>: verification report" - -t now --technote-tags "checkin:<hash>" -M text/x-markdown`)
 
 ## 7. Story Completion
 
 When all tasks are done:
-1. Verify every ACID ticket for this story is `Closed`: `fossil ticket list story_id "<story_id>"`
+1. Verify every ACID ticket for this story is `Closed`: `fossil sql "SELECT tkt_uuid, acid, status FROM ticket WHERE story_id='<story_id>'"`
 2. Update `scrummaster/epics.md`: change `## [~]` to `## [x]`
 3. Ask user: "Story complete. Archive, Delete, or Keep the story folder?"
 4. Announce completion

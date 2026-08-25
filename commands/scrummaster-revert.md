@@ -48,7 +48,7 @@ For the selected item:
 2. Extract commit hashes from completed tasks (the hash after `[x]`)
 3. Find implementation commits
 4. Find corresponding plan-update commits
-5. Identify the ACID ticket(s) tied to this item (`fossil ticket list story_id "<story_id>"`) — they'll be reopened
+5. Identify the ACID ticket(s) tied to this item (`fossil sql "SELECT tkt_uuid, acid, status FROM ticket WHERE story_id='<story_id>'"`) — they'll be reopened
 
 **For story revert:** Also find the commit that added the story to `epics.md` (`fossil finfo scrummaster/epics.md`)
 
@@ -74,9 +74,12 @@ Wait for explicit user confirmation.
 
 ## 5. Execute Revert
 
-For each commit, newest to oldest:
+For each commit, newest to oldest (`fossil patch` is a distinct binary format
+for uncommitted changes and can't be used here — apply the unified diff with
+the standard `patch` tool instead):
 ```bash
-fossil diff --from <hash> --to <parent_of_hash> | fossil patch apply -
+fossil diff --from <hash> --to <parent_of_hash> > /tmp/revert.patch
+patch -p0 < /tmp/revert.patch
 fossil commit -m "revert: <original message>"
 ```
 

@@ -262,7 +262,7 @@ Read into context:
 - `scrummaster/epics/<epic_id>/stories/<story_id>/spec.md`
 - `scrummaster/epics/<epic_id>/stories/<story_id>/plan.md`
 - `scrummaster/workflow.md`
-- Current ACID ticket states: `fossil ticket list story_id "<story_id>"`
+- Current ACID ticket states: `fossil sql "SELECT tkt_uuid, acid, status FROM ticket WHERE story_id='<story_id>'"`
 
 ### 4. Update Status
 In `scrummaster/epics.md`, change `## [ ] Story:` to `## [~] Story:` for the selected story.
@@ -305,7 +305,7 @@ At end of each phase:
 
 ### 7. Story Completion
 When all tasks — and all of the story's ACID tickets — are done:
-1. Confirm every ACID ticket for this story is `Closed`: `fossil ticket list story_id "<story_id>"`
+1. Confirm every ACID ticket for this story is `Closed`: `fossil sql "SELECT tkt_uuid, acid, status FROM ticket WHERE story_id='<story_id>'"`
 2. Update `scrummaster/epics.md`: `## [~]` → `## [x]`
 3. Ask user: Archive, Delete, or Keep the story folder?
 4. Announce completion; if all of the epic's stories are complete, offer to close the epic too
@@ -317,7 +317,7 @@ When all tasks — and all of the story's ACID tickets — are done:
 **Trigger:** `/scrummaster status`
 
 ### 1. Read State
-- Query fossil tickets for authoritative ACID/story status: `fossil ticket list`
+- Query fossil tickets for authoritative ACID/story status: `fossil sql "SELECT tkt_uuid, epic_id, story_id, acid, status FROM ticket"`
 - `scrummaster/epics.md` (generated index, refresh from ticket state before presenting)
 - All `scrummaster/epics/*/stories/*/plan.md` files
 
@@ -382,7 +382,7 @@ For the selected item:
 - abc123def0 (feat: ...)
 - 4567890abc (scrummaster(plan): ...)
 
-**Action:** Generate and apply an inverse fossil patch per commit, then commit forward. Reopen affected ACID tickets.
+**Action:** Generate an inverse unified diff per commit and apply it with the standard `patch` tool (not fossil's own `fossil patch`, a distinct binary format), then commit forward. Reopen affected ACID tickets.
 ```
 
 Ask for confirmation.
@@ -391,7 +391,7 @@ Ask for confirmation.
 For each commit, newest first:
 ```bash
 fossil diff --from <hash> --to <parent-of-hash> > /tmp/revert.patch
-fossil patch apply /tmp/revert.patch   # or: patch -p0 < /tmp/revert.patch
+patch -p0 < /tmp/revert.patch   # fossil's own `fossil patch` is a distinct binary format, not usable here
 fossil commit -m "revert: <original message>"
 ```
 Reopen the story's affected ACID tickets: `fossil ticket change <ticket-id> status Open`

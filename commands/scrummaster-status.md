@@ -12,7 +12,7 @@ If `scrummaster/epics.md` doesn't exist, tell user to run `/scrummaster-setup` f
 
 ## 2. Read State
 
-- Refresh from fossil first — it is authoritative: `fossil ticket list`
+- Refresh from fossil first — it is authoritative: `fossil sql "SELECT tkt_uuid, epic_id, story_id, acid, status FROM ticket"`
 - Read `scrummaster/epics.md`
 - List all story directories: `scrummaster/epics/*/stories/*/`
 - Read each `scrummaster/epics/<epic_id>/stories/<story_id>/plan.md`
@@ -25,7 +25,7 @@ For each story:
 - Count in-progress `[~]`
 - Count pending `[ ]`
 - Calculate percentage: (completed / total) * 100
-- Cross-check against this story's ACID tickets: `fossil ticket list story_id "<story_id>"` — count `Closed` vs total
+- Cross-check against this story's ACID tickets: `fossil sql "SELECT tkt_uuid, acid, status FROM ticket WHERE story_id='<story_id>'"` — count `Closed` vs total
 
 ## 4. Present Summary
 

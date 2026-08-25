@@ -105,7 +105,7 @@ When working in a Scrummaster project:
 2. **Read `scrummaster/tech-stack.md`** - Know the technologies and constraints
 3. **Read `scrummaster/workflow.md`** - Follow the development methodology (usually TDD, on Fossil)
 4. **Read `scrummaster/epics.md`** - See all epics, their stories, and status
-5. **For active work:** Read the current story's `spec.md` and `plan.md`, and its ACID ticket states (`fossil ticket list story_id "<story_id>"`)
+5. **For active work:** Read the current story's `spec.md` and `plan.md`, and its ACID ticket states (`fossil sql "SELECT tkt_uuid, acid, status FROM ticket WHERE story_id='<story_id>'"`)
 
 ## Workflow Integration
 

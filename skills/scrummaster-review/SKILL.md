@@ -95,7 +95,7 @@ Before starting the review process, you MUST locate and read the project's found
 **Perform the following checks on the retrieved diff:**
 
 1.  **Intent Verification:** Does the code actually implement what the `plan.md` (and `spec.md` if available) asked for?
-2.  **ACID Coverage:** For each ACID in the story's `spec.md`, confirm at least one code or test reference exists (per `vendor/acid-cli/.agents/skills/acai/SKILL.md`'s convention), and that its fossil ticket status matches reality (`fossil ticket list story_id "<story_id>"`) — flag any ticket marked `Closed` with no corresponding reference, or any implemented ACID whose ticket is still `Open`.
+2.  **ACID Coverage:** For each ACID in the story's `spec.md`, confirm at least one code or test reference exists (per `vendor/acid-cli/.agents/skills/acai/SKILL.md`'s convention), and that its fossil ticket status matches reality (`fossil sql "SELECT tkt_uuid, acid, status FROM ticket WHERE story_id='<story_id>'"`) — flag any ticket marked `Closed` with no corresponding reference, or any implemented ACID whose ticket is still `Open`.
 3.  **Style Compliance:**
     -   Does it follow `product-guidelines.md`?
     -   Does it strictly follow `scrummaster/code_styleguides/*.md`?
