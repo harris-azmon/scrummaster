@@ -27,6 +27,7 @@ export interface Reference {
 export enum VcsType {
     Git = 'git',
     Jj = 'jj',
+    Fossil = 'fossil',
 }
 
 export interface VcsCapabilities {
