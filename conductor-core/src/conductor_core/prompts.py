@@ -23,7 +23,7 @@ class PromptProvider:
     def render_string(self, source: str, **kwargs: object) -> str:
         try:
             template = Template(source)
-            return template.render(**kwargs)
+            return str(template.render(**kwargs))
         except Exception as e:
             raise RuntimeError(f"Failed to render string template: {e}") from e
 

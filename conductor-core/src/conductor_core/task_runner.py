@@ -34,16 +34,16 @@ class TaskRunner:
             self.vcs = self._discover_and_select_vcs_adapter(str(self.pm.base_path))
 
     @property
-    def git(self):
+    def git(self) -> GitService | JujutsuService | None:
         """Backward compatibility property for git attribute."""
         return self.vcs
 
     @git.setter
-    def git(self, value) -> None:
+    def git(self, value: GitService | JujutsuService | None) -> None:
         """Backward compatibility setter for git attribute."""
         self.vcs = value
 
-    def _discover_and_select_vcs_adapter(self, repo_path: str):
+    def _discover_and_select_vcs_adapter(self, repo_path: str) -> GitService | JujutsuService:
         """Discover the VCS system in use and return the appropriate adapter."""
         repo_path_obj = Path(repo_path)
 

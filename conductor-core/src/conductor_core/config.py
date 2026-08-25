@@ -65,7 +65,7 @@ class ConfigManager:
         with self.config_file.open("w", encoding="utf-8") as f:
             f.write(self._config.model_dump_json(indent=2))
 
-    def update_config(self, **kwargs) -> ConductorConfig:
+    def update_config(self, **kwargs: Any) -> ConductorConfig:
         """Update configuration with provided values."""
         config = self.load_config()
 

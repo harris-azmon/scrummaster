@@ -47,7 +47,7 @@ class GitService:
             raise InvalidGitRepositoryError(f"Not a git repository: {repo_path}")
 
     def get_status(self) -> str:
-        return self.repo.git.status()
+        return str(self.repo.git.status())
 
     def commit(self, message: str, stage_all: bool = True) -> str:
         if stage_all:
@@ -97,7 +97,7 @@ class GitService:
         self.repo.git.merge(branch_name)
 
     def get_log(self, n: int = 10) -> str:
-        return self.repo.git.log("-n", str(n))
+        return str(self.repo.git.log("-n", str(n)))
 
     def add_note(self, commit_hash: str, message: str) -> None:
         self.repo.git.notes("add", "-m", message, commit_hash)

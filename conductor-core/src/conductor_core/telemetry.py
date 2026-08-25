@@ -9,7 +9,7 @@ class TelemetryLogger:
         self.log_dir = log_dir
         self.log_dir.mkdir(parents=True, exist_ok=True)
 
-    def log_implementation_attempt(self, track_id: str, data: dict[str, Any]):
+    def log_implementation_attempt(self, track_id: str, data: dict[str, Any]) -> Path:
         timestamp = datetime.now(timezone.utc).strftime("%Y%m%d_%H%M%S")
         log_file = self.log_dir / f"implement_{track_id}_{timestamp}.json"
 
