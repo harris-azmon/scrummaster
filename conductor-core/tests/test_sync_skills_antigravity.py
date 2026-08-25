@@ -41,6 +41,7 @@ def test_sync_to_antigravity():
         patch("builtins.open", new_callable=MagicMock) as mock_open,
         patch("pathlib.Path.mkdir"),
         patch("pathlib.Path.write_text", autospec=True) as mock_write_text,
+        patch("pathlib.Path.write_bytes", autospec=True) as mock_write_bytes,
     ):
         # Import inside the patch context to ensure clean slate if needed,
         # though standard import caching applies.
@@ -67,11 +68,14 @@ def test_sync_to_antigravity():
         # Verification 1: Check Local Antigravity Sync (.antigravity/skills/conductor-test/SKILL.md)
         expected_local_file = antigravity_dir / "conductor-test" / "SKILL.md"
 
-        # We need to find if write_text was called with this path.
+        # Local skill files are written via write_bytes (LF-only frontmatter for Qwen).
         # Note: Paths might be absolute.
-        written_files = [str(call.args[0]) for call in mock_write_text.call_args_list]
+        written_bytes_files = [str(call.args[0]) for call in mock_write_bytes.call_args_list]
 
-        assert str(expected_local_file) in written_files, f"Did not attempt to write to {expected_local_file}"
+        assert str(expected_local_file) in written_bytes_files, f"Did not attempt to write to {expected_local_file}"
+
+        # Global/workspace workflow files are written via write_text.
+        written_files = [str(call.args[0]) for call in mock_write_text.call_args_list]
 
         # Verification 2: Check Global Antigravity Sync (Flat structure)
         # Assuming CONDUCTOR_SYNC_REPO_ONLY is not set or handling default

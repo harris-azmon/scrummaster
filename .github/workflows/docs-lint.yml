@@ -82,20 +82,7 @@ jobs:
           find . -name "references.json" -o -name "*.csl.json" | while read file; do
             if [ -f "$file" ]; then
               echo "Validating: $file"
-              python -c "
-import json
-import sys
-with open('$file') as f:
-    try:
-        data = json.load(f)
-        if 'references' not in data:
-            print(f'Error: {file} missing references array')
-            sys.exit(1)
-        print(f'✓ {file} is valid JSON with {len(data.get(\"references\", []))} references')
-    except json.JSONDecodeError as e:
-        print(f'Error: {file} is invalid JSON: {e}')
-        sys.exit(1)
-              "
+              python3 scripts/validate_csl_json.py "$file" || exit 1
             fi
           done
           echo "✓ All CSL-JSON files validated"
