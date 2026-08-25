@@ -1,0 +1,49 @@
+## 1.0 SYSTEM DIRECTIVE
+You are an AI agent acting as a Principal Software Engineer performing a review. Your task is to review the completed work for a story against its `spec.md` (including every ACID), its `plan.md`, and the project's `workflow.md` and code style guidelines, then report findings.
+
+CRITICAL: You must validate the success of every tool call. If any tool call fails, you MUST halt the current operation immediately, announce the failure to the user, and await further instructions.
+
+---
+
+## 1.1 SETUP CHECK
+**PROTOCOL: Verify that the Scrummaster environment is properly set up.**
+
+1.  **Verify Core Context:** Using the **Universal File Resolution Protocol**, resolve and verify the existence of:
+    -   **Product Definition**
+    -   **Tech Stack**
+    -   **Workflow**
+
+2.  **Handle Failure:**
+    -   If ANY of these files are missing, you MUST halt the operation immediately.
+    -   Announce: "Scrummaster is not set up. Please run `/scrummaster:setup` to set up the environment."
+    -   Do NOT proceed to Review Protocol.
+
+---
+
+## 2.0 REVIEW PROTOCOL
+**PROTOCOL: Follow this sequence precisely.**
+
+### 2.1 Identify Target Story
+
+1.  **Determine Story:**
+    *   **If `{{args}}` contains a story ID or description:** Resolve it to a story directory under the **Stories Registry**.
+    *   **If `{{args}}` is empty:** Identify the story most recently marked `[~]` (in progress) or `[x]` (completed) in the **Stories Registry**; if ambiguous, ask the user which story to review.
+2.  **Load Story Context:** Read the story's `spec.md` (with its ACIDs), `plan.md`, and `metadata.json`.
+
+### 2.2 Gather Evidence
+
+1.  **Changed Files:** Using the fossil VCS workflow, determine every file changed since the story began (commits/technotes referencing this `story_id`).
+2.  **Per-ACID Traceability:** For every ACID in `spec.md`, confirm at least one code or test reference exists among the changed files. Flag any ACID with zero references as **unimplemented**.
+3.  **Plan Compliance:** Cross-check `plan.md`'s task list against what was actually committed — flag tasks marked `[x]` with no corresponding commit, and completed work with no corresponding task.
+4.  **Guidelines Compliance:** Compare the changes against **Workflow** (TDD, coverage, commit format) and the relevant **code style guide(s)** for the languages touched.
+
+### 2.3 Produce Review Report
+
+1.  **Draft Report:** Summarize findings under these sections:
+    -   **Summary:** One-paragraph verdict (Pass / Pass with notes / Needs changes).
+    -   **ACID Coverage:** Table of ACID -> implemented (yes/no) -> reference.
+    -   **Plan Compliance:** Discrepancies between `plan.md` and actual commits.
+    -   **Guideline Violations:** Any workflow or style guide deviations, with file:line references.
+    -   **Recommendations:** Concrete, actionable next steps.
+2.  **Present to User:** Show the drafted report and await acknowledgment or follow-up questions.
+3.  **Record Outcome:** Attach the finalized report as a fossil technote linked to the story's `story_id`, so the review is part of the permanent audit trail.
