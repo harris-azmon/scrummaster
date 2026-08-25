@@ -28,11 +28,14 @@ components:
             5: The command rejects malformed JSON, malformed ACIDs, mixed-feature payloads, or invalid status values before making any API call
 
     API:
-        description: Interaction with the feature states API
+        description: Interaction with the feature states backend
         requirements:
-            1: After parsing and target resolution, the command calls `PATCH /api/v1/feature-states`
+            1:
+                requirement: After parsing and target resolution, the command calls `PATCH /api/v1/feature-states`
+                deprecated: true
+            1-note: The fossil backend writes `acai_status`/`acai_comment` directly onto the matching ticket via `fossil ticket change` (one call per ACID) instead of an HTTP endpoint — see `createFossilClient`'s `setFeatureStates`. An ACID with no matching ticket is skipped with a warning rather than failing the whole batch.
             2: The command sends exactly one product, one feature, one implementation, and one `states` map per invocation
-            3: Warnings returned by the API are surfaced to the user
+            3: Warnings returned by the backend are surfaced to the user
 
 constraints:
     SAFETY:

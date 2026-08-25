@@ -6,7 +6,7 @@ import { defaultRuntime } from "./runtime.ts";
 
 describe("cli-core.DIST.1 cli-core.UX.1", () => {
 	test("defaultRuntime reads text files with node-compatible APIs", async () => {
-		const dir = await mkdtemp(join(tmpdir(), "acai-runtime-"));
+		const dir = await mkdtemp(join(tmpdir(), "acid-runtime-"));
 		const filePath = join(dir, "sample.txt");
 		await writeFile(filePath, "runtime file contents");
 

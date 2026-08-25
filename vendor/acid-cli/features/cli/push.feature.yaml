@@ -15,10 +15,14 @@ components:
             3: Accepts `--all` to scan all eligible spec and source files from repo root
             4: Accepts optional `--product <product-name>`
             5: Accepts optional `--target` selector for naming or linking implementations
+            5-note: On the fossil backend `--target`/`--parent` still parse and validate (see MAIN.6) but have no effect — Cathedral-style trunk-only development has no linked/child-implementation concept to name or inherit into. Kept for compatibility with `--target`/`--parent` invocations in existing scripts.
             6: Accepts optional `--parent` selector for establishing inheritance when a new implementation is created
-            7: Reads the current repo remote and branch name from git
+            7:
+                requirement: Reads the current repo remote and branch name from git
+                deprecated: true
+            7-note: The fossil backend reads the current Fossil checkout's project-name (as product) and commit hash via `fossil info` instead — see `readFossilPushContext` in `core/fossil.ts`. Branch name is always `trunk`.
             8: Scans local spec files and code references from repo root
-            9: Groups outgoing payloads by product because the API accepts one product per push request
+            9: Groups outgoing payloads by product because the backend accepts one product per push call
 
     SCAN:
         description: Spec and ref collection
@@ -33,14 +37,22 @@ components:
             5-1: Individual ACID deprecation on the requirement itself takes precedence when both are present
 
     API:
-        description: Interaction with the push API
+        description: Interaction with the push backend
         requirements:
-            1: Sends one `POST /api/v1/push` request per product discovered during the scan
-            1-note: Additional refs-only payloads may be sent when references do not match any local spec
-            2: Namespaced `--target product/impl` and `--parent product/impl` values are split by product before the API call
+            1:
+                requirement: Sends one `POST /api/v1/push` request per product discovered during the scan
+                deprecated: true
+            1-note: The fossil backend creates or updates one fossil ticket per ACID via `fossil ticket add`/`fossil ticket change` (one subprocess call per ACID) instead of one HTTP request per product — see `createFossilClient`'s `runPush`.
+            2:
+                requirement: Namespaced `--target product/impl` and `--parent product/impl` values are split by product before the API call
+                deprecated: true
+            2-note: See MAIN.5-note — `--target`/`--parent` are parsed and validated but `runPush` never reads them, so there is nothing left to split by product.
             3: If feature-name arguments are provided, only matching specs and refs are included in each per-product payload
-            4: API failures for one product do not silently mask the result for another product
-            5: When a refs-only push creates or links an implementation, the command sends `--product` as `product_name`
+            4: Failures for one product do not silently mask the result for another product
+            5:
+                requirement: When a refs-only push creates or links an implementation, the command sends `--product` as `product_name`
+                deprecated: true
+            5-note: See SAFETY.5-note — the fossil backend has no linked/child-implementation concept, so a refs-only push never creates or links anything; it only creates or updates tickets for the ACIDs discovered by the scan.
             6: References without a matching local spec are still included in the push payload instead of being dropped
 
     OUTPUT:
@@ -61,10 +73,11 @@ constraints:
             2: Each outgoing API payload uses the product name parsed from the included specs, or explicit `--product` when provided for a refs-only payload
             3: The command exits non-zero when any per-product push fails
             4: When a push request contains refs but no specs, the command never guesses a product from refs alone and may omit `product_name`
-            5: A refs-only push creates a new child implementation only when `--product`, `--target`, and `--parent` are all provided
+            5: A refs-only push still requires `--target` and `--parent` together, never just one, even though neither has any effect on the fossil backend
+            5-note: The `buildPushPayloads` function still enforces this pairing as a usage error ("Refs-only pushes require --product, --target, and --parent together.") purely for compatibility with existing invocations — see MAIN.5-note and API.5-note for why the fossil backend itself ignores both values once validation passes.
 
     UX:
         requirements:
-            1: The command works in non-interactive environments such as CI and git hooks
+            1: The command works in non-interactive environments such as CI and fossil hooks
             2: The command produces deterministic per-product grouping from the same repo contents
             3: Users should keep feature names globally unique when they want refs to remain distinct across products on the same branch

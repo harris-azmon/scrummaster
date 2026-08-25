@@ -35,7 +35,7 @@ async function runProcess(
 describe("skill command output", () => {
 	test("skill.MAIN.2 loads the canonical bundled skill markdown verbatim", async () => {
 		const canonicalFile = await readFile(
-			new URL("../.agents/skills/acai/SKILL.md", import.meta.url),
+			new URL("../.agents/skills/acid/SKILL.md", import.meta.url),
 			"utf8",
 		);
 
@@ -60,16 +60,16 @@ describe("skill installation helpers", () => {
 
 	test("skill.WRITE.1 resolves the install path under the caller cwd", () => {
 		expect(resolveSkillInstallPath("/tmp/example")).toBe(
-			"/tmp/example/.agents/skills/acai/SKILL.md",
+			"/tmp/example/.agents/skills/acid/SKILL.md",
 		);
 	});
 
 	test("skill.WRITE.1 skill.WRITE.3 installs and overwrites the canonical skill file", async () => {
-		const root = await mkdtemp(join(tmpdir(), "acai-skill-unit-"));
+		const root = await mkdtemp(join(tmpdir(), "acid-skill-unit-"));
 		const destination = resolveSkillInstallPath(root);
 
 		try {
-			await mkdir(join(root, ".agents", "skills", "acai"), { recursive: true });
+			await mkdir(join(root, ".agents", "skills", "acid"), { recursive: true });
 			await writeFile(destination, "old content");
 			await installSkill(root);
 
@@ -91,17 +91,17 @@ describe("skill installation helpers", () => {
 		});
 
 		expect(createDirectory).toHaveBeenCalledWith(
-			"/workspace/.agents/skills/acai",
+			"/workspace/.agents/skills/acid",
 			{ recursive: true },
 		);
 		expect(writeSkillFile).toHaveBeenCalledWith(
-			"/workspace/.agents/skills/acai/SKILL.md",
+			"/workspace/.agents/skills/acid/SKILL.md",
 			getCanonicalSkillContent(),
 		);
 	});
 
 	test("skill.SAFETY.3 keeps installed bytes identical to printed bytes", async () => {
-		const root = await mkdtemp(join(tmpdir(), "acai-skill-parity-"));
+		const root = await mkdtemp(join(tmpdir(), "acid-skill-parity-"));
 		const destination = resolveSkillInstallPath(root);
 
 		try {
@@ -118,8 +118,8 @@ describe("skill installation helpers", () => {
 describe("skill distribution packaging", () => {
 	test("cli-core.DIST.1 bundles the canonical skill content into the node distribution", async () => {
 		const workspaceRoot = new URL("..", import.meta.url).pathname;
-		const outputRoot = await mkdtemp(join(tmpdir(), "acai-skill-dist-js-"));
-		const bundlePath = join(outputRoot, "acai.js");
+		const outputRoot = await mkdtemp(join(tmpdir(), "acid-skill-dist-js-"));
+		const bundlePath = join(outputRoot, "acid.js");
 
 		try {
 			const build = await runProcess(
@@ -151,8 +151,8 @@ describe("skill distribution packaging", () => {
 
 	test("cli-core.DIST.2 cli-core.DIST.3 compile a runnable binary that prints the canonical skill content", async () => {
 		const workspaceRoot = new URL("..", import.meta.url).pathname;
-		const outputRoot = await mkdtemp(join(tmpdir(), "acai-skill-dist-bin-"));
-		const binaryPath = join(outputRoot, "acai");
+		const outputRoot = await mkdtemp(join(tmpdir(), "acid-skill-dist-bin-"));
+		const binaryPath = join(outputRoot, "acid");
 
 		try {
 			const build = await runProcess(

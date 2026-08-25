@@ -1,7 +1,6 @@
 import { describe, expect, mock, test } from "bun:test";
 import { readFile } from "node:fs/promises";
-import { createApiClient } from "./core/api.ts";
-import { resolveApiConfig } from "./core/config.ts";
+import { resolveFossilConfig } from "./core/config.ts";
 import { runCli } from "./core/cli.ts";
 import {
     writeJsonResult,
@@ -15,12 +14,10 @@ import {
     runFeaturesCommand,
 } from "./core/features.ts";
 import {
-    buildFeatureContextResponse,
     buildImplementationFeatureEntry,
     buildImplementationFeaturesResponse,
     buildImplementationsResponse,
 } from "../test/support/fixtures.ts";
-import { createMockApiServer } from "../test/support/mock-api.ts";
 
 function readWrites(writer: { mock: { calls: unknown[][] } }): string {
     return (writer.mock.calls as Array<[string]>)
@@ -28,30 +25,18 @@ function readWrites(writer: { mock: { calls: unknown[][] } }): string {
         .join("");
 }
 
-describe("cli-core.CONFIG.1 cli-core.AUTH.2", () => {
-    test("cli-core.CONFIG.1 defaults the API base URL to the hosted acai.sh endpoint", () => {
-        const config = resolveApiConfig({ ACAI_API_TOKEN: "secret" });
-        expect(config).toEqual({
-            baseUrl: "https://app.acai.sh/api/v1",
-            token: "secret",
-        });
+describe("cli-core.CONFIG.3", () => {
+    test("cli-core.CONFIG.3 defaults the fossil working directory to process.cwd()", () => {
+        const config = resolveFossilConfig({}, "/repo");
+        expect(config).toEqual({ cwd: "/repo" });
     });
 
-    test("resolves API base URL and bearer token from env", () => {
-        const config = resolveApiConfig({
-            ACAI_API_BASE_URL: "https://api.example.test",
-            ACAI_API_TOKEN: "secret",
-        });
-        expect(config).toEqual({
-            baseUrl: "https://api.example.test",
-            token: "secret",
-        });
-    });
-
-    test("cli-core.CONFIG.2 fails when API bearer token configuration is missing", () => {
-        expect(() => resolveApiConfig({})).toThrow(
-            "Missing API bearer token configuration.",
+    test("cli-core.CONFIG.3 overrides the fossil working directory via ACID_FOSSIL_CWD", () => {
+        const config = resolveFossilConfig(
+            { ACID_FOSSIL_CWD: "/other/checkout" },
+            "/repo",
         );
+        expect(config).toEqual({ cwd: "/other/checkout" });
     });
 });
 
@@ -93,12 +78,12 @@ describe("cli-core.DIST.1 cli-core.DIST.2 cli-core.DIST.3", () => {
             "utf8",
         );
 
-        expect(packageJson.name).toBe("@acai.sh/cli");
+        expect(packageJson.name).toBe("@scrummaster/acid-cli");
         expect(packageJson.files).toEqual(["dist", "README.md", "docs"]);
-        expect(packageJson.bin).toEqual({ acai: "dist/acai.js" });
+        expect(packageJson.bin).toEqual({ acid: "dist/acid.js" });
         expect(packageJson.publishConfig).toEqual({ access: "public" });
         expect(packageJson.scripts["build:npm"]).toContain(
-            "bun build ./src/index.ts --target=node --outfile dist/acai.js",
+            "bun build ./src/index.ts --target=node --outfile dist/acid.js",
         );
         expect(packageJson.scripts["verify:npm-artifact"]).toBe(
             "node ./scripts/verify-npm-artifact.mjs",
@@ -137,326 +122,13 @@ describe("cli-core.DIST.1 cli-core.DIST.2 cli-core.DIST.3", () => {
         expect(npmArtifactVerification).toContain('"npm", ["install", "--no-package-lock", tarballPath]');
         expect(npmArtifactVerification).toContain("npm pack did not report a tarball filename");
         expect(npmArtifactVerification).toContain("assertCommandSucceeded(result, \"npm pack\")");
-        expect(npmArtifactVerification).toContain('"node_modules", ".bin", "acai"');
+        expect(npmArtifactVerification).toContain('"node_modules", ".bin", "acid"');
         expect(npmArtifactVerification).toContain("runInstalledCli(binPath");
         expect(npmArtifactVerification).toContain("cli-core.DIST.1 verification requires a real Node runtime");
         expect(releaseDocs).toContain("bun run verify:npm-artifact");
         expect(releaseDocs).toContain("real Node runtime");
         expect(releaseDocs).toContain("trusted publishing");
         expect(releaseDocs).toContain("--access public --provenance");
-    });
-});
-
-describe("API client behavior", () => {
-    test("cli-core.AUTH.1 applies bearer auth on outgoing API requests", async () => {
-        const server = createMockApiServer((request) => {
-            expect(request.headers.get("authorization")).toBe("Bearer secret");
-            expect(new URL(request.url).searchParams.get("product_name")).toBe(
-                "example-product",
-            );
-            return Response.json(buildImplementationsResponse());
-        });
-
-        try {
-            const client = createApiClient({
-                baseUrl: server.url.toString(),
-                token: "secret",
-            });
-
-            await expect(
-                client.listImplementations({ productName: "example-product" }),
-            ).resolves.toMatchObject({
-                data: { product_name: "example-product" },
-            });
-        } finally {
-            server.stop();
-        }
-    });
-
-    test("feature.MAIN.2-1 sends GET /implementations requests without product_name when product is unknown", async () => {
-        const get = mock(
-            async (path: string, options: Record<string, unknown>) => {
-                expect(path).toBe("/implementations");
-                expect(options).toMatchObject({
-                    params: {
-                        query: {
-                            repo_uri: "github.com/my-org/my-repo",
-                            branch_name: "main",
-                            feature_name: "feature",
-                        },
-                    },
-                });
-                expect(
-                    (options as { params: { query: Record<string, unknown> } })
-                        .params.query,
-                ).not.toHaveProperty("product_name");
-
-                return {
-                    data: buildImplementationsResponse({
-                        data: {
-                            product_name: undefined,
-                            implementations: [
-                                {
-                                    implementation_id: "impl-1",
-                                    implementation_name: "main",
-                                    product_name: "example-product",
-                                },
-                            ],
-                        },
-                    }),
-                };
-            },
-        );
-
-        const client = createApiClient(
-            { baseUrl: "https://api.example.test", token: "secret" },
-            {
-                client: {
-                    GET: get,
-                    POST: mock(async () => {
-                        throw new Error("unexpected");
-                    }),
-                } as never,
-            },
-        );
-
-        await expect(
-            client.listImplementations({
-                repoUri: "github.com/my-org/my-repo",
-                branchName: "main",
-                featureName: "feature",
-            }),
-        ).resolves.toEqual(
-            buildImplementationsResponse({
-                data: {
-                    product_name: undefined,
-                    implementations: [
-                        {
-                            implementation_id: "impl-1",
-                            implementation_name: "main",
-                            product_name: "example-product",
-                        },
-                    ],
-                },
-            }),
-        );
-    });
-
-    test("normalizes network failures", async () => {
-        const get = mock(async () => {
-            throw new Error("network down");
-        });
-
-        const client = createApiClient(
-            { baseUrl: "https://api.example.test", token: "secret" },
-            {
-                client: {
-                    GET: get,
-                    POST: mock(async () => {
-                        throw new Error("unexpected");
-                    }),
-                } as never,
-            },
-        );
-
-        await expect(
-            client.listImplementationFeatures({
-                productName: "example-product",
-                implementationName: "main",
-            }),
-        ).rejects.toThrow("API request failed.");
-    });
-
-    test("cli-core.ERRORS.6 normalizes empty API responses", async () => {
-        const get = mock(async () => ({
-            data: undefined,
-            error: undefined,
-            response: undefined,
-        }));
-
-        const client = createApiClient(
-            { baseUrl: "https://api.example.test", token: "secret" },
-            {
-                client: {
-                    GET: get,
-                    POST: mock(async () => {
-                        throw new Error("unexpected");
-                    }),
-                } as never,
-            },
-        );
-
-        await expect(
-            client.listImplementations({ productName: "example-product" }),
-        ).rejects.toThrow(
-            "API request failed. Check ACAI_API_BASE_URL and that the server is reachable.",
-        );
-    });
-
-    test("surfaces API detail messages", async () => {
-        const get = mock(async () => ({
-            data: undefined,
-            error: { errors: { detail: "detail from api" } },
-            response: { status: 422 },
-        }));
-
-        const client = createApiClient(
-            { baseUrl: "https://api.example.test", token: "secret" },
-            {
-                client: {
-                    GET: get,
-                    POST: mock(async () => {
-                        throw new Error("unexpected");
-                    }),
-                } as never,
-            },
-        );
-
-        await expect(
-            client.listImplementations({ productName: "example-product" }),
-        ).rejects.toThrow("detail from api");
-    });
-
-    test("feature.API.1 normalizes feature-context API detail failures", async () => {
-        const get = mock(async () => ({
-            data: undefined,
-            error: { errors: { detail: "feature detail" } },
-            response: { status: 404 },
-        }));
-
-        const client = createApiClient(
-            { baseUrl: "https://api.example.test", token: "secret" },
-            {
-                client: {
-                    GET: get,
-                    POST: mock(async () => {
-                        throw new Error("unexpected");
-                    }),
-                } as never,
-            },
-        );
-
-        await expect(
-            client.getFeatureContext({
-                productName: "example-product",
-                featureName: "feature",
-                implementationName: "main",
-            }),
-        ).rejects.toThrow("feature detail");
-    });
-
-    test("feature.API.1 sends GET /feature-context requests", async () => {
-        const get = mock(
-            async (path: string, options: Record<string, unknown>) => {
-                expect(path).toBe("/feature-context");
-                expect(options).toMatchObject({
-                    params: {
-                        query: {
-                            product_name: "example-product",
-                            feature_name: "feature",
-                            implementation_name: "main",
-                            include_refs: true,
-                            statuses: ["completed"],
-                        },
-                    },
-                });
-
-                return { data: buildFeatureContextResponse() };
-            },
-        );
-
-        const client = createApiClient(
-            { baseUrl: "https://api.example.test", token: "secret" },
-            {
-                client: {
-                    GET: get,
-                    POST: mock(async () => {
-                        throw new Error("unexpected");
-                    }),
-                } as never,
-            },
-        );
-
-        await expect(
-            client.getFeatureContext({
-                productName: "example-product",
-                featureName: "feature",
-                implementationName: "main",
-                includeRefs: true,
-                statuses: ["completed"],
-            }),
-        ).resolves.toEqual(buildFeatureContextResponse());
-    });
-
-    test("push.API.1 sends POST /push requests and normalizes push errors", async () => {
-        const post = mock(
-            async (path: string, options: Record<string, unknown>) => {
-                expect(path).toBe("/push");
-                expect(options.body).toMatchObject({
-                    product_name: "example-product",
-                });
-                return {
-                    data: {
-                        product_name: "example-product",
-                        implementation_name: "main",
-                        specs_created: 1,
-                        specs_updated: 0,
-                        warnings: [],
-                    },
-                };
-            },
-        );
-
-        const client = createApiClient(
-            { baseUrl: "https://api.example.test", token: "secret" },
-            {
-                client: {
-                    GET: mock(async () => {
-                        throw new Error("unexpected");
-                    }),
-                    POST: post,
-                } as never,
-            },
-        );
-
-        await expect(
-            client.push({
-                branch_name: "main",
-                commit_hash: "c1",
-                repo_uri: "github.com/my-org/my-repo",
-                product_name: "example-product",
-            }),
-        ).resolves.toMatchObject({
-            product_name: "example-product",
-            implementation_name: "main",
-        });
-
-        const errorPost = mock(async () => ({
-            data: undefined,
-            error: { errors: { detail: "push detail" } },
-            response: { status: 422 },
-        }));
-
-        const errorClient = createApiClient(
-            { baseUrl: "https://api.example.test", token: "secret" },
-            {
-                client: {
-                    GET: mock(async () => {
-                        throw new Error("unexpected");
-                    }),
-                    POST: errorPost,
-                } as never,
-            },
-        );
-
-        await expect(
-            errorClient.push({
-                branch_name: "main",
-                commit_hash: "c1",
-                repo_uri: "github.com/my-org/my-repo",
-                product_name: "example-product",
-            }),
-        ).rejects.toThrow("push detail");
     });
 });
 
@@ -579,20 +251,20 @@ describe("features command targeting", () => {
         });
     });
 
-    test("cli-core.TARGETING.2 and cli-core.TARGETING.3 normalize git remote context", async () => {
+    test("cli-core.TARGETING.6 normalizes fossil info context", async () => {
         const context = await readFossilContext({
             runner: {
                 async run(args) {
-                    if (args.join(" ") === "remote get-url origin") {
+                    if (args.join(" ") === "info") {
                         return {
                             exitCode: 0,
-                            stdout: "git@github.com:my-org/my-repo.git\n",
+                            stdout: [
+                                "project-name: example-product",
+                                "local-root:   /repo/",
+                                "tags:         trunk",
+                            ].join("\n"),
                             stderr: "",
                         };
-                    }
-
-                    if (args.join(" ") === "branch --show-current") {
-                        return { exitCode: 0, stdout: "main\n", stderr: "" };
                     }
 
                     return { exitCode: 1, stdout: "", stderr: "unexpected" };
@@ -601,12 +273,10 @@ describe("features command targeting", () => {
         });
 
         expect(context).toEqual({
-            repoUri: "github.com/my-org/my-repo",
-            branchName: "main",
+            repoUri: "example-product",
+            branchName: "trunk",
         });
-        expect(normalizeRepoUri("https://github.com/my-org/my-repo.git")).toBe(
-            "github.com/my-org/my-repo",
-        );
+        expect(normalizeRepoUri("<unnamed>")).toBeNull();
     });
 
     test("features.MAIN.2-1 cli-core.TARGETING.2 cli-core.TARGETING.3 resolve one git-derived implementation context", async () => {
@@ -798,7 +468,7 @@ describe("features command targeting", () => {
         );
     });
 
-    test("cli-core.ERRORS.2 reports missing git context", async () => {
+    test("cli-core.ERRORS.6 reports missing fossil context", async () => {
         await expect(
             readFossilContext({
                 runner: {
@@ -806,12 +476,12 @@ describe("features command targeting", () => {
                         return {
                             exitCode: 1,
                             stdout: "",
-                            stderr: "git failure",
+                            stderr: "fossil failure",
                         };
                     },
                 },
             }),
-        ).rejects.toThrow("Git context could not be determined.");
+        ).rejects.toThrow("Fossil context could not be determined.");
     });
 });
 
@@ -983,7 +653,7 @@ describe("cli-core.HELP.1 cli-core.HELP.2 cli-core.HELP.4", () => {
         });
 
         expect(exitCode).toBe(0);
-        expect(readWrites(output.stdout.write)).toContain("Usage: acai");
+        expect(readWrites(output.stdout.write)).toContain("Usage: acid");
         expect(readWrites(output.stdout.write)).toContain("features");
         expect(output.stderr.write).not.toHaveBeenCalled();
         expect(apiClient.listImplementations).not.toHaveBeenCalled();
@@ -1040,7 +710,7 @@ describe("cli-core.HELP.3 cli-core.HELP.5", () => {
         expect(helpExit).toBe(0);
         expect(shortHelpExit).toBe(0);
         expect(readWrites(helpOutput.stdout.write)).toContain(
-            "Usage: acai features [options]",
+            "Usage: acid features [options]",
         );
         expect(readWrites(helpOutput.stdout.write)).toContain("product name");
         expect(readWrites(helpOutput.stdout.write)).toContain(
@@ -1085,7 +755,7 @@ describe("cli-core.HELP.3 cli-core.HELP.5", () => {
         expect(helpExit).toBe(0);
         expect(shortHelpExit).toBe(0);
         expect(readWrites(helpOutput.stdout.write)).toContain(
-            "Usage: acai skill [options]",
+            "Usage: acid skill [options]",
         );
         expect(readWrites(helpOutput.stdout.write)).toBe(
             readWrites(shortHelpOutput.stdout.write),
@@ -1106,7 +776,7 @@ describe("cli-core.ERRORS.3 cli-core.ERRORS.4 cli-core.ERRORS.5", () => {
 
         expect(exitCode).toBe(2);
         expect(readWrites(output.stderr.write)).toContain("unknown command");
-        expect(readWrites(output.stderr.write)).toContain("Usage: acai");
+        expect(readWrites(output.stderr.write)).toContain("Usage: acid");
     });
 
     test("cli-core.ERRORS.4 reports unknown options with features help text", async () => {
@@ -1123,7 +793,7 @@ describe("cli-core.ERRORS.3 cli-core.ERRORS.4 cli-core.ERRORS.5", () => {
         expect(exitCode).toBe(2);
         expect(readWrites(output.stderr.write)).toContain("unknown option");
         expect(readWrites(output.stderr.write)).toContain(
-            "Usage: acai features",
+            "Usage: acid features",
         );
     });
 
@@ -1139,7 +809,7 @@ describe("cli-core.ERRORS.3 cli-core.ERRORS.4 cli-core.ERRORS.5", () => {
 
         expect(exitCode).toBe(2);
         expect(readWrites(output.stderr.write)).toContain("unknown option");
-        expect(readWrites(output.stderr.write)).toContain("Usage: acai skill");
+        expect(readWrites(output.stderr.write)).toContain("Usage: acid skill");
     });
 
     test("skill.SAFETY.1 runs locally without API configuration", async () => {
@@ -1162,18 +832,34 @@ describe("cli-core.ERRORS.3 cli-core.ERRORS.4 cli-core.ERRORS.5", () => {
             stdout: { write: mock(() => {}) },
             stderr: { write: mock(() => {}) },
         };
+        const apiClient = {
+            listImplementations: mock(async () => {
+                throw new Error("should not be called");
+            }),
+            listImplementationFeatures: mock(async () => {
+                throw new Error("should not be called");
+            }),
+        };
 
         const exitCode = await runCli(
-            ["features", "--product", "example-product", "--impl", "main"],
+            [
+                "features",
+                "--product",
+                "example-product",
+                "--changed-since-commit",
+                "--json",
+            ],
             {
-                env: {},
                 output,
+                apiClient: apiClient as never,
             },
         );
 
         expect(exitCode).toBe(2);
         const stderr = readWrites(output.stderr.write);
-        expect(stderr).toContain("Missing API bearer token configuration.");
-        expect(stderr).toContain("Usage: acai features");
+        expect(stderr).toContain("Missing value for --changed-since-commit.");
+        expect(stderr).toContain("Usage: acid features");
+        expect(apiClient.listImplementations).not.toHaveBeenCalled();
+        expect(apiClient.listImplementationFeatures).not.toHaveBeenCalled();
     });
 });

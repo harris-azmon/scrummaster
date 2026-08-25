@@ -17,7 +17,7 @@ import {
 async function createRepoFixture(
 	files: Record<string, string>,
 ): Promise<string> {
-	const root = await mkdtemp(join(tmpdir(), "acai-push-"));
+	const root = await mkdtemp(join(tmpdir(), "acid-push-"));
 
 	for (const [relativePath, content] of Object.entries(files)) {
 		const absolutePath = join(root, relativePath);
@@ -962,7 +962,7 @@ describe("push command execution", () => {
 							},
 							requirements: {
 								"push.MAIN.1": {
-									requirement: "Exposes `acai push`",
+									requirement: "Exposes `acid push`",
 									deprecated: false,
 								},
 							},
@@ -1045,7 +1045,7 @@ describe("push command execution", () => {
 							},
 							requirements: {
 								"push.MAIN.1": {
-									requirement: "Exposes `acai push`",
+									requirement: "Exposes `acid push`",
 									deprecated: false,
 								},
 							},

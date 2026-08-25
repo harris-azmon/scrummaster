@@ -1,6 +1,6 @@
 # Releasing
 
-This document explains how the `acai` CLI release pipeline works for npm and GitHub Releases, and what a maintainer needs to do to cut a release.
+This document explains how the `acid` CLI release pipeline works for npm and GitHub Releases, and what a maintainer needs to do to cut a release.
 
 ## Overview
 
@@ -16,7 +16,7 @@ When a tag matching `v*` is pushed, GitHub Actions runs `.github/workflows/relea
 
 This gives users two supported installation paths:
 
-1. npm / npx / pnpx via the published `acai` package
+1. npm / npx / pnpx via the published `acid` package
 2. Downloaded binaries from GitHub Releases
 
 ## What Gets Published
@@ -32,14 +32,14 @@ bun run build:npm
 That produces:
 
 ```text
-dist/acai.js
+dist/acid.js
 ```
 
 `package.json` maps the CLI binary name to that built file:
 
 ```json
 "bin": {
-  "acai": "dist/acai.js"
+  "acid": "dist/acid.js"
 }
 ```
 
@@ -55,7 +55,7 @@ That verification:
 
 1. creates the tarball with `npm pack`
 2. installs that tarball with `npm install`
-3. runs the installed CLI through the npm-installed `node_modules/.bin/acai` entrypoint with a real Node binary from `actions/setup-node`
+3. runs the installed CLI through the npm-installed `node_modules/.bin/acid` entrypoint with a real Node binary from `actions/setup-node`
 4. smoke-tests help, `skill`, `push`, `set-status`, and one `--json` stdout/stderr separation path
 
 This specifically closes the gap between Bun source execution and the real npm artifact users install.
@@ -64,10 +64,10 @@ This specifically closes the gap between Bun source execution and the real npm a
 
 The release workflow compiles these binaries with `bun build --compile`:
 
-1. `acai-linux-x64`
-2. `acai-linux-arm64`
-3. `acai-darwin-x64`
-4. `acai-darwin-arm64`
+1. `acid-linux-x64`
+2. `acid-linux-arm64`
+3. `acid-darwin-x64`
+4. `acid-darwin-arm64`
 
 It also generates `SHA256SUMS.txt` and uploads all of them to the GitHub Release.
 
@@ -89,7 +89,7 @@ If this job fails, nothing is published.
 
 ### 2. `publish-npm`
 
-This job publishes the `@acai.sh/cli` package to npm using `npm publish --access public --provenance`.
+This job publishes the `@scrummaster/acid-cli` package to npm using `npm publish --access public --provenance`.
 
 Behavior:
 
@@ -180,7 +180,7 @@ Fix by making them match exactly.
 Check:
 
 1. the package has a trusted publisher configured for GitHub Actions
-2. the trusted publisher matches repository `acai-sh/cli`
+2. the trusted publisher matches repository `harris-azmon/conductor`
 3. the trusted publisher workflow filename is exactly `release.yml`
 4. the trusted publisher environment name is exactly `npm`
 5. the workflow job includes `permissions: id-token: write`

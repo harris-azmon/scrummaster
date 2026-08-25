@@ -2,7 +2,6 @@ import { mkdir, mkdtemp, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { expect } from "bun:test";
-import type { MockApiServer } from "./mock-api.ts";
 
 export interface TempWorkspace {
 	root: string;
@@ -11,7 +10,7 @@ export interface TempWorkspace {
 
 export async function createTempWorkspace(
 	files: Record<string, string> = {},
-	prefix = "acai-e2e-",
+	prefix = "acid-e2e-",
 ): Promise<TempWorkspace> {
 	const root = await mkdtemp(join(tmpdir(), prefix));
 
@@ -26,17 +25,6 @@ export async function createTempWorkspace(
 		cleanup: async () => {
 			await rm(root, { recursive: true, force: true });
 		},
-	};
-}
-
-export function apiEnv(
-	server: MockApiServer,
-	extraEnv: Record<string, string> = {},
-): Record<string, string> {
-	return {
-		ACAI_API_BASE_URL: server.url.toString(),
-		ACAI_API_TOKEN: "secret",
-		...extraEnv,
 	};
 }
 

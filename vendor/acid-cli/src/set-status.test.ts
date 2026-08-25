@@ -6,7 +6,8 @@ import {
 	buildFeatureStatesResponse,
 	buildImplementationsResponse,
 } from "../test/support/fixtures.ts";
-import { createApiClient } from "./core/api.ts";
+import { createFossilClient } from "./core/fossil-client.ts";
+import type { RuntimeCompat } from "./core/runtime.ts";
 import {
 	formatSetStatusText,
 	normalizeSetStatusOptions,
@@ -14,6 +15,36 @@ import {
 	readSetStatusInput,
 	runSetStatusCommand,
 } from "./core/set-status.ts";
+
+interface RecordedFossilCall {
+	command: string;
+	args: string[];
+	input?: string;
+}
+
+function createFakeFossilRuntime(sqlRows: Array<Record<string, unknown>>): {
+	runtime: RuntimeCompat;
+	calls: RecordedFossilCall[];
+} {
+	const calls: RecordedFossilCall[] = [];
+	const runtime: RuntimeCompat = {
+		getArgv: () => [],
+		readTextFile: async () => "",
+		readStdinText: async () => "",
+		async runCommand(command, args, options = {}) {
+			calls.push({ command, args, input: options.input });
+			if (args[0] === "sql") {
+				const acidMatch = options.input?.match(/acid = '([^']*)'/);
+				const rows = acidMatch
+					? sqlRows.filter((row) => row.acid === acidMatch[1])
+					: sqlRows;
+				return { exitCode: 0, stdout: JSON.stringify(rows), stderr: "" };
+			}
+			return { exitCode: 0, stdout: "", stderr: "" };
+		},
+	};
+	return { runtime, calls };
+}
 
 describe("set-status option normalization", () => {
 	test("set-status.MAIN.4 and set-status.MAIN.5 normalize direct selectors", () => {
@@ -77,7 +108,7 @@ describe("set-status option normalization", () => {
 
 describe("set-status input loading", () => {
 	test("set-status.MAIN.2 reads @file JSON input", async () => {
-		const dir = await mkdtemp(join(tmpdir(), "acai-set-status-"));
+		const dir = await mkdtemp(join(tmpdir(), "acid-set-status-"));
 		const filePath = join(dir, "states.json");
 		await writeFile(filePath, '{"set-status.MAIN.1":{"status":"completed"}}');
 
@@ -170,74 +201,44 @@ describe("set-status payload validation", () => {
 });
 
 describe("set-status API and output", () => {
-	test("set-status.API.1 sends PATCH /feature-states requests and normalizes errors", async () => {
-		const patch = mock(
-			async (path: string, options: Record<string, unknown>) => {
-				expect(path).toBe("/feature-states");
-				expect(options.body).toEqual({
-					product_name: "example-product",
-					feature_name: "set-status",
-					implementation_name: "main",
-					states: {
-						"set-status.MAIN.1": { status: "completed" },
-					},
-				});
-
-				return { data: buildFeatureStatesResponse() };
-			},
-		);
-
-		const client = createApiClient(
-			{ baseUrl: "https://api.example.test", token: "secret" },
-			{
-				client: {
-					GET: mock(async () => {
-						throw new Error("unexpected");
-					}),
-					POST: mock(async () => {
-						throw new Error("unexpected");
-					}),
-					PATCH: patch,
-				},
-			},
-		);
+	test("set-status.API.1-note fossil backend writes acai_status/acai_comment per ACID and warns on unmatched ACIDs", async () => {
+		const { runtime, calls } = createFakeFossilRuntime([
+			{ tkt_uuid: "uuid-1", acid: "set-status.MAIN.1" },
+		]);
+		const client = createFossilClient({ cwd: "/repo", runtime });
 
 		await expect(
 			client.setFeatureStates({
 				product_name: "example-product",
 				feature_name: "set-status",
-				implementation_name: "main",
-				states: { "set-status.MAIN.1": { status: "completed" } },
-			}),
-		).resolves.toEqual(buildFeatureStatesResponse());
-
-		const errorClient = createApiClient(
-			{ baseUrl: "https://api.example.test", token: "secret" },
-			{
-				client: {
-					GET: mock(async () => {
-						throw new Error("unexpected");
-					}),
-					POST: mock(async () => {
-						throw new Error("unexpected");
-					}),
-					PATCH: mock(async () => ({
-						data: undefined,
-						error: { errors: { detail: "set-status detail" } },
-						response: { status: 422 },
-					})),
+				implementation_name: "trunk",
+				states: {
+					"set-status.MAIN.1": { status: "completed", comment: "done" },
+					"set-status.MAIN.2": { status: "completed" },
 				},
-			},
-		);
-
-		await expect(
-			errorClient.setFeatureStates({
-				product_name: "example-product",
-				feature_name: "set-status",
-				implementation_name: "main",
-				states: { "set-status.MAIN.1": { status: "completed" } },
 			}),
-		).rejects.toThrow("set-status detail");
+		).resolves.toEqual({
+			data: {
+				product_name: "example-product",
+				implementation_name: "trunk",
+				feature_name: "set-status",
+				states_written: 1,
+				warnings: ["No ticket found for ACID 'set-status.MAIN.2'; skipped."],
+			},
+		});
+
+		const ticketChangeCall = calls.find(
+			(call) => call.args[0] === "ticket" && call.args[1] === "change",
+		);
+		expect(ticketChangeCall?.args).toEqual([
+			"ticket",
+			"change",
+			"uuid-1",
+			"acai_status",
+			"completed",
+			"acai_comment",
+			"done",
+		]);
 	});
 
 	test("set-status.API.1 set-status.API.2 cli-core.TARGETING.1 resolves explicit and namespaced targets", async () => {

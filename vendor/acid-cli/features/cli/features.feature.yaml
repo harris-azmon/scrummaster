@@ -22,10 +22,13 @@ components:
             8: When `--changed-since-commit` is provided, the command sends that filter to the API
 
     API:
-        description: Interaction with the implementation features API
+        description: Interaction with the implementation features backend
         requirements:
-            1: After target resolution, the command calls `GET /api/v1/implementation-features`
-            2: The command relays feature completion counts, ref counts, inheritance indicators, and canonical spec commit metadata from the API response
+            1:
+                requirement: After target resolution, the command calls `GET /api/v1/implementation-features`
+                deprecated: true
+            1-note: The fossil backend queries the local ticket table directly (`fossil sql`) instead of an HTTP endpoint — see `createFossilClient`'s `listImplementationFeatures`.
+            2: The command relays feature completion counts, ref counts, inheritance indicators, and canonical spec commit metadata from the backend response
 
 constraints:
     UX:

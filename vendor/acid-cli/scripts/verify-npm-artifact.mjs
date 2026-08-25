@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 
 import assert from "node:assert/strict";
-import { chmod, mkdir, mkdtemp, readFile, rm, writeFile, access } from "node:fs/promises";
-import http from "node:http";
+import { mkdir, mkdtemp, readFile, rm, writeFile, access } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -17,35 +16,32 @@ async function main() {
   assertRealNodeRuntime();
 
   const canonicalSkill = await readFile(
-    join(workspaceRoot, ".agents", "skills", "acai", "SKILL.md"),
+    join(workspaceRoot, ".agents", "skills", "acid", "SKILL.md"),
     "utf8",
   );
 
-  const tempRoot = await mkdtemp(join(tmpdir(), "acai-npm-artifact-"));
+  const tempRoot = await mkdtemp(join(tmpdir(), "acid-npm-artifact-"));
 
   try {
     const tarballPath = await packArtifact(tempRoot);
     const installRoot = await installPackedArtifact(tarballPath, tempRoot);
-    const packageRoot = join(installRoot, "node_modules", "@acai.sh", "cli");
-    const entrypoint = join(packageRoot, "dist", "acai.js");
-    const binPath = join(installRoot, "node_modules", ".bin", "acai");
+    const packageRoot = join(installRoot, "node_modules", "@scrummaster", "acid-cli");
+    const entrypoint = join(packageRoot, "dist", "acid.js");
+    const binPath = join(installRoot, "node_modules", ".bin", "acid");
 
     await access(entrypoint);
     await access(binPath);
 
-    const api = await createMockApiServer();
-    try {
-      await verifyHelpOutput(binPath, api.env, api.requests);
-      await verifySkillCommand(binPath, canonicalSkill, api.env, api.requests);
-      await verifyPushCommand(binPath, api.env, api.requests);
-      await verifySetStatusFileInput(binPath, api.env);
-      await verifySetStatusStdinInput(binPath, api.env);
-      await verifyJsonStdoutStderrSeparation(binPath, api.env);
+    const env = { USER: process.env.USER || process.env.LOGNAME || "acid-verify" };
 
-      console.log("cli-core.DIST.1 verified with packed npm artifact under real Node.");
-    } finally {
-      await api.stop();
-    }
+    await verifyHelpOutput(binPath, env);
+    await verifySkillCommand(binPath, canonicalSkill, env);
+    await verifyPushCommand(binPath, env);
+    await verifySetStatusFileInput(binPath, env);
+    await verifySetStatusStdinInput(binPath, env);
+    await verifyJsonStdoutStderrSeparation(binPath, env);
+
+    console.log("cli-core.DIST.1 verified with packed npm artifact under real Node.");
   } finally {
     await rm(tempRoot, { recursive: true, force: true });
   }
@@ -89,26 +85,22 @@ async function installPackedArtifact(tarballPath, tempRoot) {
 }
 
 // cli-core.HELP.1 / cli-core.HELP.3 / cli-core.HELP.4 / cli-core.UX.1 / cli-core.UX.2
-async function verifyHelpOutput(binPath, env, requests) {
-  const baselineRequests = requests.length;
+async function verifyHelpOutput(binPath, env) {
   const topLevel = await runInstalledCli(binPath, [], { env });
   assert.equal(topLevel.exitCode, 0);
   assert.equal(topLevel.stderr, "");
-  assert.match(topLevel.stdout, /Usage: acai/);
+  assert.match(topLevel.stdout, /Usage: acid/);
 
   const commandHelp = await runInstalledCli(binPath, ["push", "--help"], { env });
   assert.equal(commandHelp.exitCode, 0);
   assert.equal(commandHelp.stderr, "");
-  assert.match(commandHelp.stdout, /Usage: acai push/);
-
-  assert.equal(requests.length, baselineRequests);
+  assert.match(commandHelp.stdout, /Usage: acid push/);
 }
 
 // skill.MAIN.2 / skill.MAIN.3 / skill.WRITE.1 / skill.WRITE.2 / skill.SAFETY.1 / skill.SAFETY.3 / skill.UX.1 / skill.UX.2
-async function verifySkillCommand(binPath, canonicalSkill, env, requests) {
-  const workspace = await createWorkspace({}, "acai-npm-skill-");
-  const installPath = join(workspace.root, ".agents", "skills", "acai", "SKILL.md");
-  const baselineRequests = requests.length;
+async function verifySkillCommand(binPath, canonicalSkill, env) {
+  const workspace = await createWorkspace({}, "acid-npm-skill-");
+  const installPath = join(workspace.root, ".agents", "skills", "acid", "SKILL.md");
 
   try {
     const printResult = await runInstalledCli(binPath, ["skill"], {
@@ -127,105 +119,114 @@ async function verifySkillCommand(binPath, canonicalSkill, env, requests) {
     assert.equal(installResult.stdout, "");
     assert.equal(installResult.stderr, "");
     assert.equal(await readFile(installPath, "utf8"), canonicalSkill);
-
-    assert.equal(requests.length, baselineRequests);
   } finally {
     await workspace.cleanup();
   }
 }
 
 // push.MAIN.3 / push.MAIN.7 / push.MAIN.8 / push.SCAN.1 / push.SCAN.2 / push.SCAN.2-1 / push.SCAN.3 / push.UX.1
-async function verifyPushCommand(binPath, env, requests) {
-  const workspace = await createWorkspace(
-    {
-      "features/alpha.feature.yaml": "feature:\n  name: alpha\n  product: product-a\ncomponents:\n  MAIN:\n    requirements:\n      1: Alpha requirement\n",
-      "src/alpha.ts": 'const alpha = "alpha.MAIN.1";\n',
-    },
-    "acai-npm-push-",
-  );
-  const git = await createFakeGitContext({
-    topLevel: workspace.root,
-    fileCommits: { "features/alpha.feature.yaml": "a1" },
-  });
+async function verifyPushCommand(binPath, env) {
+  const fossil = await createFossilFixture(env, "example-product");
 
   try {
+    await writeFixtureFiles(fossil.root, {
+      "features/alpha.feature.yaml":
+        "feature:\n  name: alpha\n  product: product-a\ncomponents:\n  MAIN:\n    requirements:\n      1: Alpha requirement\n",
+      "src/alpha.ts": 'const alpha = "alpha.MAIN.1";\n',
+    });
+
     const result = await runInstalledCli(binPath, ["push", "--all"], {
-      cwd: workspace.root,
-      env: {
-        ...env,
-        PATH: `${git.binDir}:${process.env.PATH ?? ""}`,
-      },
+      cwd: fossil.root,
+      env,
     });
 
     assert.equal(result.exitCode, 0);
     assert.equal(result.stderr, "");
     assert.match(result.stdout, /product-a/);
 
-    const pushRequest = requests.find((request) => request.path === "/push");
-    assert.ok(pushRequest, "expected packaged push command to call /push");
-    assert.equal(pushRequest.body.repo_uri, "github.com/my-org/my-repo");
-    assert.equal(pushRequest.body.branch_name, "main");
-    assert.equal(pushRequest.body.product_name, "product-a");
-    assert.equal(pushRequest.body.specs[0].feature.name, "alpha");
-    assert.equal(pushRequest.body.specs[0].feature.product, "product-a");
-    assert.deepEqual(pushRequest.body.references.data["alpha.MAIN.1"], [
-      { path: "src/alpha.ts:1", is_test: false },
-    ]);
+    const featureResult = await runInstalledCli(
+      binPath,
+      ["feature", "alpha", "--product", "example-product", "--impl", "trunk", "--json"],
+      { cwd: fossil.root, env },
+    );
+    const acids = JSON.parse(featureResult.stdout).data.acids;
+    assert.equal(acids[0].acid, "alpha.MAIN.1");
   } finally {
-    await git.cleanup();
-    await workspace.cleanup();
+    await fossil.cleanup();
   }
 }
 
 // set-status.MAIN.2 / set-status.UX.2
 async function verifySetStatusFileInput(binPath, env) {
-  const workspace = await createWorkspace(
-    {
-      "states.json": '{"set-status.MAIN.1":{"status":"completed"}}',
-    },
-    "acai-npm-set-status-file-",
-  );
+  const fossil = await createFossilFixture(env, "example-product", [
+    { acid: "set-status.MAIN.1", requirement: "writes status" },
+  ]);
 
   try {
+    await writeFixtureFiles(fossil.root, {
+      "states.json": '{"set-status.MAIN.1":{"status":"completed"}}',
+    });
+
     const result = await runInstalledCli(
       binPath,
-      ["set-status", "@states.json", "--product", "example-product", "--impl", "main"],
-      { cwd: workspace.root, env },
+      ["set-status", "@states.json", "--product", "example-product", "--impl", "trunk"],
+      { cwd: fossil.root, env },
     );
 
     assert.equal(result.exitCode, 0);
     assert.match(result.stdout, /STATES_WRITTEN/);
   } finally {
-    await workspace.cleanup();
+    await fossil.cleanup();
   }
 }
 
 // set-status.MAIN.3 / set-status.UX.2
 async function verifySetStatusStdinInput(binPath, env) {
-  const result = await runInstalledCli(
-    binPath,
-    ["set-status", "-", "--product", "example-product", "--impl", "main"],
-    {
-      env,
-      input: '{"set-status.INPUT.1":{"status":null}}',
-    },
-  );
+  const fossil = await createFossilFixture(env, "example-product", [
+    { acid: "set-status.INPUT.1", requirement: "validates input" },
+  ]);
 
-  assert.equal(result.exitCode, 0);
-  assert.match(result.stdout, /STATES_WRITTEN/);
+  try {
+    const result = await runInstalledCli(
+      binPath,
+      ["set-status", "-", "--product", "example-product", "--impl", "trunk"],
+      { cwd: fossil.root, env, input: '{"set-status.INPUT.1":{"status":null}}' },
+    );
+
+    assert.equal(result.exitCode, 0);
+    assert.match(result.stdout, /STATES_WRITTEN/);
+  } finally {
+    await fossil.cleanup();
+  }
 }
 
-// cli-core.OUTPUT.1 / cli-core.OUTPUT.2 / set-status.MAIN.6
+// cli-core.OUTPUT.1 / cli-core.OUTPUT.2 / set-status.MAIN.6 / set-status.API.1-note
 async function verifyJsonStdoutStderrSeparation(binPath, env) {
-  const result = await runInstalledCli(
-    binPath,
-    ["set-status", '{"set-status.MAIN.1":{"status":"completed"}}', "--product", "example-product", "--impl", "main", "--json"],
-    { env },
-  );
+  const fossil = await createFossilFixture(env, "example-product", [
+    { acid: "set-status.MAIN.1", requirement: "writes status" },
+  ]);
 
-  assert.equal(result.exitCode, 0);
-  assert.match(result.stderr, /warning one/);
-  assert.equal(JSON.parse(result.stdout).data.feature_name, "set-status");
+  try {
+    const result = await runInstalledCli(
+      binPath,
+      [
+        "set-status",
+        '{"set-status.MAIN.1":{"status":"completed"},"set-status.MAIN.2":{"status":"completed"}}',
+        "--product",
+        "example-product",
+        "--impl",
+        "trunk",
+        "--json",
+      ],
+      { cwd: fossil.root, env },
+    );
+
+    assert.equal(result.exitCode, 0);
+    assert.match(result.stderr, /No ticket found for ACID 'set-status\.MAIN\.2'; skipped\./);
+    assert.equal(JSON.parse(result.stdout).data.feature_name, "set-status");
+  } finally {
+    await fossil.cleanup();
+  }
 }
 
 async function runInstalledCli(binPath, args, options = {}) {
@@ -277,12 +278,7 @@ function assertCommandSucceeded(result, label) {
 
 async function createWorkspace(files, prefix) {
   const root = await mkdtemp(join(tmpdir(), prefix));
-
-  for (const [relativePath, content] of Object.entries(files)) {
-    const absolutePath = join(root, relativePath);
-    await mkdir(dirname(absolutePath), { recursive: true });
-    await writeFile(absolutePath, content);
-  }
+  await writeFixtureFiles(root, files);
 
   return {
     root,
@@ -292,131 +288,75 @@ async function createWorkspace(files, prefix) {
   };
 }
 
-async function createFakeGitContext(options = {}) {
-  const binDir = await mkdtemp(join(tmpdir(), "acai-npm-git-"));
-  const scriptPath = join(binDir, "git");
-  const remote = options.remote ?? "git@github.com:my-org/my-repo.git";
-  const branch = options.branch ?? "main";
-  const topLevel = options.topLevel;
-  const head = options.head ?? "c0ffee0000000000000000000000000000000000";
-  const fileCommits = options.fileCommits ?? {};
+async function writeFixtureFiles(root, files) {
+  for (const [relativePath, content] of Object.entries(files)) {
+    const absolutePath = join(root, relativePath);
+    await mkdir(dirname(absolutePath), { recursive: true });
+    await writeFile(absolutePath, content);
+  }
+}
 
-  const fileCommitChecks = Object.entries(fileCommits)
-    .map(
-      ([path, commit]) => `  if [ "$path" = '${path.replace(/'/g, "'\\''")}' ]; then\n    printf '%s\\n' '${commit.replace(/'/g, "'\\''")}'\n    exit 0\n  fi\n`,
-    )
-    .join("");
+// Real fossil fixture (mirrors test/support/fossil-fixture.ts, duplicated here
+// since this script runs under plain Node rather than bun:test).
+async function createFossilFixture(env, projectName, seedTickets = []) {
+  const base = await mkdtemp(join(tmpdir(), "acid-npm-fossil-"));
+  const repoPath = join(base, "repo.fossil");
+  const root = join(base, "checkout");
+  await mkdir(root, { recursive: true });
 
-  const script = `#!/bin/sh
-cmd="$1 $2"
-if [ "$cmd" = "remote get-url" ]; then
-  printf '%s\\n' '${remote.replace(/'/g, "'\\''")}'
-  exit 0
-fi
+  await runFossil(["init", repoPath, "--project-name", projectName], base, env);
+  await runFossil(["open", repoPath], root, env);
+  await runFossil(
+    ["sql"],
+    root,
+    env,
+    `
+ALTER TABLE ticket ADD COLUMN epic_id TEXT;
+ALTER TABLE ticket ADD COLUMN story_id TEXT;
+ALTER TABLE ticket ADD COLUMN acid TEXT;
+ALTER TABLE ticket ADD COLUMN component TEXT;
+ALTER TABLE ticket ADD COLUMN deprecated BOOLEAN DEFAULT 0;
+ALTER TABLE ticket ADD COLUMN acai_status TEXT;
+ALTER TABLE ticket ADD COLUMN acai_comment TEXT;
+ALTER TABLE ticket ADD COLUMN last_seen_commit TEXT;
+`,
+  );
 
-if [ "$cmd" = "branch --show-current" ]; then
-  printf '%s\\n' '${branch.replace(/'/g, "'\\''")}'
-  exit 0
-fi
-
-if [ "$cmd" = "rev-parse HEAD" ]; then
-  printf '%s\\n' '${head.replace(/'/g, "'\\''")}'
-  exit 0
-fi
-
-if [ "$cmd" = "rev-parse --show-toplevel" ]; then
-  ${topLevel ? `printf '%s\\n' '${topLevel.replace(/'/g, "'\\''")}'` : 'printf "%s\\n" "$PWD"'}
-  exit 0
-fi
-
-if [ "$1 $2 $3 $4" = "log -1 --format=%H --" ]; then
-  path="$5"
-${fileCommitChecks}  printf '%s\\n' 'unexpected git log path' >&2
-  exit 1
-fi
-
-printf '%s\\n' 'unexpected git invocation' >&2
-exit 1
-`;
-
-  await writeFile(scriptPath, script);
-  await chmod(scriptPath, 0o755);
+  for (const ticket of seedTickets) {
+    await runFossil(
+      [
+        "ticket",
+        "add",
+        "type",
+        "Story",
+        "story_id",
+        ticket.acid.split(".")[0] ?? ticket.acid,
+        "acid",
+        ticket.acid,
+        "component",
+        ticket.acid.split(".")[1] ?? "",
+        "status",
+        "Open",
+        "title",
+        ticket.requirement,
+        "deprecated",
+        "0",
+      ],
+      root,
+      env,
+    );
+  }
 
   return {
-    binDir,
+    root,
     cleanup: async () => {
-      await rm(binDir, { recursive: true, force: true });
+      await rm(base, { recursive: true, force: true });
     },
   };
 }
 
-async function createMockApiServer() {
-  const requests = [];
-  const server = http.createServer(async (req, res) => {
-    const bodyText = await readRequestBody(req);
-    const body = bodyText ? JSON.parse(bodyText) : undefined;
-    requests.push({ method: req.method, path: req.url, body });
-
-    if (req.method === "POST" && req.url === "/push") {
-      res.writeHead(200, { "content-type": "application/json" });
-      res.end(
-        JSON.stringify({
-          data: {
-            product_name: body?.product_name ?? "product-a",
-            implementation_name: "main",
-            specs_created: 1,
-            specs_updated: 0,
-            warnings: [],
-          },
-        }),
-      );
-      return;
-    }
-
-    if (req.method === "PATCH" && req.url === "/feature-states") {
-      res.writeHead(200, { "content-type": "application/json" });
-      res.end(
-        JSON.stringify({
-          data: {
-            product_name: body?.product_name ?? "example-product",
-            implementation_name: body?.implementation_name ?? "main",
-            feature_name: body?.feature_name ?? "set-status",
-            states_written: Object.keys(body?.states ?? {}).length,
-            warnings: ["warning one"],
-          },
-        }),
-      );
-      return;
-    }
-
-    res.writeHead(404, { "content-type": "application/json" });
-    res.end(JSON.stringify({ errors: { detail: "not found" } }));
-  });
-
-  await new Promise((resolvePromise) => server.listen(0, "127.0.0.1", resolvePromise));
-  const address = server.address();
-  if (!address || typeof address === "string") {
-    throw new Error("Failed to bind mock API server.");
-  }
-
-  return {
-    requests,
-    env: {
-      ACAI_API_BASE_URL: `http://127.0.0.1:${address.port}`,
-      ACAI_API_TOKEN: "secret",
-    },
-    stop: async () => {
-      await new Promise((resolvePromise, reject) => {
-        server.close((error) => (error ? reject(error) : resolvePromise()));
-      });
-    },
-  };
-}
-
-async function readRequestBody(req) {
-  let body = "";
-  for await (const chunk of req) {
-    body += chunk;
-  }
-  return body;
+async function runFossil(args, cwd, env, input) {
+  const result = await runCommand("fossil", args, { cwd, env, input });
+  assertCommandSucceeded(result, `fossil ${args.join(" ")}`);
+  return result;
 }

@@ -3,8 +3,8 @@ import {
 	buildFeatureContextResponse,
 	buildImplementationsResponse,
 } from "../test/support/fixtures.ts";
-import { createMockApiServer } from "../test/support/mock-api.ts";
-import { createApiClient } from "./core/api.ts";
+import { createFossilClient } from "./core/fossil-client.ts";
+import type { RuntimeCompat } from "./core/runtime.ts";
 import {
 	formatFeatureContext,
 	normalizeFeatureOptions,
@@ -14,6 +14,32 @@ import {
 	resolveImplementationName,
 	resolveImplementationTarget,
 } from "./core/targeting.ts";
+
+interface RecordedFossilCall {
+	command: string;
+	args: string[];
+	input?: string;
+}
+
+function createFakeFossilRuntime(sqlRows: Array<Record<string, unknown>>): {
+	runtime: RuntimeCompat;
+	calls: RecordedFossilCall[];
+} {
+	const calls: RecordedFossilCall[] = [];
+	const runtime: RuntimeCompat = {
+		getArgv: () => [],
+		readTextFile: async () => "",
+		readStdinText: async () => "",
+		async runCommand(command, args, options = {}) {
+			calls.push({ command, args, input: options.input });
+			if (args[0] === "sql") {
+				return { exitCode: 0, stdout: JSON.stringify(sqlRows), stderr: "" };
+			}
+			return { exitCode: 0, stdout: "", stderr: "" };
+		},
+	};
+	return { runtime, calls };
+}
 
 describe("feature option normalization", () => {
 	test("feature.MAIN.2 and feature.MAIN.3 normalize direct selectors", () => {
@@ -258,11 +284,11 @@ describe("implementation targeting", () => {
 				}),
 			}),
 		).rejects.toThrow(
-			"No implementation matched the current repo, branch, and filters. This branch may not be tracked yet or no tracked implementation on this branch includes feature `feature`. Try `acai push` from this branch, or pass `--product` and `--impl` for a known implementation.",
+			"No implementation matched the current repo, branch, and filters. This branch may not be tracked yet or no tracked implementation on this branch includes feature `feature`. Try `acid push` from this branch, or pass `--product` and `--impl` for a known implementation.",
 		);
 	});
 
-	test("cli-core.ERRORS.2 surfaces missing git context", async () => {
+	test("cli-core.ERRORS.6 surfaces missing fossil context", async () => {
 		const apiClient = {
 			listImplementations: mock(async () => buildImplementationsResponse()),
 		};
@@ -270,46 +296,63 @@ describe("implementation targeting", () => {
 		await expect(
 			resolveImplementationName(apiClient as never, { productName: "example-product" }, {
 				readFossilContext: async () => {
-					throw new Error("git missing");
+					throw new Error("fossil missing");
 				},
 			}),
-		).rejects.toThrow("git missing");
+		).rejects.toThrow("fossil missing");
 	});
 });
 
 describe("feature API and formatting", () => {
-	test("feature.API.1 requests GET /feature-context and forwards filters", async () => {
-		const server = createMockApiServer((request) => {
-			const url = new URL(request.url);
-			expect(url.pathname).toBe("/feature-context");
-			expect(url.searchParams.get("product_name")).toBe("example-product");
-			expect(url.searchParams.get("feature_name")).toBe("feature");
-			expect(url.searchParams.get("implementation_name")).toBe("main");
-			expect(url.searchParams.get("include_refs")).toBe("true");
-			expect(url.searchParams.getAll("statuses")).toEqual([
-				"completed",
-				"incomplete",
-			]);
-			return Response.json(buildFeatureContextResponse());
+	test("feature.API.1-note fossil backend queries the local ticket table by story_id for getFeatureContext", async () => {
+		const { runtime, calls } = createFakeFossilRuntime([
+			{
+				tkt_uuid: "uuid-1",
+				epic_id: null,
+				story_id: "feature",
+				acid: "feature.MAIN.1",
+				component: "MAIN",
+				status: "Open",
+				acai_status: "completed",
+				acai_comment: null,
+				title: "Expose the command",
+				deprecated: 0,
+				last_seen_commit: "abc123",
+			},
+		]);
+		const client = createFossilClient({ cwd: "/repo", runtime });
+
+		await expect(
+			client.getFeatureContext({
+				productName: "example-product",
+				featureName: "feature",
+				implementationName: "trunk",
+				includeRefs: true,
+				statuses: ["completed", "incomplete"],
+			}),
+		).resolves.toEqual({
+			data: {
+				product_name: "example-product",
+				implementation_name: "trunk",
+				feature_name: "feature",
+				summary: { total_acids: 1, status_counts: { completed: 1 } },
+				acids: [
+					{
+						acid: "feature.MAIN.1",
+						state: { status: "completed" },
+						refs_count: 0,
+						test_refs_count: 0,
+						requirement: "Expose the command",
+						refs: [],
+					},
+				],
+				warnings: [],
+			},
 		});
 
-		try {
-			const client = createApiClient({
-				baseUrl: server.url.toString(),
-				token: "secret",
-			});
-			await expect(
-				client.getFeatureContext({
-					productName: "example-product",
-					featureName: "feature",
-					implementationName: "main",
-					includeRefs: true,
-					statuses: ["completed", "incomplete"],
-				}),
-			).resolves.toEqual(buildFeatureContextResponse());
-		} finally {
-			server.stop();
-		}
+		const sqlCall = calls.find((call) => call.args[0] === "sql");
+		expect(sqlCall?.args).toEqual(["sql", "--readonly"]);
+		expect(sqlCall?.input).toContain("story_id = 'feature'");
 	});
 
 	test("feature.API.2 feature.API.3 and feature.UX.1 format summary, acids, refs, and warnings in API order", () => {

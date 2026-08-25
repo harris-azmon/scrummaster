@@ -20,11 +20,17 @@ components:
             6: Supports `--json` output for machine consumption
 
     API:
-        description: Interaction with the feature context API
+        description: Interaction with the feature context backend
         requirements:
-            1: After target resolution, the command calls `GET /api/v1/feature-context`
-            2: The command relays canonical requirement definitions, resolved states, and summary counts from the API response
-            3: When refs are requested, the command relays per-ACID refs returned by the API response
+            1:
+                requirement: After target resolution, the command calls `GET /api/v1/feature-context`
+                deprecated: true
+            1-note: The fossil backend queries the local ticket table directly (`fossil sql`, filtered by `story_id`) instead of an HTTP endpoint — see `createFossilClient`'s `getFeatureContext`.
+            2: The command relays canonical requirement definitions, resolved states, and summary counts from the backend response
+            3:
+                requirement: When refs are requested, the command relays per-ACID refs returned by the backend response
+                deprecated: true
+            3-note: The fossil backend does not persist per-reference storage; `--include-refs` currently returns an empty refs array per ACID (see fossil-client.ts's `getFeatureContext`). Use `acid push --all` against a fresh scan to recompute refs locally instead.
 
 constraints:
     UX:

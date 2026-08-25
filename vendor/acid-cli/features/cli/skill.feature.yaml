@@ -10,15 +10,15 @@ components:
     MAIN:
         description: Primary command behavior
         requirements:
-            1: Exposes `acai skill`
-            2: Reads the canonical bundled acai skill content from the CLI package
+            1: Exposes `acid skill`
+            2: Reads the canonical bundled acid skill content from the CLI package
             3: When invoked without `--install`, writes the canonical skill content to stdout
             4: Accepts optional `--install`
 
     WRITE:
         description: Installing the skill into the current workspace
         requirements:
-            1: When `--install` is provided, writes the canonical skill content to `.agents/skills/acai/SKILL.md`
+            1: When `--install` is provided, writes the canonical skill content to `.agents/skills/acid/SKILL.md`
             2: Creates the destination parent directories when they do not already exist
             3: Replaces the destination file contents with the canonical skill content when the file already exists
 

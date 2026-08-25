@@ -140,7 +140,7 @@ export async function resolveImplementationTarget(
 				? ""
 				: ` or no tracked implementation on this branch includes feature \`${target.featureName}\``;
 		throw runtimeError(
-			`No implementation matched the current repo, branch, and filters. This branch may not be tracked yet${featureHint}. Try \`acai push\` from this branch, or pass \`--product\` and \`--impl\` for a known implementation.`,
+			`No implementation matched the current repo, branch, and filters. This branch may not be tracked yet${featureHint}. Try \`acid push\` from this branch, or pass \`--product\` and \`--impl\` for a known implementation.`,
 		);
 	}
 

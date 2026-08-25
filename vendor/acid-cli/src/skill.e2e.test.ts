@@ -10,7 +10,7 @@ import {
 
 describe("skill command", () => {
 	test("skill.MAIN.2 skill.MAIN.3 skill.UX.1 prints the canonical skill markdown and nothing else", async () => {
-		const workspace = await createTempWorkspace({}, "acai-skill-print-");
+		const workspace = await createTempWorkspace({}, "acid-skill-print-");
 
 		try {
 			const result = await runCliSubprocess(["skill"], {}, { cwd: workspace.root });
@@ -24,11 +24,11 @@ describe("skill command", () => {
 	});
 
 	test("skill.WRITE.1 skill.WRITE.3 installs and overwrites the canonical skill file in an isolated workspace", async () => {
-		const workspace = await createTempWorkspace({}, "acai-skill-install-");
-		const destination = join(workspace.root, ".agents", "skills", "acai", "SKILL.md");
+		const workspace = await createTempWorkspace({}, "acid-skill-install-");
+		const destination = join(workspace.root, ".agents", "skills", "acid", "SKILL.md");
 
 		try {
-			await mkdir(join(workspace.root, ".agents", "skills", "acai"), {
+			await mkdir(join(workspace.root, ".agents", "skills", "acid"), {
 				recursive: true,
 			});
 			await writeFile(destination, "stale content");
@@ -45,8 +45,8 @@ describe("skill command", () => {
 	});
 
 	test("skill.WRITE.2 installs into a clean workspace without precreating parent directories", async () => {
-		const workspace = await createTempWorkspace({}, "acai-skill-clean-");
-		const destination = join(workspace.root, ".agents", "skills", "acai", "SKILL.md");
+		const workspace = await createTempWorkspace({}, "acid-skill-clean-");
+		const destination = join(workspace.root, ".agents", "skills", "acid", "SKILL.md");
 
 		try {
 			const result = await runCliSubprocess(["skill", "--install"], {}, { cwd: workspace.root });
@@ -58,9 +58,9 @@ describe("skill command", () => {
 		}
 	});
 
-	test("skill.SAFETY.1 skill.SAFETY.3 works without ACAI_API_TOKEN in a temp workspace", async () => {
-		const workspace = await createTempWorkspace({}, "acai-skill-parity-e2e-");
-		const destination = join(workspace.root, ".agents", "skills", "acai", "SKILL.md");
+	test("skill.SAFETY.1 skill.SAFETY.3 works with no fossil or API configuration in a temp workspace", async () => {
+		const workspace = await createTempWorkspace({}, "acid-skill-parity-e2e-");
+		const destination = join(workspace.root, ".agents", "skills", "acid", "SKILL.md");
 
 		try {
 			const printResult = await runCliSubprocess(["skill"], {}, { cwd: workspace.root });
@@ -79,7 +79,7 @@ describe("skill command", () => {
 
 	test("cli-core.ERRORS.4 returns exit code 2 for unknown skill options", async () => {
 		const result = await runCliSubprocess(["skill", "--unknown-option"]);
-		expectUsageError(result, "Usage: acai skill", "unknown option");
+		expectUsageError(result, "Usage: acid skill", "unknown option");
 	});
 
 	test("cli-core.HELP.3 cli-core.HELP.5 keep skill --help and -h in sync", async () => {
@@ -89,7 +89,7 @@ describe("skill command", () => {
 		expect(help.exitCode).toBe(0);
 		expect(shortHelp.exitCode).toBe(0);
 		expect(help.stdout).toBe(shortHelp.stdout);
-		expect(help.stdout).toContain("Usage: acai skill [options]");
+		expect(help.stdout).toContain("Usage: acid skill [options]");
 		expect(help.stderr.trim()).toBe("");
 		expect(shortHelp.stderr.trim()).toBe("");
 	});
