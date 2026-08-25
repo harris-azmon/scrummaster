@@ -160,8 +160,8 @@ def main() -> int:
         mismatches.extend(_check_skill_dir(skills, TEMPLATES_DIR, ANTIGRAVITY_SKILLS_GLOBAL_DIR, fix=args.fix))
 
     if mismatches:
-        for _item in mismatches:
-            pass
+        for item in mismatches:
+            print(item)
         return 1
 
     return 0

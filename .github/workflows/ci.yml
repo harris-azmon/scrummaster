@@ -33,6 +33,11 @@ jobs:
       - name: Install JS dependencies
         run: cd conductor-vscode && npm ci
 
+      - name: Install conductor-core and conductor-gemini
+        shell: bash -l {0}
+        run: |
+          pip install -e ./conductor-core -e ./conductor-gemini
+
       - name: Run Core Tests
         shell: bash -l {0}
         run: |
