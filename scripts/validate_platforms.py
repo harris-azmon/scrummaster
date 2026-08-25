@@ -71,15 +71,15 @@ def run_validation() -> None:
 
     for path, template in gemini_mappings.items():
         if args.sync:
-            success, msg = service.synchronize_gemini_toml(path, template)
+            _success, _msg = service.synchronize_gemini_toml(path, template)
         else:
-            valid, msg = service.validate_gemini_toml(path, template)
+            valid, _msg = service.validate_gemini_toml(path, template)
             if not valid:
                 all_valid = False
 
     for path, template in claude_mappings.items():
         if args.sync:
-            _success, msg = service.synchronize_claude_md(path, template)
+            _success, _msg = service.synchronize_claude_md(path, template)
         else:
             valid, _msg = service.validate_claude_md(path, template)
             if not valid:

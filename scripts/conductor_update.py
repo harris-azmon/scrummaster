@@ -60,14 +60,14 @@ class UpdateChecker:
         """Get current installed version of a component"""
         if component == "core":
             # Try to import and get version
-            code, stdout, stderr = self.run_command(
+            code, stdout, _stderr = self.run_command(
                 [sys.executable, "-c", "import conductor_core; print(conductor_core.__version__)"]
             )
             if code == 0:
                 return stdout.strip()
 
         elif component == "gemini":
-            code, stdout, stderr = self.run_command(
+            code, stdout, _stderr = self.run_command(
                 [sys.executable, "-c", "import conductor_gemini; print(conductor_gemini.__version__)"]
             )
             if code == 0:
@@ -199,7 +199,7 @@ class UpdateChecker:
             return True
 
         # Pull latest changes
-        code, stdout, stderr = self.run_command(["git", "pull"], cwd=core_path)
+        code, _stdout, stderr = self.run_command(["git", "pull"], cwd=core_path)
         if code != 0:
             self.log(f"[FAIL] Git pull failed: {stderr}", Colors.RED)
             return False
@@ -219,7 +219,7 @@ class UpdateChecker:
             self.log("[WARN]  conductor-gemini not found", Colors.YELLOW)
             return True
 
-        code, stdout, stderr = self.run_command(["git", "pull"], cwd=gemini_path)
+        code, _stdout, stderr = self.run_command(["git", "pull"], cwd=gemini_path)
         if code != 0:
             self.log(f"[FAIL] Git pull failed: {stderr}", Colors.RED)
             return False
@@ -239,13 +239,13 @@ class UpdateChecker:
             return True
 
         # Pull changes
-        code, stdout, stderr = self.run_command(["git", "pull"], cwd=vscode_path)
+        code, _stdout, stderr = self.run_command(["git", "pull"], cwd=vscode_path)
         if code != 0:
             self.log(f"[FAIL] Git pull failed: {stderr}", Colors.RED)
             return False
 
         # Rebuild
-        code, stdout, stderr = self.run_command(["npm", "run", "package"], cwd=vscode_path)
+        code, _stdout, stderr = self.run_command(["npm", "run", "package"], cwd=vscode_path)
         if code != 0:
             self.log(f"[FAIL] Build failed: {stderr}", Colors.RED)
             return False

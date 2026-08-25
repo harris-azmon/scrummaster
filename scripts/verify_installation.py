@@ -74,7 +74,7 @@ class InstallationVerifier:
         self.log("\n[SCAN] System Requirements", Colors.BLUE)
 
         # Check Python version
-        code, stdout, stderr = self.run_command([sys.executable, "--version"])
+        code, stdout, _stderr = self.run_command([sys.executable, "--version"])
         if code == 0:
             version = stdout.strip()
             self.check_pass(f"Python: {version}")
@@ -82,7 +82,7 @@ class InstallationVerifier:
             self.check_fail("Python: Not found")
 
         # Check Git
-        code, stdout, stderr = self.run_command(["git", "--version"])
+        code, stdout, _stderr = self.run_command(["git", "--version"])
         if code == 0:
             self.check_pass(f"Git: {stdout.strip()}")
         else:
@@ -116,7 +116,7 @@ class InstallationVerifier:
         self.log("\n[SCAN] Conductor Gemini", Colors.BLUE)
 
         # Check if module can be imported
-        code, stdout, stderr = self.run_command([sys.executable, "-c", "import conductor_gemini; print('OK')"])
+        code, _stdout, stderr = self.run_command([sys.executable, "-c", "import conductor_gemini; print('OK')"])
         if code == 0:
             self.check_pass("conductor-gemini: Installed")
         else:
@@ -136,7 +136,7 @@ class InstallationVerifier:
         self.log("\n[SCAN] VS Code Extension", Colors.BLUE)
 
         # Check if VS Code is installed
-        code, stdout, stderr = self.run_command(["code", "--version"], check=False)
+        code, stdout, _stderr = self.run_command(["code", "--version"], check=False)
         if code != 0:
             self.check_warn("VS Code: Not installed (optional)")
             return
@@ -185,7 +185,7 @@ class InstallationVerifier:
         self.log("\n[SCAN] Mise Configuration", Colors.BLUE)
 
         # Check if mise is installed
-        code, stdout, stderr = self.run_command(["mise", "--version"], check=False)
+        code, stdout, _stderr = self.run_command(["mise", "--version"], check=False)
         if code == 0:
             version = stdout.strip()
             self.check_pass(f"mise: v{version}")

@@ -180,7 +180,7 @@ class ConductorInstaller:
             # Install npm dependencies
             self.run_command(["npm", "install"], cwd=vscode_path, check=False)
             # Build extension
-            code, stdout, stderr = self.run_command(["npm", "run", "package"], cwd=vscode_path, check=False)
+            code, _stdout, stderr = self.run_command(["npm", "run", "package"], cwd=vscode_path, check=False)
             if code != 0:
                 self.log(f"[WARN]  Failed to build extension: {stderr}", Colors.YELLOW)
                 self.skipped.append("vscode")
@@ -192,7 +192,7 @@ class ConductorInstaller:
             return True
 
         # Install extension
-        code, stdout, stderr = self.run_command(
+        code, _stdout, stderr = self.run_command(
             ["code", "--install-extension", str(vsix_path), "--force" if force else ""],
             check=False,
         )
