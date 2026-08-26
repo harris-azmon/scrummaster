@@ -16,11 +16,8 @@ Creates a new epic to group related stories. Use this whenever the user wants to
 This skill is activated by the following phrases:
 
 - "$scrummaster-newepic"
-
 - "/scrummaster-newepic"
-
 - "/scrummaster:newepic"
-
 - "@scrummaster /newepic"
 
 ## Usage
@@ -30,21 +27,13 @@ To use this skill, simply type one of the triggers or ask the agent to "new_epic
 ## Platform-Specific Commands
 
 - **Gemini:** `/scrummaster:newepic`
-
 - **Qwen:** `/scrummaster:newepic`
-
 - **Claude:** `/scrummaster-newepic`
-
 - **Codex:** `$scrummaster-newepic`
-
 - **Opencode:** `/scrummaster-newepic`
-
 - **Antigravity:** `@scrummaster /newepic`
-
 - **Copilot:** `/scrummaster-newepic`
-
 - **Aix:** `/scrummaster-newepic`
-
 - **Skillshare:** `/scrummaster-newepic`
 
 ## Capabilities Required

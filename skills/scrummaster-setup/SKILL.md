@@ -16,11 +16,8 @@ Scaffolds the project and sets up the Scrummaster environment. Use this whenever
 This skill is activated by the following phrases:
 
 - "$scrummaster-setup"
-
 - "/scrummaster-setup"
-
 - "/scrummaster:setup"
-
 - "@scrummaster /setup"
 
 ## Usage
@@ -30,21 +27,13 @@ To use this skill, simply type one of the triggers or ask the agent to "setup".
 ## Platform-Specific Commands
 
 - **Gemini:** `/scrummaster:setup`
-
 - **Qwen:** `/scrummaster:setup`
-
 - **Claude:** `/scrummaster-setup`
-
 - **Codex:** `$scrummaster-setup`
-
 - **Opencode:** `/scrummaster-setup`
-
 - **Antigravity:** `@scrummaster /setup`
-
 - **Copilot:** `/scrummaster-setup`
-
 - **Aix:** `/scrummaster-setup`
-
 - **Skillshare:** `/scrummaster-setup`
 
 ## Capabilities Required

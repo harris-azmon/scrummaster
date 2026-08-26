@@ -16,11 +16,8 @@ Reviews the completed story work against guidelines and the plan. Acts as a Prin
 This skill is activated by the following phrases:
 
 - "$scrummaster-review"
-
 - "/scrummaster-review"
-
 - "/scrummaster:review"
-
 - "@scrummaster /review"
 
 ## Usage
@@ -30,21 +27,13 @@ To use this skill, simply type one of the triggers or ask the agent to "review".
 ## Platform-Specific Commands
 
 - **Gemini:** `/scrummaster:review`
-
 - **Qwen:** `/scrummaster:review`
-
 - **Claude:** `/scrummaster-review`
-
 - **Codex:** `$scrummaster-review`
-
 - **Opencode:** `/scrummaster-review`
-
 - **Antigravity:** `@scrummaster /review`
-
 - **Copilot:** `/scrummaster-review`
-
 - **Aix:** `/scrummaster-review`
-
 - **Skillshare:** `/scrummaster-review`
 
 ## Capabilities Required

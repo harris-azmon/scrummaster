@@ -16,11 +16,8 @@ Displays the current progress of the project by parsing the Epics Index, fossil 
 This skill is activated by the following phrases:
 
 - "$scrummaster-status"
-
 - "/scrummaster-status"
-
 - "/scrummaster:status"
-
 - "@scrummaster /status"
 
 ## Usage
@@ -30,21 +27,13 @@ To use this skill, simply type one of the triggers or ask the agent to "status".
 ## Platform-Specific Commands
 
 - **Gemini:** `/scrummaster:status`
-
 - **Qwen:** `/scrummaster:status`
-
 - **Claude:** `/scrummaster-status`
-
 - **Codex:** `$scrummaster-status`
-
 - **Opencode:** `/scrummaster-status`
-
 - **Antigravity:** `@scrummaster /status`
-
 - **Copilot:** `/scrummaster-status`
-
 - **Aix:** `/scrummaster-status`
-
 - **Skillshare:** `/scrummaster-status`
 
 ## Capabilities Required

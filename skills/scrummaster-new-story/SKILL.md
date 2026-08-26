@@ -16,11 +16,8 @@ Plans a new story (feature or bug fix), generates spec/plan documents, and updat
 This skill is activated by the following phrases:
 
 - "$scrummaster-new-story"
-
 - "/scrummaster-new-story"
-
 - "/scrummaster:new-story"
-
 - "@scrummaster /new-story"
 
 ## Usage
@@ -30,21 +27,13 @@ To use this skill, simply type one of the triggers or ask the agent to "new_stor
 ## Platform-Specific Commands
 
 - **Gemini:** `/scrummaster:new-story`
-
 - **Qwen:** `/scrummaster:new-story`
-
 - **Claude:** `/scrummaster-new-story`
-
 - **Codex:** `$scrummaster-new-story`
-
 - **Opencode:** `/scrummaster-new-story`
-
 - **Antigravity:** `@scrummaster /new-story`
-
 - **Copilot:** `/scrummaster-new-story`
-
 - **Aix:** `/scrummaster-new-story`
-
 - **Skillshare:** `/scrummaster-new-story`
 
 ## Capabilities Required

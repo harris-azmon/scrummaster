@@ -16,11 +16,8 @@ Context-driven development methodology. Understands projects set up with Scrumma
 This skill is activated by the following phrases:
 
 - "$scrummaster-info"
-
 - "/scrummaster-info"
-
 - "/scrummaster:info"
-
 - "@scrummaster /info"
 
 ## Usage
@@ -30,21 +27,13 @@ To use this skill, simply type one of the triggers or ask the agent to "scrummas
 ## Platform-Specific Commands
 
 - **Gemini:** `/scrummaster:info`
-
 - **Qwen:** `/scrummaster:info`
-
 - **Claude:** `/scrummaster-info`
-
 - **Codex:** `$scrummaster-info`
-
 - **Opencode:** `/scrummaster-info`
-
 - **Antigravity:** `@scrummaster /info`
-
 - **Copilot:** `/scrummaster-info`
-
 - **Aix:** `/scrummaster-info`
-
 - **Skillshare:** `/scrummaster-info`
 
 ## Capabilities Required

@@ -16,11 +16,8 @@ Executes the tasks defined in the specified story's plan. Use this to start or c
 This skill is activated by the following phrases:
 
 - "$scrummaster-implement"
-
 - "/scrummaster-implement"
-
 - "/scrummaster:implement"
-
 - "@scrummaster /implement"
 
 ## Usage
@@ -30,21 +27,13 @@ To use this skill, simply type one of the triggers or ask the agent to "implemen
 ## Platform-Specific Commands
 
 - **Gemini:** `/scrummaster:implement`
-
 - **Qwen:** `/scrummaster:implement`
-
 - **Claude:** `/scrummaster-implement`
-
 - **Codex:** `$scrummaster-implement`
-
 - **Opencode:** `/scrummaster-implement`
-
 - **Antigravity:** `@scrummaster /implement`
-
 - **Copilot:** `/scrummaster-implement`
-
 - **Aix:** `/scrummaster-implement`
-
 - **Skillshare:** `/scrummaster-implement`
 
 ## Capabilities Required

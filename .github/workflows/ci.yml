@@ -61,6 +61,14 @@ jobs:
         run: |
           ./scripts/build_core.sh
 
+      - name: Synchronize Artifacts
+        # scrummaster_dev.py verify (below) validates .antigravity/skills and
+        # the antigravity workspace sync, which are gitignored generated
+        # artifacts, not committed to the repo.
+        shell: bash -l {0}
+        run: |
+          python scripts/sync_all.py
+
       - name: Validate Artifacts
         shell: bash -l {0}
         run: |

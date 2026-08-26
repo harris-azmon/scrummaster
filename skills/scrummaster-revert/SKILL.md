@@ -16,11 +16,8 @@ Reverts previous work (stories, phases, or tasks) by identifying associated comm
 This skill is activated by the following phrases:
 
 - "$scrummaster-revert"
-
 - "/scrummaster-revert"
-
 - "/scrummaster:revert"
-
 - "@scrummaster /revert"
 
 ## Usage
@@ -30,21 +27,13 @@ To use this skill, simply type one of the triggers or ask the agent to "revert".
 ## Platform-Specific Commands
 
 - **Gemini:** `/scrummaster:revert`
-
 - **Qwen:** `/scrummaster:revert`
-
 - **Claude:** `/scrummaster-revert`
-
 - **Codex:** `$scrummaster-revert`
-
 - **Opencode:** `/scrummaster-revert`
-
 - **Antigravity:** `@scrummaster /revert`
-
 - **Copilot:** `/scrummaster-revert`
-
 - **Aix:** `/scrummaster-revert`
-
 - **Skillshare:** `/scrummaster-revert`
 
 ## Capabilities Required
