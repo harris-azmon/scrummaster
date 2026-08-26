@@ -39,6 +39,11 @@ jobs:
         # dependencies installed to resolve.
         run: cd vendor/acid-cli && bun install --frozen-lockfile
 
+      - name: Install Core
+        shell: bash -l {0}
+        run: |
+          cd scrummaster-core && pip install -e ".[test]"
+
       - name: Run Core Tests
         shell: bash -l {0}
         run: |

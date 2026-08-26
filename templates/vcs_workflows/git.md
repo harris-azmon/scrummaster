@@ -7,6 +7,8 @@ This file defines the specific shell commands and their expected behaviors for S
 ## Command Definitions
 
 ### initialize_repository
+
+```yaml
 # Purpose: Initializes a new, empty Git repository in the current directory.
 command: git init
 success_code: 0
@@ -14,22 +16,31 @@ error_handlers:
   - exit_code: 128
     stderr_contains: "already exists and is not an empty directory"
     agent_action: "A Git repository already exists here. Scrummaster will proceed, but no new repository was initialized."
+```
 
 ### get_repository_status
+
+```yaml
 # Purpose: Checks the status of the working tree to detect uncommitted changes.
 # Expected Output: A list of modified/untracked files (one per line). Empty if clean.
 command: git status --porcelain
 success_code: 0
 error_handlers: []
+```
 
 ### list_relevant_files
+
+```yaml
 # Purpose: Lists all files tracked by Git, plus any other non-ignored files.
 # Expected Output: A list of file paths (one per line).
 command: git ls-files --exclude-standard -co
 success_code: 0
 error_handlers: []
+```
 
 ### get_latest_commit_hash
+
+```yaml
 # Purpose: Retrieves the full SHA hash of the most recent commit (HEAD).
 # Expected Output: A single 40-character commit SHA.
 command: git log -1 --format="%H"
@@ -38,8 +49,11 @@ error_handlers:
   - exit_code: 128
     stderr_contains: "does not have any commits yet"
     agent_action: "The repository has no commits yet. Unable to retrieve a hash."
+```
 
 ### get_changed_files_since
+
+```yaml
 # Purpose: Lists all files that have been changed between a specified commit and HEAD.
 # Placeholders:
 #   - {{hash}}: The starting commit hash to compare against.
@@ -50,8 +64,11 @@ error_handlers:
   - exit_code: 128
     stderr_contains: "bad object"
     agent_action: "The provided hash '{{hash}}' is not a valid Git object."
+```
 
 ### store_commit_metadata
+
+```yaml
 # Purpose: Appends a JSON object containing metadata about a commit to the project's metadata log.
 # Placeholders:
 #   - {{hash}}: The hash of the commit to log.
@@ -61,8 +78,11 @@ success_code: 0
 error_handlers:
   - exit_code: "*" # Catch any non-zero exit code
     agent_action: "Failed to write metadata to scrummaster/metadata.json. This might indicate a permissions issue or file system problem."
+```
 
 ### get_commit_metadata
+
+```yaml
 # Purpose: Searches the metadata log and retrieves the full JSON line for a specific commit hash.
 # Placeholders:
 #   - {{hash}}: The commit hash to search for.
@@ -72,8 +92,11 @@ success_code: 0
 error_handlers:
   - exit_code: 1 # grep returns 1 if no lines were selected
     agent_action: "No metadata found for commit hash '{{hash}}' in scrummaster/metadata.json."
+```
 
 ### revert_commit
+
+```yaml
 # Purpose: Creates a new commit that reverts the changes from a specified commit.
 # Placeholders:
 #   - {{hash}}: The hash of the commit to revert.
@@ -89,8 +112,11 @@ error_handlers:
   - exit_code: 128
     stderr_contains: "is a merge but no -m option was given"
     agent_action: "The commit '{{hash}}' is a merge commit. Scrummaster cannot automatically revert merge commits. Please revert it manually specifying a parent number (e.g., 'git revert -m 1 {{hash}}')."
+```
 
 ### get_commit_history_for_file
+
+```yaml
 # Purpose: Retrieves the commit history for a specific file.
 # Placeholders:
 #   - {{file}}: The path to the file to get the history for.
@@ -101,8 +127,11 @@ error_handlers:
   - exit_code: 128
     stderr_contains: "ambiguous argument"
     agent_action: "The file path '{{file}}' is ambiguous or does not exist."
+```
 
 ### search_commit_history
+
+```yaml
 # Purpose: Searches the entire commit history for commits whose messages match a specific pattern.
 # Placeholders:
 #   - {{pattern}}: The regex pattern to search for in commit messages.
@@ -110,3 +139,4 @@ error_handlers:
 command: git log --grep="{{pattern}}"
 success_code: 0
 error_handlers: []
+```
