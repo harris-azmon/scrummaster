@@ -28,7 +28,13 @@ Add it to your project's `opencode.json`:
 }
 ```
 
-OpenCode installs npm plugins automatically via Bun at startup.
+Or use the CLI:
+
+```bash
+opencode2 plugin add scrummaster-opencode
+```
+
+OpenCode installs npm plugins automatically at startup.
 
 ## Installing the slash commands
 

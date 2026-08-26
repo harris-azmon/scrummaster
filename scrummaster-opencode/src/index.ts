@@ -1,4 +1,4 @@
-import { tool, type Plugin } from "@opencode-ai/plugin";
+import { tool, type Plugin, type PluginModule } from "@opencode-ai/plugin";
 import { queryTickets, queryTicketsByEpic, summarizeStatus, type StatusSummary } from "./fossil.js";
 import { readScrummasterContext } from "./context.js";
 
@@ -31,7 +31,7 @@ export function formatStatusSummary(summary: StatusSummary): string {
 // `fossil sql` calls) alongside the SKILL.md/commands install already
 // covered by `skill/scripts/install.sh` and this package's
 // `scrummaster-opencode-install` bin (see install-commands.ts).
-export const ScrummasterPlugin: Plugin = async ({ directory }) => {
+const server: Plugin = async ({ directory }) => {
 	return {
 		tool: {
 			scrummaster_status: tool({
@@ -70,4 +70,5 @@ export const ScrummasterPlugin: Plugin = async ({ directory }) => {
 	};
 };
 
-export default ScrummasterPlugin;
+const module: PluginModule = { id: "scrummaster", server };
+export default module;
