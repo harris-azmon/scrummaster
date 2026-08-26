@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Add overwrite confirmation for file operations in Conductor.
+"""Add overwrite confirmation for file operations in Scrummaster.
 
 This script provides confirmation prompts before overwriting existing files
-during conductor operations like track creation, sync, etc.
+during scrummaster operations like story creation, sync, etc.
 """
 
 import sys
@@ -37,11 +37,11 @@ def confirm_overwrite(files: list[Path], dry_run: bool = False) -> bool:
     return response in ("y", "yes")
 
 
-def find_files_to_create(track_dir: Path, force: bool = False) -> list[Path]:
-    """Find files that would be overwritten during track creation.
+def find_files_to_create(story_dir: Path, force: bool = False) -> list[Path]:
+    """Find files that would be overwritten during story creation.
 
     Args:
-        track_dir: Track directory being created
+        story_dir: Story directory being created
         force: If True, skip confirmation
 
     Returns:
@@ -51,7 +51,7 @@ def find_files_to_create(track_dir: Path, force: bool = False) -> list[Path]:
     track_files = ["index.md", "plan.md", "spec.md", "metadata.json"]
 
     for fname in track_files:
-        fpath = track_dir / fname
+        fpath = story_dir / fname
         if fpath.exists():
             existing.append(fpath)
 
@@ -77,7 +77,7 @@ def main() -> int:
     args = parser.parse_args()
 
     print("=" * 60)
-    print("Overwrite Confirmation for Conductor Operations")
+    print("Overwrite Confirmation for Scrummaster Operations")
     print("=" * 60)
 
     if args.check:
@@ -87,8 +87,8 @@ def main() -> int:
         else:
             print(f"[OK] {args.check} - No files would be overwritten")
     else:
-        print("This script provides overwrite confirmation for conductor operations.")
-        print("It is integrated into conductor-newtrack and other file-modifying commands.")
+        print("This script provides overwrite confirmation for scrummaster operations.")
+        print("It is integrated into scrummaster-newtrack and other file-modifying commands.")
         print("\nUsage:")
         print("  python confirm_overwrite.py --check <directory>")
         print("  python confirm_overwrite.py --check <directory> --dry-run")

@@ -7,8 +7,8 @@ sys.path.insert(0, str(ROOT))
 from scripts.skills_manifest import iter_skills, load_manifest  # noqa: E402
 
 MANIFEST_PATH = ROOT / "skills" / "manifest.json"
-TEMPLATES_DIR = ROOT / "conductor-core" / "src" / "conductor_core" / "templates"
-TARGET_PATH = ROOT / ".claude" / "skills" / "conductor" / "references" / "workflows.md"
+TEMPLATES_DIR = ROOT / "scrummaster-core" / "src" / "scrummaster_core" / "templates"
+TARGET_PATH = ROOT / ".claude" / "skills" / "scrummaster" / "references" / "workflows.md"
 
 
 def render() -> str:
@@ -16,7 +16,7 @@ def render() -> str:
     skills = list(iter_skills(manifest))
 
     lines = [
-        "# Conductor",
+        "# Scrummaster",
         "",
         "Context-Driven Development for Claude Code. Measure twice, code once.",
         "",
@@ -26,7 +26,7 @@ def render() -> str:
         "| --- | --- |",
     ]
 
-    lines.extend(f"| `{skill['name'].replace('conductor-', '')}` | {skill['description']} |" for skill in skills)
+    lines.extend(f"| `{skill['name'].replace('scrummaster-', '')}` | {skill['description']} |" for skill in skills)
 
     lines.extend(
         [

@@ -1,30 +1,30 @@
-# Homebrew Tap for Conductor
+# Homebrew Tap for Scrummaster
 
 ## Installation
 
 ```bash
 # Add the tap
-brew tap harris-azmon/conductor
+brew tap harris-azmon/scrummaster
 
-# Install conductor
-brew install conductor
+# Install scrummaster
+brew install scrummaster
 ```
 
 ## Creating the Formula
 
-To create the Homebrew formula for Conductor, create a file named `conductor.rb` in the `Formula/` directory:
+To create the Homebrew formula for Scrummaster, create a file named `scrummaster.rb` in the `Formula/` directory:
 
 ```ruby
-class Conductor < Formula
+class Scrummaster < Formula
   desc "Context-Driven Development tool for AI-assisted workflows"
   homepage "https://github.com/harris-azmon/conductor"
-  url "https://github.com/harris-azmon/conductor/archive/v0.2.0.tar.gz"
+  url "https://github.com/harris-azmon/conductor/archive/v0.1.0.tar.gz"
   sha256 "TODO_REPLACE_WITH_ACTUAL_SHA256"
-  license "MIT"
+  license "Apache-2.0"
 
   depends_on "python@3.9"
   depends_on "node"
-  depends_on "git"
+  depends_on "fossil"
 
   def install
     # Install core Python packages
@@ -37,14 +37,14 @@ class Conductor < Formula
     bin.install Dir["scripts/*"]
 
     # Create launcher script
-    (bin/"conductor").write <<~EOS
+    (bin/"scrummaster").write <<~EOS
       #!/bin/bash
-      exec mise run conductor "$@"
+      exec mise run scrummaster "$@"
     EOS
   end
 
   test do
-    system "#{bin}/conductor", "--version"
+    system "#{bin}/scrummaster", "--version"
   end
 end
 ```
@@ -52,8 +52,8 @@ end
 ## Publishing Process
 
 1. Fork the [Homebrew/homebrew-core](https://github.com/Homebrew/homebrew-core) repository
-2. Create the formula file in `Formula/conductor.rb`
-3. Run `brew audit --new-formula conductor.rb` to check for issues
+2. Create the formula file in `Formula/scrummaster.rb`
+3. Run `brew audit --new-formula scrummaster.rb` to check for issues
 4. Submit a pull request with the formula
 
 ## Alternative: Personal Tap
@@ -62,16 +62,16 @@ For faster iteration, you can create a personal tap:
 
 ```bash
 # Create your tap repository
-mkdir -p ~/tap/harris-azmon/conductor/Formula
-cp conductor.rb ~/tap/harris-azmon/conductor/Formula/
-cd ~/tap/harris-azmon/conductor
+mkdir -p ~/tap/harris-azmon/scrummaster/Formula
+cp scrummaster.rb ~/tap/harris-azmon/scrummaster/Formula/
+cd ~/tap/harris-azmon/scrummaster
 git init
 git add .
-git commit -m "Add conductor formula"
-git remote add origin https://github.com/YOUR_USERNAME/homebrew-conductor.git
+git commit -m "Add scrummaster formula"
+git remote add origin https://github.com/YOUR_USERNAME/homebrew-scrummaster.git
 git push -u origin main
 
 # Users can then install with:
-brew tap harris-azmon/conductor
-brew install conductor
+brew tap harris-azmon/scrummaster
+brew install scrummaster
 ```

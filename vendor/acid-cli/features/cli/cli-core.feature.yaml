@@ -1,0 +1,112 @@
+feature:
+    name: cli-core
+    product: cli
+    version: 1.0.0
+    description: |
+        Shared command-line behavior for the acai CLI.
+        These requirements apply across the CLI surface where relevant.
+
+components:
+    TARGETING:
+        description: Shared implementation resolution behavior for commands that target one implementation
+        requirements:
+            1: A command that accepts `--impl` uses that implementation directly when it is provided
+            2:
+                requirement: A command that relies on branch-based implementation discovery reads the current repo remote and branch name from git
+                deprecated: true
+            2-note: Scrummaster runs on Fossil, not git, and is Cathedral-style (trunk-only) — see TARGETING.6.
+            3: If branch-based implementation discovery yields exactly one matching implementation context after applying the command's filters, that context is used automatically
+            4:
+                requirement: If branch-based implementation discovery yields multiple matching implementation contexts, the command exits with an ambiguity error and lists the product-qualified candidates
+                deprecated: true
+            4-note: The fossil backend is trunk-only and returns at most one implementation ("trunk") per product, so this ambiguity case can no longer occur.
+            5: If branch-based implementation discovery yields no matching implementation context, the command exits non-zero and states that no implementation matched the current repo, branch, and filters
+            6: A command that relies on implementation discovery without an explicit `--impl` reads the current Fossil checkout's project-name (as the product) via `fossil info`; the fossil backend always resolves to a single implementation named `trunk` when any ticket exists for that product
+
+    AUTH:
+        description: Shared API authentication behavior (deprecated — the fossil backend is entirely local, with no API and no bearer token; see the fossil-client.ts subprocess calls)
+        requirements:
+            1:
+                requirement: A command that calls the API includes a Bearer token in each request
+                deprecated: true
+            2:
+                requirement: The Bearer token is configurable via an environment variable
+                deprecated: true
+
+    CONFIG:
+        description: Shared runtime configuration behavior
+        requirements:
+            1:
+                requirement: A command that calls the API defaults its API base URL to `https://app.acai.sh/api/<version>` and allows configuration to override it
+                deprecated: true
+            1-note: See CONFIG.3 — the fossil backend has no base URL, only a working directory.
+            2:
+                requirement: A command that requires API configuration exits with a usage or input validation error when required configuration is missing
+                deprecated: true
+            2-note: The fossil backend has no required configuration to be missing (CONFIG.3's cwd always resolves to something). The closest surviving case is set-status.MAIN.4's own product-selector requirement, which is a command-specific usage rule, not shared configuration validation.
+            3: The fossil backend defaults its working directory to the process's current working directory and allows overriding it via the `ACID_FOSSIL_CWD` environment variable
+
+    OUTPUT:
+        description: Shared machine-readable output behavior
+        requirements:
+            1: A command that supports `--json` reserves stdout for the final JSON payload when `--json` is active
+            2: A command that supports `--json` writes warnings, diagnostics, and non-payload text to stderr when `--json` is active
+
+    HELP:
+        description: Shared help and command discovery behavior
+        requirements:
+            1: Invoking `acid` with no subcommand prints top-level help output
+            2: Invoking `acid --help` prints top-level help output
+            3: Invoking `acid <command> --help` prints help output for that command
+            4: Help output exits successfully without invoking fossil
+            5: Invoking `acid -h` or `acid <command> -h` prints the same help output as the corresponding `--help` form
+
+    ERRORS:
+        description: Shared runtime error reporting behavior
+        requirements:
+            1: When a fossil subprocess call fails, the command surfaces the fossil error detail to the user
+            2:
+                requirement: When branch-based targeting cannot read the current repo remote or branch name from git, the command exits non-zero and states that git context could not be determined
+                deprecated: true
+            2-note: The fossil equivalent is FOSSIL.1 — the message text is "Fossil context could not be determined."
+            3: Invoking `acid <unknown-command>` exits with a usage or input validation error and identifies the command as unknown
+            4: Invoking a command with an unknown option exits with a usage or input validation error and identifies the option as unknown
+            5: When a command exits with a usage or input validation error, the CLI also prints command usage or help text
+            6: When implementation discovery cannot read fossil context (not within an open Fossil checkout, or `fossil info` fails), the command exits non-zero and states that Fossil context could not be determined
+
+constraints:
+    HTTP:
+        description: Deprecated — the fossil backend has no network layer; see FOSSIL below
+        requirements:
+            1:
+                requirement: A network failure while calling the API exits with code `1`
+                deprecated: true
+            2:
+                requirement: An API authentication or authorization failure exits with code `1`
+                deprecated: true
+            3:
+                requirement: An API not found or validation failure exits with code `1`
+                deprecated: true
+
+    FOSSIL:
+        description: Runtime behavior specific to the local fossil backend
+        requirements:
+            1: When implementation discovery cannot determine the current Fossil context (no open checkout), the command exits with code `1`
+            2: When a `fossil` subprocess call fails (non-zero exit), the command exits with code `1` and includes the fossil error text
+
+    EXITS:
+        requirements:
+            1: A successful command exits with code `0`
+            2: A usage or input validation error, including unknown commands and unknown options, exits with code `2`
+            3: A runtime failure exits with code `1`
+
+    UX:
+        requirements:
+            1: The CLI works in non-interactive environments such as CI and agent runtimes
+            2: The CLI never requires an interactive prompt to complete a command
+
+    DIST:
+        requirements:
+            1: The CLI can be distributed as a JavaScript bundle runnable via `npx`
+            2: The CLI can be distributed through GitHub Releases as platform-specific binaries
+            3: GitHub Release binaries are built using `bun compile`

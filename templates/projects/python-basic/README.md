@@ -1,6 +1,6 @@
 # Basic Python Project
 
-This is a basic Python project template scaffolded by Conductor.
+This is a basic Python project template scaffolded by Scrummaster.
 
 ## Structure
 

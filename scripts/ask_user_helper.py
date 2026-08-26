@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""AskUser Tool Helper - Structured user input for Conductor.
+"""AskUser Tool Helper - Structured user input for Scrummaster.
 
 This module provides helper functions for using the AskUser tool
-for structured user interactions in Conductor workflows.
+for structured user interactions in Scrummaster workflows.
 
 Usage:
     from ask_user_helper import ask_yesno, ask_choice, ask_text, ask_batch

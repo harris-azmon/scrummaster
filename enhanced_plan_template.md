@@ -1,4 +1,4 @@
-# Implementation Plan: [Track Title]
+# Implementation Plan: [Story Title]
 
 ## Task Granularity Guidelines
 
@@ -21,7 +21,7 @@
   - [ ] Validation: [Another validation point]
   - [ ] Acceptance Criteria: [Specific, measurable outcome that defines completion]
 - [ ] Quality Gate: [Specific quality check before proceeding]
-- [ ] Task: Conductor - Automated Verification 'Phase 1: [Phase Name]' (Protocol in workflow.md)
+- [ ] Task: Scrummaster - Automated Verification 'Phase 1: [Phase Name]' (Protocol in workflow.md)
 
 ## Phase 2: [Phase Name]
 
@@ -36,7 +36,7 @@
   - [ ] Validation: [Another validation point]
   - [ ] Acceptance Criteria: [Specific, measurable outcome that defines completion]
 - [ ] Quality Gate: [Specific quality check before proceeding]
-- [ ] Task: Conductor - Automated Verification 'Phase 2: [Phase Name]' (Protocol in workflow.md)
+- [ ] Task: Scrummaster - Automated Verification 'Phase 2: [Phase Name]' (Protocol in workflow.md)
 
 ## Phase 3: [Phase Name]
 
@@ -51,11 +51,11 @@
   - [ ] Validation: [Another validation point]
   - [ ] Acceptance Criteria: [Specific, measurable outcome that defines completion]
 - [ ] Quality Gate: [Specific quality check before proceeding]
-- [ ] Task: Conductor - Automated Verification 'Phase 3: [Phase Name]' (Protocol in workflow.md)
+- [ ] Task: Scrummaster - Automated Verification 'Phase 3: [Phase Name]' (Protocol in workflow.md)
 
 ## Rollback Plan
 
-- What to do if this track needs to be reverted
+- What to do if this story needs to be reverted
 - Data cleanup procedures
 - Configuration resets
 - User communication plan if needed

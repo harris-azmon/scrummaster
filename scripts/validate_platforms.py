@@ -1,27 +1,30 @@
 import os
 import sys
 
-from conductor_core.validation import ValidationService
+from scrummaster_core.validation import ValidationService
 
 
 def sync_platforms() -> None:
     base_dir = os.getcwd()
-    core_templates = os.path.join(base_dir, "conductor-core/src/conductor_core/templates")
+    core_templates = os.path.join(base_dir, "scrummaster-core/src/scrummaster_core/templates")
     service = ValidationService(core_templates)
 
-    # Gemini CLI TOML commands (commands/conductor/*.toml) and the Claude Code
-    # .claude/commands/*.md mirror were retired when this repo adopted upstream's
-    # agent-plugin restructure: skills/*/SKILL.md is now the single portable
-    # source of command content, not something synchronized per-tool from these
-    # core templates. Both mapping tables are intentionally empty.
-    gemini_mappings: dict[str, str] = {}
-    claude_mappings: dict[str, str] = {}
+    # Gemini TOMLs
+    gemini_mappings = {
+        "commands/scrummaster/scrummaster.toml": "scrummaster.j2",
+        "commands/scrummaster/setup.toml": "setup.j2",
+        "commands/scrummaster/newstory.toml": "new_story.j2",
+        "commands/scrummaster/implement.toml": "implement.j2",
+        "commands/scrummaster/status.toml": "status.j2",
+        "commands/scrummaster/revert.toml": "revert.j2",
+    }
+
+    # NOTE: .claude/ is intentionally excluded from sync — it stays untouched
+    # and still "conductor"-branded by explicit product decision; it must
+    # never be overwritten with scrummaster templates.
 
     for path, template in gemini_mappings.items():
         service.synchronize_gemini_toml(path, template)
-
-    for path, template in claude_mappings.items():
-        service.synchronize_claude_md(path, template)
 
 
 def run_validation() -> None:
@@ -32,16 +35,22 @@ def run_validation() -> None:
     args = parser.parse_args()
 
     base_dir = os.getcwd()
-    core_templates = os.path.join(base_dir, "conductor-core/src/conductor_core/templates")
+    core_templates = os.path.join(base_dir, "scrummaster-core/src/scrummaster_core/templates")
     service = ValidationService(core_templates)
 
-    # Gemini CLI TOML commands (commands/conductor/*.toml) and the Claude Code
-    # .claude/commands/*.md mirror were retired when this repo adopted upstream's
-    # agent-plugin restructure: skills/*/SKILL.md is now the single portable
-    # source of command content, not something synchronized per-tool from these
-    # core templates. Both mapping tables are intentionally empty.
-    gemini_mappings: dict[str, str] = {}
-    claude_mappings: dict[str, str] = {}
+    # Gemini TOMLs
+    gemini_mappings = {
+        "commands/scrummaster/scrummaster.toml": "scrummaster.j2",
+        "commands/scrummaster/setup.toml": "setup.j2",
+        "commands/scrummaster/newstory.toml": "new_story.j2",
+        "commands/scrummaster/implement.toml": "implement.j2",
+        "commands/scrummaster/status.toml": "status.j2",
+        "commands/scrummaster/revert.toml": "revert.j2",
+    }
+
+    # NOTE: .claude/ is intentionally excluded here — it stays untouched and
+    # still "conductor"-branded by explicit product decision, so it is never
+    # synced from or validated against the scrummaster templates.
 
     all_valid = True
 
@@ -50,14 +59,6 @@ def run_validation() -> None:
             _success, _msg = service.synchronize_gemini_toml(path, template)
         else:
             valid, _msg = service.validate_gemini_toml(path, template)
-            if not valid:
-                all_valid = False
-
-    for path, template in claude_mappings.items():
-        if args.sync:
-            _success, _msg = service.synchronize_claude_md(path, template)
-        else:
-            valid, _msg = service.validate_claude_md(path, template)
             if not valid:
                 all_valid = False
 

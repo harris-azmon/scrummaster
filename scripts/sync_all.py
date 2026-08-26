@@ -3,7 +3,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(ROOT))
-sys.path.insert(0, str(ROOT / "conductor-core" / "src"))
+sys.path.insert(0, str(ROOT / "scrummaster-core" / "src"))
 
 from scripts.sync_skills import sync_skills  # noqa: E402 - must follow sys.path setup above
 from scripts.validate_platforms import sync_platforms  # noqa: E402 - must follow sys.path setup above
@@ -26,7 +26,7 @@ def main() -> int:
         print(f"❌ Error synchronizing platform files: {e}")
         return 1
 
-    print("\n🎉 Conductor Synchronization Complete!")
+    print("\n🎉 Scrummaster Synchronization Complete!")
     return 0
 
 

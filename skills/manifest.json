@@ -2,95 +2,88 @@
   "manifest_version": 1,
   "tools": {
     "gemini": {
-      "artifact": "commands/conductor/*.toml",
+      "artifact": "commands/scrummaster/*.toml",
       "command_style": "slash-colon",
-      "example": "/conductor:setup",
+      "example": "/scrummaster:setup",
       "needs_confirmation": false
     },
     "qwen": {
-      "artifact": "commands/conductor/*.toml",
+      "artifact": "commands/scrummaster/*.toml",
       "command_style": "slash-colon",
-      "example": "/conductor:setup",
+      "example": "/scrummaster:setup",
       "needs_confirmation": true
     },
     "claude": {
       "artifact": ".claude/commands/*.md and .claude-plugin/*",
       "command_style": "slash-dash",
-      "example": "/conductor-setup",
+      "example": "/scrummaster-setup",
       "needs_confirmation": false
     },
     "codex": {
       "artifact": "~/.codex/skills/<skill>/SKILL.md",
       "command_style": "dollar-dash",
-      "example": "$conductor-setup",
+      "example": "$scrummaster-setup",
       "needs_confirmation": true
     },
     "opencode": {
-      "artifact": "~/.opencode/skill/<skill>/SKILL.md",
+      "artifact": "~/.config/opencode/skills/<skill>/SKILL.md",
       "command_style": "slash-dash",
-      "example": "/conductor-setup",
-      "needs_confirmation": true
+      "example": "/scrummaster-setup",
+      "needs_confirmation": false
     },
     "antigravity": {
       "artifact": ".agent/workflows/<skill>.md and ~/.gemini/antigravity/global_workflows/<skill>.md",
       "command_style": "at-mention + slash",
-      "example": "@conductor /setup",
-      "needs_confirmation": true
-    },
-    "vscode": {
-      "artifact": "conductor-vscode/skills/<skill>/SKILL.md",
-      "command_style": "at-mention + slash",
-      "example": "@conductor /setup",
+      "example": "@scrummaster /setup",
       "needs_confirmation": true
     },
     "copilot": {
-      "artifact": "~/.config/github-copilot/conductor.md",
+      "artifact": "~/.config/github-copilot/scrummaster.md",
       "command_style": "slash-dash",
-      "example": "/conductor-setup",
+      "example": "/scrummaster-setup",
       "needs_confirmation": true
     },
     "aix": {
-      "artifact": "~/.config/aix/conductor.md",
+      "artifact": "~/.config/aix/scrummaster.md",
       "command_style": "slash-dash",
-      "example": "/conductor-setup",
+      "example": "/scrummaster-setup",
       "needs_confirmation": true
     },
     "skillshare": {
       "artifact": "~/.config/skillshare/skills/<skill>/SKILL.md",
       "command_style": "slash-dash",
-      "example": "/conductor-setup",
+      "example": "/scrummaster-setup",
       "needs_confirmation": true
     }
   },
   "extensions": {
     "gemini": {
-      "name": "conductor",
+      "name": "scrummaster",
       "version": "0.2.0",
       "contextFileName": "GEMINI.md"
     },
     "qwen": {
-      "name": "conductor",
+      "name": "scrummaster",
       "version": "0.2.0",
       "contextFileName": "GEMINI.md"
     }
   },
   "skills": [
     {
-      "id": "conductor",
-      "template": "conductor",
-      "name": "conductor",
-      "description": "Context-driven development methodology. Understands projects set up with Conductor (via Gemini CLI or Claude Code). Use when working with conductor/ directories, tracks, specs, plans, or when user mentions context-driven development.",
+      "id": "scrummaster",
+      "template": "scrummaster",
+      "name": "scrummaster",
+      "description": "Context-driven development methodology. Understands projects set up with Scrummaster (via Gemini CLI or Claude Code). Use when working with scrummaster/ directories, stories, specs, plans, or when user mentions context-driven development.",
       "commands": {
-        "gemini": "/conductor:info",
-        "qwen": "/conductor:info",
-        "claude": "/conductor-info",
-        "codex": "$conductor-info",
-        "opencode": "/conductor-info",
-        "antigravity": "@conductor /info",
-        "vscode": "@conductor /info",
-        "copilot": "/conductor-info",
-        "aix": "/conductor-info",
-        "skillshare": "/conductor-info"
+        "gemini": "/scrummaster:info",
+        "qwen": "/scrummaster:info",
+        "claude": "/scrummaster-info",
+        "codex": "$scrummaster-info",
+        "opencode": "/scrummaster-info",
+        "antigravity": "@scrummaster /info",
+        "copilot": "/scrummaster-info",
+        "aix": "/scrummaster-info",
+        "skillshare": "/scrummaster-info"
       },
       "enabled": {
         "gemini": true,
@@ -99,7 +92,6 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true
@@ -108,19 +100,18 @@
     {
       "id": "setup",
       "template": "setup",
-      "name": "conductor-setup",
-      "description": "Scaffolds the project and sets up the Conductor environment. Use this whenever a project needs to be initialized or if the Conductor configuration is missing.",
+      "name": "scrummaster-setup",
+      "description": "Scaffolds the project and sets up the Scrummaster environment. Use this whenever a project needs to be initialized or if the Scrummaster configuration is missing.",
       "commands": {
-        "gemini": "/conductor:setup",
-        "qwen": "/conductor:setup",
-        "claude": "/conductor-setup",
-        "codex": "$conductor-setup",
-        "opencode": "/conductor-setup",
-        "antigravity": "@conductor /setup",
-        "vscode": "@conductor /setup",
-        "copilot": "/conductor-setup",
-        "aix": "/conductor-setup",
-        "skillshare": "/conductor-setup"
+        "gemini": "/scrummaster:setup",
+        "qwen": "/scrummaster:setup",
+        "claude": "/scrummaster-setup",
+        "codex": "$scrummaster-setup",
+        "opencode": "/scrummaster-setup",
+        "antigravity": "@scrummaster /setup",
+        "copilot": "/scrummaster-setup",
+        "aix": "/scrummaster-setup",
+        "skillshare": "/scrummaster-setup"
       },
       "enabled": {
         "gemini": true,
@@ -129,28 +120,26 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true
       }
     },
     {
-      "id": "new_track",
-      "template": "new_track",
-      "name": "conductor-new-track",
-      "description": "Plans a new track (feature or bug fix), generates spec/plan documents, and updates the registry.",
+      "id": "new_epic",
+      "template": "new_epic",
+      "name": "scrummaster-new-epic",
+      "description": "Creates a new epic to group related stories. Use this whenever the user wants to plan a broader area of work before breaking it into individual stories, or when scrummaster-new-story finds no existing epic to attach a story to.",
       "commands": {
-        "gemini": "/conductor:new-track",
-        "qwen": "/conductor:new-track",
-        "claude": "/conductor-new-track",
-        "codex": "$conductor-new-track",
-        "opencode": "/conductor-new-track",
-        "antigravity": "@conductor /new-track",
-        "vscode": "@conductor /new-track",
-        "copilot": "/conductor-new-track",
-        "aix": "/conductor-new-track",
-        "skillshare": "/conductor-new-track"
+        "gemini": "/scrummaster:newepic",
+        "qwen": "/scrummaster:newepic",
+        "claude": "/scrummaster-newepic",
+        "codex": "$scrummaster-newepic",
+        "opencode": "/scrummaster-newepic",
+        "antigravity": "@scrummaster /newepic",
+        "copilot": "/scrummaster-newepic",
+        "aix": "/scrummaster-newepic",
+        "skillshare": "/scrummaster-newepic"
       },
       "enabled": {
         "gemini": true,
@@ -159,7 +148,34 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
+        "copilot": true,
+        "aix": true,
+        "skillshare": true
+      }
+    },
+    {
+      "id": "new_story",
+      "template": "new_story",
+      "name": "scrummaster-new-story",
+      "description": "Plans a new story (feature or bug fix), generates spec/plan documents, and updates the registry.",
+      "commands": {
+        "gemini": "/scrummaster:new-story",
+        "qwen": "/scrummaster:new-story",
+        "claude": "/scrummaster-new-story",
+        "codex": "$scrummaster-new-story",
+        "opencode": "/scrummaster-new-story",
+        "antigravity": "@scrummaster /new-story",
+        "copilot": "/scrummaster-new-story",
+        "aix": "/scrummaster-new-story",
+        "skillshare": "/scrummaster-new-story"
+      },
+      "enabled": {
+        "gemini": true,
+        "qwen": true,
+        "claude": true,
+        "codex": true,
+        "opencode": true,
+        "antigravity": true,
         "copilot": true,
         "aix": true,
         "skillshare": true
@@ -168,19 +184,18 @@
     {
       "id": "implement",
       "template": "implement",
-      "name": "conductor-implement",
-      "description": "Executes the tasks defined in the specified track's plan. Use this to start or continue working on a feature, bug fix, or chore.",
+      "name": "scrummaster-implement",
+      "description": "Executes the tasks defined in the specified story's plan. Use this to start or continue working on a feature, bug fix, or chore.",
       "commands": {
-        "gemini": "/conductor:implement",
-        "qwen": "/conductor:implement",
-        "claude": "/conductor-implement",
-        "codex": "$conductor-implement",
-        "opencode": "/conductor-implement",
-        "antigravity": "@conductor /implement",
-        "vscode": "@conductor /implement",
-        "copilot": "/conductor-implement",
-        "aix": "/conductor-implement",
-        "skillshare": "/conductor-implement"
+        "gemini": "/scrummaster:implement",
+        "qwen": "/scrummaster:implement",
+        "claude": "/scrummaster-implement",
+        "codex": "$scrummaster-implement",
+        "opencode": "/scrummaster-implement",
+        "antigravity": "@scrummaster /implement",
+        "copilot": "/scrummaster-implement",
+        "aix": "/scrummaster-implement",
+        "skillshare": "/scrummaster-implement"
       },
       "enabled": {
         "gemini": true,
@@ -189,7 +204,6 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true
@@ -198,19 +212,18 @@
     {
       "id": "status",
       "template": "status",
-      "name": "conductor-status",
-      "description": "Displays the current progress of the project by parsing the Tracks Registry and individual track plans.",
+      "name": "scrummaster-status",
+      "description": "Displays the current progress of the project by parsing the Epics Index, fossil ACID ticket state, and individual story plans.",
       "commands": {
-        "gemini": "/conductor:status",
-        "qwen": "/conductor:status",
-        "claude": "/conductor-status",
-        "codex": "$conductor-status",
-        "opencode": "/conductor-status",
-        "antigravity": "@conductor /status",
-        "vscode": "@conductor /status",
-        "copilot": "/conductor-status",
-        "aix": "/conductor-status",
-        "skillshare": "/conductor-status"
+        "gemini": "/scrummaster:status",
+        "qwen": "/scrummaster:status",
+        "claude": "/scrummaster-status",
+        "codex": "$scrummaster-status",
+        "opencode": "/scrummaster-status",
+        "antigravity": "@scrummaster /status",
+        "copilot": "/scrummaster-status",
+        "aix": "/scrummaster-status",
+        "skillshare": "/scrummaster-status"
       },
       "enabled": {
         "gemini": true,
@@ -219,7 +232,6 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true
@@ -228,19 +240,18 @@
     {
       "id": "revert",
       "template": "revert",
-      "name": "conductor-revert",
-      "description": "Reverts previous work (tracks, phases, or tasks) by identifying associated commits and performing Git reverts.",
+      "name": "scrummaster-revert",
+      "description": "Reverts previous work (stories, phases, or tasks) by identifying associated commits and performing fossil-aware reverts (forward inverse-patch commits).",
       "commands": {
-        "gemini": "/conductor:revert",
-        "qwen": "/conductor:revert",
-        "claude": "/conductor-revert",
-        "codex": "$conductor-revert",
-        "opencode": "/conductor-revert",
-        "antigravity": "@conductor /revert",
-        "vscode": "@conductor /revert",
-        "copilot": "/conductor-revert",
-        "aix": "/conductor-revert",
-        "skillshare": "/conductor-revert"
+        "gemini": "/scrummaster:revert",
+        "qwen": "/scrummaster:revert",
+        "claude": "/scrummaster-revert",
+        "codex": "$scrummaster-revert",
+        "opencode": "/scrummaster-revert",
+        "antigravity": "@scrummaster /revert",
+        "copilot": "/scrummaster-revert",
+        "aix": "/scrummaster-revert",
+        "skillshare": "/scrummaster-revert"
       },
       "enabled": {
         "gemini": true,
@@ -249,7 +260,6 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true
@@ -258,19 +268,18 @@
     {
       "id": "review",
       "template": "review",
-      "name": "conductor-review",
-      "description": "Reviews the completed track work against guidelines and the plan. Acts as a Principal Software Engineer to ensure quality and compliance.",
+      "name": "scrummaster-review",
+      "description": "Reviews the completed story work against guidelines and the plan. Acts as a Principal Software Engineer to ensure quality and compliance.",
       "commands": {
-        "gemini": "/conductor:review",
-        "qwen": "/conductor:review",
-        "claude": "/conductor-review",
-        "codex": "$conductor-review",
-        "opencode": "/conductor-review",
-        "antigravity": "@conductor /review",
-        "vscode": "@conductor /review",
-        "copilot": "/conductor-review",
-        "aix": "/conductor-review",
-        "skillshare": "/conductor-review"
+        "gemini": "/scrummaster:review",
+        "qwen": "/scrummaster:review",
+        "claude": "/scrummaster-review",
+        "codex": "$scrummaster-review",
+        "opencode": "/scrummaster-review",
+        "antigravity": "@scrummaster /review",
+        "copilot": "/scrummaster-review",
+        "aix": "/scrummaster-review",
+        "skillshare": "/scrummaster-review"
       },
       "enabled": {
         "gemini": true,
@@ -279,7 +288,6 @@
         "codex": true,
         "opencode": true,
         "antigravity": true,
-        "vscode": true,
         "copilot": true,
         "aix": true,
         "skillshare": true

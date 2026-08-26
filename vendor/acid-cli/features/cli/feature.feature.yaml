@@ -1,0 +1,41 @@
+feature:
+    name: feature
+    product: cli
+    version: 1.0.0
+    description: |
+        The `acai feature` command loads canonical feature context for one feature in one implementation.
+        It is the primary read command used by AI agents before making spec, code, or status changes.
+
+components:
+    MAIN:
+        description: Primary command behavior
+        requirements:
+            1: Exposes `acai feature <feature-name>`
+            2: Accepts optional `--product <product-name>`
+            2-1: When `--product` is omitted and no namespaced `--impl` supplies it, the command resolves a target from the current repo and branch using implementation discovery filtered by the requested feature name
+            2-2: When `--product` is omitted and no namespaced `--impl` supplies it, and implementation discovery does not resolve exactly one matching target, the command exits non-zero with a targeting error
+            3: Accepts optional `--impl <implementation-name>` or namespaced selector `<product/implementation>`
+            4: Accepts optional `--include-refs`
+            5: Accepts optional `--status <value>` filters, repeatable
+            6: Supports `--json` output for machine consumption
+
+    API:
+        description: Interaction with the feature context backend
+        requirements:
+            1:
+                requirement: After target resolution, the command calls `GET /api/v1/feature-context`
+                deprecated: true
+            1-note: The fossil backend queries the local ticket table directly (`fossil sql`, filtered by `story_id`) instead of an HTTP endpoint — see `createFossilClient`'s `getFeatureContext`.
+            2: The command relays canonical requirement definitions, resolved states, and summary counts from the backend response
+            3:
+                requirement: When refs are requested, the command relays per-ACID refs returned by the backend response
+                deprecated: true
+            3-note: The fossil backend does not persist per-reference storage; `--include-refs` currently returns an empty refs array per ACID (see fossil-client.ts's `getFeatureContext`). Use `acid push --all` against a fresh scan to recompute refs locally instead.
+            4: An ACID's resolved state falls back to `completed` when its ticket has no `set-status`-written status but was closed directly (e.g. by `/scrummaster-implement`'s own `fossil ticket change ... status Closed`)
+            4-note: Without this fallback a ticket closed only via fossil's built-in status field showed `null` here while `acid features`' completion counts (which already checked the built-in status directly) counted it as done - an inconsistency between acid-cli's own two read commands, not just against the skill's raw fossil commands. See `resolveAcaiStatus` in fossil-client.ts.
+
+constraints:
+    UX:
+        requirements:
+            1: The default text output includes feature summary counts and presents each returned ACID with its resolved state and ref counts
+            2: The command never performs status writes or branch pushes

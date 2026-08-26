@@ -1,6 +1,6 @@
-# Installation Methods for Conductor
+# Installation Methods for Scrummaster
 
-Conductor can be installed through multiple methods to suit different environments and preferences.
+Scrummaster can be installed through multiple methods to suit different environments and preferences.
 
 ## Quick Install
 
@@ -18,7 +18,7 @@ curl -fsSL install.cat/harris-azmon/conductor | sh
 
 ```bash
 # Once published to Smithery
-smithery install conductor
+smithery install scrummaster
 ```
 
 ## Detailed Installation Methods
@@ -28,13 +28,13 @@ smithery install conductor
 #### pip (Python)
 
 ```bash
-pip install conductor-core conductor-gemini
+pip install scrummaster-core
 ```
 
 #### npm (Node.js)
 
 ```bash
-npm install -g @conductor/vscode-extension
+npm install -g @scrummaster/acid-cli
 ```
 
 ### 2. Cross-Platform Package Managers
@@ -43,23 +43,23 @@ npm install -g @conductor/vscode-extension
 
 ```bash
 # Coming soon
-brew tap harris-azmon/conductor
-brew install conductor
+brew tap harris-azmon/scrummaster
+brew install scrummaster
 ```
 
 #### Chocolatey (Windows)
 
 ```powershell
 # Coming soon
-choco install conductor
+choco install scrummaster
 ```
 
 #### Scoop (Windows)
 
 ```powershell
 # Coming soon
-scoop bucket add conductor https://github.com/harris-azmon/scoop-conductor
-scoop install conductor
+scoop bucket add scrummaster https://github.com/harris-azmon/scoop-scrummaster
+scoop install scrummaster
 ```
 
 ### 3. Direct Download
@@ -84,20 +84,20 @@ cd conductor
 
 All installation methods require:
 
-- Git (>= 2.0)
+- [Fossil SCM](https://fossil-scm.org/) (>= 2.0)
 - Python (>= 3.9) or Node.js (>= 18)
 - Internet connection for initial setup
 
 ## Verification
 
-After installation, verify Conductor is working:
+After installation, verify Scrummaster is working:
 
 ```bash
 # Check version
-conductor --version
+scrummaster --version
 
 # Run setup
-conductor:setup
+scrummaster:setup
 
 # Verify installation
 mise run verify  # if using mise
@@ -112,7 +112,7 @@ mise run verify  # if using mise
    - Check PATH environment variable
 
 2. **Missing Dependencies**
-   - Ensure Git, Python/Node.js are installed
+   - Ensure Fossil, Python/Node.js are installed
    - Check version requirements
 
 3. **Network Issues**

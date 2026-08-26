@@ -1,8 +1,10 @@
+import { FossilVcs } from './fossil.js';
 import { GitVcs } from './git.js';
 import { JjVcs } from './jj.js';
 import { Vcs, VcsType } from './types.js';
 
-const strategies = [GitVcs, JjVcs];
+// Fossil first: it's Scrummaster's default VCS backend.
+const strategies = [FossilVcs, GitVcs, JjVcs];
 
 /**
  * Detects the VCS type for a given path.
@@ -26,7 +28,9 @@ export function detectVcs(repoPath: string): VcsType | null {
  * @param type The type of VCS to initialize ('git' or 'jj').
  */
 export function initVcs(repoPath: string, type: VcsType): void {
-  if (type === VcsType.Git) {
+  if (type === VcsType.Fossil) {
+    new FossilVcs().init(repoPath);
+  } else if (type === VcsType.Git) {
     new GitVcs().init(repoPath);
   } else if (type === VcsType.Jj) {
     new JjVcs().init(repoPath);

@@ -217,6 +217,10 @@ out/
 dist/
 node_modules/
 
+# scrummaster-opencode's build-time copy of commands/*.md (see
+# scripts/copy-commands.mjs) - generated, source of truth is commands/*.md
+scrummaster-opencode/commands/
+
 # Tool-specific directories (should not be in remote repo)
 /.claude/
 /.gemini/

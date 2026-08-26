@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# Conductor Marketplace Preparation Script
-# Prepares Conductor for publication to multiple marketplaces
+# Scrummaster Marketplace Preparation Script
+# Prepares Scrummaster for publication to multiple marketplaces
 #
 
 set -e
@@ -31,8 +31,8 @@ log_error() {
 
 # Configuration
 VERSION="0.2.0"
-PROJECT_NAME="conductor"
-REPO_URL="https://github.com/harris-azmon/conductor"
+PROJECT_NAME="scrummaster"
+REPO_URL="https://github.com/harris-azmon/scrummaster"
 
 # Check if command exists
 command_exists() {
@@ -101,8 +101,8 @@ update_manifests() {
     fi
 
     # Update Scoop manifest
-    if [ -f "scoop/conductor.json" ]; then
-        sed -i.bak "s|TODO_REPLACE_WITH_ACTUAL_HASH|$checksum|g" scoop/conductor.json
+    if [ -f "scoop/scrummaster.json" ]; then
+        sed -i.bak "s|TODO_REPLACE_WITH_ACTUAL_HASH|$checksum|g" scoop/scrummaster.json
         log_success "Updated Scoop manifest with checksum"
     fi
 
@@ -163,7 +163,7 @@ verify_readiness() {
 
     # Check Chocolatey setup
     ((total_checks++))
-    if [ -f "chocolatey/conductor.nuspec" ]; then
+    if [ -f "chocolatey/scrummaster.nuspec" ]; then
         log_success "✓ Chocolatey setup ready"
         ((ready_count++))
     else
@@ -172,7 +172,7 @@ verify_readiness() {
 
     # Check Scoop setup
     ((total_checks++))
-    if [ -f "scoop/conductor.json" ]; then
+    if [ -f "scoop/scrummaster.json" ]; then
         log_success "✓ Scoop setup ready"
         ((ready_count++))
     else
@@ -202,7 +202,7 @@ print_publication_guide() {
     echo "1. ${GREEN}Smithery${NC}: Run 'smithery publish' in project root"
     echo "2. ${GREEN}PyPI${NC}: Run 'twine upload dist/*'"
     echo "3. ${GREEN}npm${NC}: Run 'npm publish' in project root"
-    echo "4. ${GREEN}Homebrew${NC}: Submit Formula/conductor.rb to homebrew-core"
+    echo "4. ${GREEN}Homebrew${NC}: Submit Formula/scrummaster.rb to homebrew-core"
     echo "5. ${GREEN}Chocolatey${NC}: Run 'choco pack && choco push *.nupkg'"
     echo "6. ${GREEN}Scoop${NC}: Add manifest to bucket and submit PR"
     echo ""
@@ -213,7 +213,7 @@ print_publication_guide() {
 # Main function
 main() {
     echo ""
-    echo "🚀 Conductor Marketplace Preparation"
+    echo "🚀 Scrummaster Marketplace Preparation"
     echo "====================================="
     echo ""
 

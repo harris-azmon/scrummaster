@@ -1,7 +1,7 @@
 {
-  "name": "conductor-vcs-mcp",
+  "name": "scrummaster-vcs-mcp",
   "version": "1.0.0",
-  "description": "MCP Server for VCS abstraction (Git/JJ)",
+  "description": "MCP Server for VCS abstraction (Git/JJ/Fossil)",
   "type": "module",
   "main": "dist/server.js",
   "scripts": {

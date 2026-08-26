@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Conductor Repository Cleanup Script
+# Scrummaster Repository Cleanup Script
 # Removes proprietary tool files and ensures only essential files are in the repository
 #
 
@@ -79,10 +79,10 @@ verify_essential_files() {
         "smithery.toml"
         "install.sh"
         "install.ps1"
-        "conductor-core/"
-        "conductor-gemini/"
-        "conductor-vscode/"
-        "conductor/"
+        "scrummaster-core/"
+        "scrummaster-gemini/"
+        "scrummaster-vscode/"
+        "scrummaster/"
     )
 
     for file in "${essential_files[@]}"; do
@@ -151,7 +151,7 @@ print_summary() {
     printf "   - %s\n" "${TOOL_DIRS[@]}"
     echo ""
     echo "✅ Essential files verified:"
-    echo "   - Core architecture (conductor-core, conductor-gemini, conductor-vscode)"
+    echo "   - Core architecture (scrummaster-core, scrummaster-gemini, scrummaster-vscode)"
     echo "   - Universal installer (install.sh, install.ps1)"
     echo "   - Package manager configs (mise.toml, package.json, setup.cfg)"
     echo "   - Documentation (README.md, AGENTS.md, INSTALL.md)"
@@ -165,7 +165,7 @@ print_summary() {
 # Main function
 main() {
     echo ""
-    echo "🧹 Conductor Repository Cleanup"
+    echo "🧹 Scrummaster Repository Cleanup"
     echo "================================"
     echo ""
 

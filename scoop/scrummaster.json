@@ -1,0 +1,51 @@
+{
+    "version": "0.1.0",
+    "description": "Context-Driven Development tool for AI-assisted workflows",
+    "homepage": "https://github.com/harris-azmon/conductor",
+    "license": "Apache-2.0",
+    "depends": [
+        "fossil",
+        "python",
+        "nodejs"
+    ],
+    "architecture": {
+        "64bit": {
+            "url": "https://github.com/harris-azmon/conductor/archive/v0.1.0.zip",
+            "hash": "TODO_REPLACE_WITH_ACTUAL_HASH"
+        }
+    },
+    "extract_dir": "conductor-0.1.0",
+    "installer": {
+        "script": [
+            "# Install mise if not present",
+            "if (!(Get-Command mise -ErrorAction SilentlyContinue)) {",
+            "    Write-Host \"Installing mise...\"",
+            "    Invoke-Expression (Invoke-RestMethod https://mise.run)",
+            "}",
+            "# Run mise install to set up the environment",
+            "Push-Location \"$dir\"",
+            "try {",
+            "    mise install",
+            "    Write-Host \"Running scrummaster setup...\"",
+            "    python scripts/scrummaster_install.py --all",
+            "} finally {",
+            "    Pop-Location",
+            "}"
+        ]
+    },
+    "bin": [
+        [
+            "scripts/scrummaster_install.py",
+            "scrummaster"
+        ]
+    ],
+    "env_add_path": [
+        "scripts"
+    ],
+    "checkver": {
+        "github": "https://github.com/harris-azmon/conductor"
+    },
+    "autoupdate": {
+        "url": "https://github.com/harris-azmon/conductor/archive/v$version.zip"
+    }
+}

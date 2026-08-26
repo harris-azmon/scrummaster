@@ -62,7 +62,7 @@ def render_skill_content(skill: dict, templates_dir: Path) -> str:
     if "triggers" in skill:
         skill_data["triggers"] = skill["triggers"]
 
-    return template.render(skill=skill_data)
+    return template.render(skill=skill_data).rstrip("\n") + "\n"
 
     # Note: Do NOT append raw instruction template content.
     # The SKILL.md.j2 template is designed as a standalone skill definition

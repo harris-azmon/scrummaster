@@ -1,6 +1,6 @@
 # Marketplace Integration Guide
 
-This document outlines the process for publishing Conductor to various marketplaces and package managers.
+This document outlines the process for publishing Scrummaster to various marketplaces and package managers.
 
 ## Current Status
 
@@ -68,19 +68,19 @@ npm publish --access public
 To submit to Homebrew:
 
 1. Fork <https://github.com/Homebrew/homebrew-core>
-2. Create formula in `Formula/conductor.rb`:
+2. Create formula in `Formula/scrummaster.rb`:
 
 ```ruby
-class Conductor < Formula
+class Scrummaster < Formula
   desc "Context-Driven Development tool for AI-assisted workflows"
   homepage "https://github.com/harris-azmon/conductor"
-  url "https://github.com/harris-azmon/conductor/archive/v0.2.0.tar.gz"
+  url "https://github.com/harris-azmon/conductor/archive/v0.1.0.tar.gz"
   sha256 "REPLACE_WITH_ACTUAL_SHA256"
-  license "MIT"
+  license "Apache-2.0"
 
   depends_on "python@3.9"
   depends_on "node"
-  depends_on "git"
+  depends_on "fossil"
 
   def install
     # Install core components
@@ -88,12 +88,12 @@ class Conductor < Formula
   end
 
   test do
-    system "#{bin}/conductor", "--version"
+    system "#{bin}/scrummaster", "--version"
   end
 end
 ```
 
-1. Run audit: `brew audit --new-formula Formula/conductor.rb`
+1. Run audit: `brew audit --new-formula Formula/scrummaster.rb`
 2. Submit pull request
 
 ### 5. Chocolatey Package
@@ -103,20 +103,20 @@ To publish to Chocolatey:
 1. Build the package:
 
 ```powershell
-choco pack chocolatey/conductor.nuspec
+choco pack chocolatey/scrummaster.nuspec
 ```
 
 1. Test locally:
 
 ```powershell
-choco install conductor -s . -fdv
+choco install scrummaster -s . -fdv
 ```
 
 1. Push to Chocolatey:
 
 ```powershell
 choco apikey -k YOUR_API_KEY -source https://push.chocolatey.org/
-choco push conductor.0.2.0.nupkg -s https://push.chocolatey.org/
+choco push scrummaster.0.1.0.nupkg -s https://push.chocolatey.org/
 ```
 
 ### 6. Scoop Bucket
@@ -124,22 +124,22 @@ choco push conductor.0.2.0.nupkg -s https://push.chocolatey.org/
 To add to Scoop:
 
 1. Fork <https://github.com/ScoopInstaller/Main>
-2. Add manifest to `/bucket/conductor.json`
+2. Add manifest to `/bucket/scrummaster.json`
 3. Submit pull request
 
 Or create a personal bucket:
 
 ```bash
 # Create your bucket
-mkdir -p ~/scoop-buckets/conductor/bucket
-cp scoop/conductor.json ~/scoop-buckets/conductor/bucket/
+mkdir -p ~/scoop-buckets/scrummaster/bucket
+cp scoop/scrummaster.json ~/scoop-buckets/scrummaster/bucket/
 ```
 
 Users can then add your bucket:
 
 ```bash
-scoop bucket add conductor https://github.com/YOUR_USERNAME/scoop-buckets
-scoop install conductor
+scoop bucket add scrummaster https://github.com/YOUR_USERNAME/scoop-buckets
+scoop install scrummaster
 ```
 
 ## Automation Scripts
@@ -152,29 +152,29 @@ scoop install conductor
 
 set -e
 
-VERSION="0.2.0"
+VERSION="0.1.0"
 
-echo "Publishing Conductor v$VERSION to marketplaces..."
+echo "Publishing Scrummaster v$VERSION to marketplaces..."
 
 # Build artifacts
 echo "Building release artifacts..."
 mkdir -p dist/
-tar -czf "dist/conductor-$VERSION.tar.gz" --exclude=".*" --exclude="dist" --exclude="*.egg-info" .
+tar -czf "dist/scrummaster-$VERSION.tar.gz" --exclude=".*" --exclude="dist" --exclude="*.egg-info" .
 
 # Calculate checksums
-SHA256=$(shasum -a 256 "dist/conductor-$VERSION.tar.gz" | cut -d' ' -f1)
+SHA256=$(shasum -a 256 "dist/scrummaster-$VERSION.tar.gz" | cut -d' ' -f1)
 echo "SHA256: $SHA256"
 
 # Update manifests with actual checksums
 sed -i.bak "s/TODO_REPLACE_WITH_ACTUAL_SHA256/$SHA256/g" HOMEBREW.md
-sed -i.bak "s/TODO_REPLACE_WITH_ACTUAL_HASH/$SHA256/g" scoop/conductor.json
+sed -i.bak "s/TODO_REPLACE_WITH_ACTUAL_HASH/$SHA256/g" scoop/scrummaster.json
 
 echo "Marketplace manifests updated with correct checksums."
 
 # Instructions for publishing
 echo ""
 echo "Next steps:"
-echo "1. Upload dist/conductor-$VERSION.tar.gz to GitHub Releases"
+echo "1. Upload dist/scrummaster-$VERSION.tar.gz to GitHub Releases"
 echo "2. Update Homebrew formula with correct SHA256"
 echo "3. Follow publication steps for each marketplace"
 ```

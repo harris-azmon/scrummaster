@@ -1,9 +1,9 @@
-# PowerShell script to build Conductor VS Code Extension
+# PowerShell script to build Scrummaster VS Code Extension
 $ErrorActionPreference = "Stop"
 
-Write-Host "Building Conductor VS Code Extension..."
-Set-Location conductor-vscode
+Write-Host "Building Scrummaster VS Code Extension..."
+Set-Location scrummaster-vscode
 npm install
-npx vsce package -o ../conductor.vsix
+npx vsce package -o ../scrummaster.vsix
 Set-Location ..
-Write-Host "Build complete: conductor.vsix"
+Write-Host "Build complete: scrummaster.vsix"

@@ -1,10 +1,10 @@
 # Quick Start Guide
 
-Get up and running with Conductor in minutes using one of our installation methods.
+Get up and running with Scrummaster in minutes using one of our installation methods.
 
 ## One-Click Installation (Recommended)
 
-The fastest way to install Conductor is using our universal installer:
+The fastest way to install Scrummaster is using our universal installer:
 
 ### Unix/macOS
 
@@ -31,7 +31,7 @@ mise install harris-azmon/conductor
 ### Via Smithery (Coming Soon)
 
 ```bash
-smithery install conductor
+smithery install scrummaster
 ```
 
 ### Manual Installation
@@ -54,7 +54,7 @@ If you prefer to install manually:
 3. Run the installer:
 
    ```bash
-   python scripts/conductor_install.py --all
+   python scripts/scrummaster_install.py --all
    ```
 
 ## Verify Installation
@@ -65,8 +65,8 @@ After installation, verify everything is working:
 # Check if mise is working
 mise --version
 
-# Verify Conductor components
-python -c "import conductor_core; print('Core installed')"
+# Verify Scrummaster components
+python -c "import scrummaster_core; print('Core installed')"
 ```
 
 ## Next Steps
@@ -74,22 +74,23 @@ python -c "import conductor_core; print('Core installed')"
 Once installed, initialize your project:
 
 ```bash
-/conductor:setup
+/scrummaster:setup
 ```
 
-Then create your first track:
+Then create your first epic and story:
 
 ```bash
-/conductor:newTrack "My first feature"
+/scrummaster:newepic "My first initiative"
+/scrummaster:newstory "My first feature"
 ```
 
 ## Troubleshooting
 
 If you encounter issues:
 
-1. **Check prerequisites**: Ensure Git, Python 3.9+, and Node.js 18+ are installed
+1. **Check prerequisites**: Ensure Fossil, Python 3.9+, and Node.js 18+ are installed
 2. **Verify mise**: Run `mise doctor` to diagnose issues
-3. **Check PATH**: Ensure mise and Conductor binaries are in your PATH
+3. **Check PATH**: Ensure mise and Scrummaster binaries are in your PATH
 4. **Review logs**: Check the installer output for specific error messages
 
 For more detailed troubleshooting, see [TROUBLESHOOTING.md](TROUBLESHOOTING.md).

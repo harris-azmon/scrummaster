@@ -1,7 +1,7 @@
 <#
 .SYNOPSIS
-    Conductor Marketplace Integration Script
-    This script demonstrates how to publish Conductor to various marketplaces
+    Scrummaster Marketplace Integration Script
+    This script demonstrates how to publish Scrummaster to various marketplaces
 #>
 
 [CmdletBinding()]
@@ -42,25 +42,25 @@ function Prepare-Release {
     }
 
     # Build core components
-    if (Test-Path "conductor-core") {
-        Write-Info "Building conductor-core..."
+    if (Test-Path "scrummaster-core") {
+        Write-Info "Building scrummaster-core..."
         try {
-            Push-Location "conductor-core"
+            Push-Location "scrummaster-core"
             if (Test-Command "python") {
                 python -m build --outdir ../dist 2>$null
             }
             Pop-Location
         }
         catch {
-            Write-Warning "Build skipped for conductor-core: $_"
+            Write-Warning "Build skipped for scrummaster-core: $_"
         }
     }
 
     # Build VS Code extension
-    if (Test-Path "conductor-vscode") {
+    if (Test-Path "scrummaster-vscode") {
         Write-Info "Building VS Code extension..."
         try {
-            Push-Location "conductor-vscode"
+            Push-Location "scrummaster-vscode"
             if (Test-Command "npm") {
                 npm run package 2>$null
                 Copy-Item "*.vsix" "../dist/" -Force 2>$null
@@ -84,13 +84,13 @@ function Publish-To-Smithery {
         Write-Warning "smithery.toml not found, creating template..."
 
         $smitheryContent = @"
-# Smithery Manifest for Conductor
-id = "conductor"
-name = "Conductor"
+# Smithery Manifest for Scrummaster
+id = "scrummaster"
+name = "Scrummaster"
 version = "0.2.0"
 description = "Context-Driven Development tool for AI-assisted workflows"
-homepage = "https://github.com/harris-azmon/conductor"
-repository = "https://github.com/harris-azmon/conductor"
+homepage = "https://github.com/harris-azmon/scrummaster"
+repository = "https://github.com/harris-azmon/scrummaster"
 license = "MIT"
 
 [installation]
@@ -140,9 +140,9 @@ function Publish-To-Chocolatey {
     Write-Host "To publish to Chocolatey:" -ForegroundColor Yellow
     Write-Host "1. Create account at https://chocolatey.org" -ForegroundColor Yellow
     Write-Host "2. Install Chocolatey CLI: choco install chocolatey" -ForegroundColor Yellow
-    Write-Host "3. Create package template with: choco new conductor" -ForegroundColor Yellow
+    Write-Host "3. Create package template with: choco new scrummaster" -ForegroundColor Yellow
     Write-Host "4. Modify nuspec file with proper metadata" -ForegroundColor Yellow
-    Write-Host "5. Test package: choco pack && choco install conductor -s ." -ForegroundColor Yellow
+    Write-Host "5. Test package: choco pack && choco install scrummaster -s ." -ForegroundColor Yellow
     Write-Host "6. Submit package to Chocolatey Gallery" -ForegroundColor Yellow
 }
 
@@ -152,7 +152,7 @@ function Publish-To-Scoop {
 
     Write-Host "To publish to Scoop:" -ForegroundColor Yellow
     Write-Host "1. Fork https://github.com/ScoopInstaller/Main or create a bucket" -ForegroundColor Yellow
-    Write-Host "2. Create manifest in bucket: conductor.json" -ForegroundColor Yellow
+    Write-Host "2. Create manifest in bucket: scrummaster.json" -ForegroundColor Yellow
     Write-Host "3. Submit pull request to ScoopInstaller/Main" -ForegroundColor Yellow
 }
 
@@ -182,7 +182,7 @@ function Show-Summary {
 # Main function
 function Main {
     Write-Host ""
-    Write-Host "🚀 Conductor Marketplace Integration" -ForegroundColor Cyan
+    Write-Host "🚀 Scrummaster Marketplace Integration" -ForegroundColor Cyan
     Write-Host "=====================================" -ForegroundColor Cyan
     Write-Host ""
 

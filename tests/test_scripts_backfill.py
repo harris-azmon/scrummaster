@@ -13,10 +13,7 @@ from scripts.skills_manifest import (
     load_manifest,
     render_skill,
 )
-from scripts.sync_skills import (
-    _clean_antigravity_global,
-    update_vscode_package_json,
-)
+from scripts.sync_skills import _clean_antigravity_global
 
 
 @pytest.fixture
@@ -24,7 +21,6 @@ def mock_repo(tmp_path):
     repo = tmp_path / "repo"
     repo.mkdir()
     (repo / "skills").mkdir()
-    (repo / "conductor-vscode").mkdir()
     (repo / "conductor-core" / "src" / "conductor_core" / "templates").mkdir(parents=True)
 
     manifest = {
@@ -36,7 +32,7 @@ def mock_repo(tmp_path):
                 "id": "s1",
                 "name": "c1",
                 "description": "D",
-                "enabled": {"vscode": True, "gemini": True},
+                "enabled": {"gemini": True},
                 "template": "setup",
                 "commands": {"claude": "/c", "codex": "/cx"},
             }
@@ -71,7 +67,6 @@ def test_sync_skills_all(mock_repo, monkeypatch):
         sync_module, "TEMPLATES_DIR", mock_repo / "conductor-core" / "src" / "conductor_core" / "templates"
     )
     monkeypatch.setattr(sync_module, "SKILLS_DIR", mock_repo / "skills")
-    monkeypatch.setattr(sync_module, "VSCODE_SKILLS_DIR", mock_repo / "conductor-vscode" / "skills")
     monkeypatch.setattr(sync_module, "ANTIGRAVITY_DIR", mock_repo / ".antigravity" / "skills")
     monkeypatch.setattr(sync_module, "ANTIGRAVITY_WORKSPACE_DIR", mock_repo / ".agent" / "workflows")
     monkeypatch.setattr(sync_module, "ANTIGRAVITY_SKILLS_WORKSPACE_DIR", mock_repo / ".agent" / "skills")
@@ -79,25 +74,22 @@ def test_sync_skills_all(mock_repo, monkeypatch):
     monkeypatch.setattr(sync_module, "validate_manifest", lambda *_args, **_kwargs: None)
     monkeypatch.setattr(sync_module, "iter_skills", lambda manifest: manifest.get("skills", []))
 
-    # Missing package.json
-    update_vscode_package_json([])
-
     # Clean non-existent dir
     _clean_antigravity_global(mock_repo / "none", [])
 
     # Clean with unlink
     target = mock_repo / "clean"
     target.mkdir()
-    (target / "conductor-old.md").write_text("old")
+    (target / "scrummaster-old.md").write_text("old")
     _clean_antigravity_global(target, [])
-    assert not (target / "conductor-old.md").exists()
+    assert not (target / "scrummaster-old.md").exists()
 
     skills = [
-        {"id": "s1", "name": "c1", "description": "d", "enabled": {"vscode": False}},
-        {"id": "s2", "name": "c2", "description": "d", "enabled": {"vscode": True}, "template": "setup"},
+        {"id": "s1", "name": "c1", "description": "d", "enabled": {}},
+        {"id": "s2", "name": "c2", "description": "d", "enabled": {}, "template": "setup"},
     ]
 
-    monkeypatch.setenv("CONDUCTOR_SYNC_REPO_ONLY", "1")
+    monkeypatch.setenv("SCRUMMASTER_SYNC_REPO_ONLY", "1")
     with (
         patch("scripts.sync_skills.load_manifest", return_value={"manifest_version": 1, "skills": skills}),
         patch("scripts.sync_skills.validate_manifest"),
@@ -115,7 +107,6 @@ def test_sync_skills_antigravity_skills_output(mock_repo, monkeypatch):
         sync_module, "TEMPLATES_DIR", mock_repo / "conductor-core" / "src" / "conductor_core" / "templates"
     )
     monkeypatch.setattr(sync_module, "SKILLS_DIR", mock_repo / "skills")
-    monkeypatch.setattr(sync_module, "VSCODE_SKILLS_DIR", mock_repo / "conductor-vscode" / "skills")
     monkeypatch.setattr(sync_module, "ANTIGRAVITY_DIR", mock_repo / ".antigravity" / "skills")
     monkeypatch.setattr(sync_module, "ANTIGRAVITY_WORKSPACE_DIR", mock_repo / ".agent" / "workflows")
     monkeypatch.setattr(sync_module, "ANTIGRAVITY_SKILLS_WORKSPACE_DIR", mock_repo / ".agent" / "skills")
@@ -123,7 +114,7 @@ def test_sync_skills_antigravity_skills_output(mock_repo, monkeypatch):
     monkeypatch.setattr(sync_module, "validate_manifest", lambda *_args, **_kwargs: None)
 
     skills = [
-        {"id": "s1", "name": "c1", "description": "d", "enabled": {"vscode": False}, "template": "setup"},
+        {"id": "s1", "name": "c1", "description": "d", "enabled": {}, "template": "setup"},
     ]
 
     sync_module.sync_antigravity_skills(skills, repo_only=False)
@@ -141,7 +132,6 @@ def test_sync_skills_emits_antigravity_skills(mock_repo, monkeypatch):
         sync_module, "TEMPLATES_DIR", mock_repo / "conductor-core" / "src" / "conductor_core" / "templates"
     )
     monkeypatch.setattr(sync_module, "SKILLS_DIR", mock_repo / "skills")
-    monkeypatch.setattr(sync_module, "VSCODE_SKILLS_DIR", mock_repo / "conductor-vscode" / "skills")
     monkeypatch.setattr(sync_module, "ANTIGRAVITY_DIR", mock_repo / ".antigravity" / "skills")
     monkeypatch.setattr(sync_module, "ANTIGRAVITY_WORKSPACE_DIR", mock_repo / ".agent" / "workflows")
     monkeypatch.setattr(sync_module, "ANTIGRAVITY_SKILLS_WORKSPACE_DIR", mock_repo / ".agent" / "skills")
@@ -150,11 +140,11 @@ def test_sync_skills_emits_antigravity_skills(mock_repo, monkeypatch):
     monkeypatch.setattr(sync_module, "iter_skills", lambda manifest: manifest.get("skills", []))
 
     skills = [
-        {"id": "s1", "name": "c1", "description": "d", "enabled": {"vscode": False}, "template": "setup"},
+        {"id": "s1", "name": "c1", "description": "d", "enabled": {}, "template": "setup"},
     ]
 
-    monkeypatch.setenv("CONDUCTOR_ANTIGRAVITY_SKILLS", "1")
-    monkeypatch.setenv("CONDUCTOR_SYNC_REPO_ONLY", "1")
+    monkeypatch.setenv("SCRUMMASTER_ANTIGRAVITY_SKILLS", "1")
+    monkeypatch.setenv("SCRUMMASTER_SYNC_REPO_ONLY", "1")
     with (
         patch("scripts.sync_skills.load_manifest", return_value={"manifest_version": 1, "skills": skills}),
         patch("scripts.sync_skills.validate_manifest"),
@@ -193,8 +183,8 @@ def test_resolve_locations_posix():
     home = PurePosixPath("/home/user")
     locations = _resolve_locations(repo_root, home)
     assert str(locations["antigravity-global"]) == "/home/user/.gemini/antigravity/global_workflows"
-    assert str(locations["copilot"]) == "/home/user/.config/github-copilot/conductor.md"
-    assert str(locations["vsix"]) == "/repo/conductor.vsix"
+    assert str(locations["copilot"]) == "/home/user/.config/github-copilot/scrummaster.md"
+    assert str(locations["vsix"]) == "/repo/scrummaster.vsix"
 
 
 def test_resolve_locations_windows():
@@ -202,7 +192,7 @@ def test_resolve_locations_windows():
     home = PureWindowsPath("C:/Users/Alice")
     locations = _resolve_locations(repo_root, home)
     assert str(locations["antigravity-global"]) == r"C:\Users\Alice\.gemini\antigravity\global_workflows"
-    assert str(locations["copilot"]) == r"C:\Users\Alice\.config\github-copilot\conductor.md"
+    assert str(locations["copilot"]) == r"C:\Users\Alice\.config\github-copilot\scrummaster.md"
 
 
 def test_validate_artifacts_runs_checks(monkeypatch):

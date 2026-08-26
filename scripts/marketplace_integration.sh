@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
-# Conductor Marketplace Integration Script
-# This script demonstrates how to publish Conductor to various marketplaces
+# Scrummaster Marketplace Integration Script
+# This script demonstrates how to publish Scrummaster to various marketplaces
 #
 
 set -e
@@ -42,17 +42,17 @@ prepare_release() {
     mkdir -p dist/
 
     # Build core components
-    if [ -d "conductor-core" ]; then
-        log_info "Building conductor-core..."
-        cd conductor-core
-        python -m build --outdir ../dist/ 2>/dev/null || echo "Build skipped for conductor-core"
+    if [ -d "scrummaster-core" ]; then
+        log_info "Building scrummaster-core..."
+        cd scrummaster-core
+        python -m build --outdir ../dist/ 2>/dev/null || echo "Build skipped for scrummaster-core"
         cd ..
     fi
 
     # Build VS Code extension
-    if [ -d "conductor-vscode" ]; then
+    if [ -d "scrummaster-vscode" ]; then
         log_info "Building VS Code extension..."
-        cd conductor-vscode
+        cd scrummaster-vscode
         npm run package 2>/dev/null || echo "VS Code build skipped"
         cp *.vsix ../dist/ 2>/dev/null || echo "No VSIX file to copy"
         cd ..
@@ -68,13 +68,13 @@ publish_to_smithery() {
     if [ ! -f "smithery.toml" ]; then
         log_warning "smithery.toml not found, creating template..."
         cat > smithery.toml << 'EOF'
-# Smithery Manifest for Conductor
-id = "conductor"
-name = "Conductor"
+# Smithery Manifest for Scrummaster
+id = "scrummaster"
+name = "Scrummaster"
 version = "0.2.0"
 description = "Context-Driven Development tool for AI-assisted workflows"
-homepage = "https://github.com/harris-azmon/conductor"
-repository = "https://github.com/harris-azmon/conductor"
+homepage = "https://github.com/harris-azmon/scrummaster"
+repository = "https://github.com/harris-azmon/scrummaster"
 license = "MIT"
 
 [installation]
@@ -121,13 +121,13 @@ publish_to_homebrew() {
 
     echo "To publish to Homebrew:"
     echo "1. Fork https://github.com/Homebrew/homebrew-core or create a tap"
-    echo "2. Create formula in Formula/conductor.rb:"
+    echo "2. Create formula in Formula/scrummaster.rb:"
     cat << 'EOF'
 
-class Conductor < Formula
+class Scrummaster < Formula
   desc "Context-Driven Development tool for AI-assisted workflows"
-  homepage "https://github.com/harris-azmon/conductor"
-  url "https://github.com/harris-azmon/conductor/archive/v0.2.0.tar.gz"
+  homepage "https://github.com/harris-azmon/scrummaster"
+  url "https://github.com/harris-azmon/scrummaster/archive/v0.2.0.tar.gz"
   sha256 "..."
 
   depends_on "python@3.9"
@@ -136,11 +136,11 @@ class Conductor < Formula
 
   def install
     # Installation logic
-    bin.install "conductor"
+    bin.install "scrummaster"
   end
 
   test do
-    system "#{bin}/conductor", "--version"
+    system "#{bin}/scrummaster", "--version"
   end
 end
 EOF
@@ -155,17 +155,17 @@ publish_to_npm() {
         log_info "Creating package.json for npm..."
         cat > package.json << 'EOF'
 {
-  "name": "@conductor/cli",
+  "name": "@scrummaster/cli",
   "version": "0.2.0",
   "description": "Context-Driven Development tool for AI-assisted workflows",
-  "homepage": "https://github.com/harris-azmon/conductor",
+  "homepage": "https://github.com/harris-azmon/scrummaster",
   "repository": {
     "type": "git",
-    "url": "https://github.com/harris-azmon/conductor.git"
+    "url": "https://github.com/harris-azmon/scrummaster.git"
   },
   "license": "MIT",
   "bin": {
-    "conductor": "./bin/conductor"
+    "scrummaster": "./bin/scrummaster"
   },
   "dependencies": {
     "commander": "^12.0.0"
@@ -221,7 +221,7 @@ print_marketplace_summary() {
 # Main function
 main() {
     echo ""
-    echo "🚀 Conductor Marketplace Integration"
+    echo "🚀 Scrummaster Marketplace Integration"
     echo "====================================="
     echo ""
 

@@ -24,7 +24,7 @@ def smoke_test():
             success = False
 
     # 2. Check VS Code package.json
-    vscode_pkg_path = ROOT / "conductor-vscode" / "package.json"
+    vscode_pkg_path = ROOT / "scrummaster-vscode" / "package.json"
     if vscode_pkg_path.exists():
         with open(vscode_pkg_path, encoding="utf-8") as f:
             pkg_data = json.load(f)
@@ -32,7 +32,7 @@ def smoke_test():
         commands = [cmd["command"] for cmd in pkg_data.get("contributes", {}).get("commands", [])]
         for skill in skills:
             if skill.get("enabled", {}).get("vscode", False):
-                cmd_id = f"conductor.{skill['id']}"
+                cmd_id = f"scrummaster.{skill['id']}"
                 if cmd_id not in commands:
                     success = False
 

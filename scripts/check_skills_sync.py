@@ -14,18 +14,18 @@ from scripts.skills_manifest import (  # noqa: E402
 )
 from scripts.skills_validator import validate_manifest  # noqa: E402
 
-TEMPLATES_DIR = ROOT / "conductor-core" / "src" / "conductor_core" / "templates"
+TEMPLATES_DIR = ROOT / "scrummaster-core" / "src" / "scrummaster_core" / "templates"
 MANIFEST_PATH = ROOT / "skills" / "manifest.json"
 SCHEMA_PATH = ROOT / "skills" / "manifest.schema.json"
 
-# skills/ and conductor-vscode/skills/ are checked for existence only (see
-# _check_skill_presence below), not generator parity: skills/*/SKILL.md is now
-# canonical, hand-authored content (adopted from upstream's plugin format), not
-# something rendered from conductor-core's Jinja templates. .antigravity/skills
-# is gitignored (local-only), so it's never present in a fresh checkout.
+# skills/ is checked for existence only (see _check_skill_presence below),
+# not generator parity: skills/*/SKILL.md is now canonical, hand-authored
+# content (adopted from upstream's plugin format), not something rendered
+# from scrummaster-core's Jinja templates. .antigravity/skills is
+# gitignored (local-only), so it's never present in a fresh checkout.
 REPO_SKILL_PRESENCE_DIRS = [
     ROOT / "skills",
-    ROOT / "conductor-vscode" / "skills",
+    ROOT / ".antigravity" / "skills",
 ]
 # .agent/workflows and .agent/skills are gitignored (local-only, synced by
 # scripts/install_local.py on demand), so they never exist in a fresh checkout.
@@ -33,7 +33,7 @@ ANTIGRAVITY_WORKSPACE_DIR = ROOT / ".agent" / "workflows"
 ANTIGRAVITY_GLOBAL_DIR = Path.home() / ".gemini" / "antigravity" / "global_workflows"
 ANTIGRAVITY_SKILLS_WORKSPACE_DIR = ROOT / ".agent" / "skills"
 ANTIGRAVITY_SKILLS_GLOBAL_DIR = Path.home() / ".gemini" / "antigravity" / "skills"
-VSIX_PATH = ROOT / "conductor.vsix"
+VSIX_PATH = ROOT / "scrummaster.vsix"
 
 
 def _check_skill_dir(skills: list[dict], templates_dir: Path, target_dir: Path, *, fix: bool) -> list[str]:
@@ -116,7 +116,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Check generated skill artifacts for drift.")
     parser.add_argument("--fix", action="store_true", help="Rewrite repo-local outputs to match manifest")
     parser.add_argument("--check-global", action="store_true", help="Validate Antigravity global workflows if present")
-    parser.add_argument("--require-vsix", action="store_true", help="Require conductor.vsix to exist")
+    parser.add_argument("--require-vsix", action="store_true", help="Require scrummaster.vsix to exist")
     parser.add_argument("--check-antigravity-skills", action="store_true", help="Validate Antigravity skills output")
     args = parser.parse_args()
 
@@ -137,7 +137,7 @@ def main() -> int:
             skills, TEMPLATES_DIR, ANTIGRAVITY_WORKSPACE_DIR, fix=args.fix, optional=not workspace_required
         )
     )
-    global_required = args.check_global or os.environ.get("CONDUCTOR_VALIDATE_GLOBAL_ANTIGRAVITY") == "1"
+    global_required = args.check_global or os.environ.get("SCRUMMASTER_VALIDATE_GLOBAL_ANTIGRAVITY") == "1"
     mismatches.extend(
         _check_antigravity_workflows(
             skills,
@@ -150,7 +150,7 @@ def main() -> int:
 
     mismatches.extend(_check_vsix_artifact(VSIX_PATH, require=args.require_vsix))
 
-    check_skills = args.check_antigravity_skills or os.environ.get("CONDUCTOR_VALIDATE_ANTIGRAVITY_SKILLS") == "1"
+    check_skills = args.check_antigravity_skills or os.environ.get("SCRUMMASTER_VALIDATE_ANTIGRAVITY_SKILLS") == "1"
     if check_skills:
         mismatches.extend(_check_skill_dir(skills, TEMPLATES_DIR, ANTIGRAVITY_SKILLS_WORKSPACE_DIR, fix=args.fix))
         mismatches.extend(_check_skill_dir(skills, TEMPLATES_DIR, ANTIGRAVITY_SKILLS_GLOBAL_DIR, fix=args.fix))

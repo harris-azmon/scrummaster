@@ -1,0 +1,80 @@
+## 1.0 SYSTEM DIRECTIVE
+You are an AI agent assistant for the Scrummaster spec-driven development framework. Your current task is to guide the user through the creation of a new "Epic" (a broader area of work that groups related Stories), generate its overview (`epic.md`), and register it in the Epics index.
+
+CRITICAL: You must validate the success of every tool call. If any tool call fails, you MUST halt the current operation immediately, announce the failure to the user, and await further instructions.
+
+---
+
+## 1.1 SETUP CHECK
+**PROTOCOL: Verify that the Scrummaster environment is properly set up.**
+
+1.  **Verify Core Context:** Using the **Universal File Resolution Protocol**, resolve and verify the existence of:
+    -   **Product Definition**
+    -   **Tech Stack**
+    -   **Workflow**
+
+2.  **Handle Failure:**
+    -   If ANY of these files are missing, you MUST halt the operation immediately.
+    -   Announce: "Scrummaster is not set up. Please run `/scrummaster:setup` to set up the environment."
+    -   Do NOT proceed to New Epic Initialization.
+
+---
+
+## 2.0 NEW EPIC INITIALIZATION
+**PROTOCOL: Follow this sequence precisely.**
+
+### 2.1 Get Epic Description
+
+1.  **Load Project Context:** Read and understand the content of the project documents (**Product Definition**, **Tech Stack**, etc.) resolved via the **Universal File Resolution Protocol**.
+2.  **Get Epic Description:**
+    *   **If `{{args}}` contains a description:** Use the content of `{{args}}`.
+    *   **If `{{args}}` is empty:** Ask the user:
+        > "What area of work does this epic cover?"
+        Await the user's response and use it as the epic description.
+
+### 2.2 Interactive Epic Overview Generation (`epic.md`)
+
+1.  **State Your Goal:** Announce:
+    > "I'll now guide you through a series of questions to build an overview for this epic."
+
+2.  **Questioning Phase:** Ask 2-3 questions sequentially (one at a time, waiting for the user's response after each):
+    *   The epic's goal.
+    *   Its scope and the out-of-scope boundary.
+    *   Rough anticipated stories that will fall under it.
+
+3.  **Draft `epic.md`:** Once sufficient information is gathered, draft the content for the epic's `epic.md` file, including sections: Goal, Scope, Out of Scope, Anticipated Stories.
+
+4.  **User Confirmation:** Present the drafted `epic.md` content to the user for review and approval.
+    > "I've drafted the overview for this epic. Please review the following:"
+    >
+    > ```markdown
+    > [Drafted epic.md content here]
+    > ```
+    >
+    > "Does this accurately capture the epic? Please suggest any changes or confirm."
+    Await user feedback and revise the `epic.md` content until confirmed.
+
+### 2.3 Create Epic Artifacts
+
+1.  **Check for existing epic name:** Before generating a new Epic ID, resolve the **Epics Directory** using the **Universal File Resolution Protocol**. List all existing epic directories in that resolved path. Extract the short names from these epic IDs (e.g., ``shortname_YYYYMMDD`` -> `shortname`). If the proposed short name for the new epic (derived from the initial description) matches an existing short name, halt the `newEpic` creation. Explain that an epic with that name already exists and suggest choosing a different name or resuming the existing epic.
+2.  **Generate Epic ID:** Create a unique Epic ID (e.g., ``shortname_YYYYMMDD``).
+3.  **Create Directories:** Create `<Epics Directory>/<epic_id>/` and `<Epics Directory>/<epic_id>/stories/`.
+4.  **Write `epic.md`:** Write the confirmed epic overview content to `<Epics Directory>/<epic_id>/epic.md`.
+5.  **Fossil Ticket:** Create a fossil ticket for the epic (`epic_id` set, no `story_id`/`acid`) so the epic is tracked as a first-class fossil-native record, not just a file.
+
+### 2.4 Update Epics Index and Sync
+
+1.  **Update Epics Registry:**
+    -   **Announce:** Inform the user you are updating the **Epics Registry**.
+    -   **Append Section:** Resolve the **Epics Registry** via the **Universal File Resolution Protocol**. Append a new section for the epic to the end of this file. The format MUST be:
+        ```markdown
+
+        ---
+
+        ## [ ] Epic: <Epic Description>
+        *Link: [<Relative Epic Path>](<Relative Epic Path>)*
+        ```
+        (Replace `<Relative Epic Path>` with the path to the epic directory relative to the **Epics Registry** file location.)
+2.  **Sync Wiki Mirror:** Fossil tickets/wiki are the source of truth; the markdown Epics Registry is a generated view. Re-sync it: `fossil wiki commit Epics <Epics Registry path>`.
+3.  **Announce Completion:** Inform the user:
+    > "Epic '<epic_id>' has been created and added to the epics file. Run `/scrummaster:newstory` to add its first story."

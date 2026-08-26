@@ -1,19 +1,29 @@
-# Conductor Plugin
+# Scrummaster Plugin
 
 **Measure twice, code once.**
 
-Conductor is a plugin for AI coding agents (including Antigravity and Claude
+Scrummaster is a plugin for AI coding agents (including Antigravity and Claude
 Code) that enables **Spec-Driven Development**. It turns your agent into a
 proactive project manager that follows a strict protocol to specify, plan, and
 implement software features and bug fixes.
 
-Instead of just writing code, Conductor ensures a consistent, high-quality
+Instead of just writing code, Scrummaster ensures a consistent, high-quality
 lifecycle for every task: **Context -> Spec & Plan -> Implement**.
 
-The philosophy behind Conductor is simple: control your code. By treating
+The philosophy behind Scrummaster is simple: control your code. By treating
 context as a managed artifact alongside your code, you transform your repository
 into a single source of truth that drives every agent interaction with deep,
 persistent project awareness.
+
+Scrummaster groups work into **Epics** containing **Stories** (instead of
+Conductor's flat "tracks"), tracks Acceptance Criteria with stable **ACIDs**
+(borrowed from `acai-sh/cli`'s spec-driven methodology), and uses
+**Fossil SCM** instead of git, defaulting to Cathedral-style (trunk-oriented,
+direct-to-trunk) development. Fossil's native tickets, wiki, and technotes are
+the source of truth; the markdown files under `scrummaster/` are generated,
+synced views. See `skills/scrummaster/references/workflows.md` for the full
+data model and `templates/vcs_workflows/fossil.md` for the fossil command
+mapping.
 
 ---
 
@@ -23,13 +33,19 @@ This repository is organized as a modular monorepo:
 
 - **`skills` / `rules`**: The portable, platform-agnostic protocol logic
   (`SKILL.md`) and platform-specific operational rules that ship as the
-  Conductor plugin (see Installation below).
-- **`conductor-core`**: A platform-agnostic core library (Python) with
-  protocol logic, Pydantic models, and prompt templates.
-- **`conductor-gemini`**: A Gemini adapter built on `conductor-core`.
-- **`conductor-vscode`**: The VS Code extension (TypeScript).
-- **`mcp` / `mcp-server`**: MCP servers used by Conductor's VCS-abstraction
+  Scrummaster plugin (see Installation below).
+- **`scrummaster-core`**: A platform-agnostic core library (Python) with
+  protocol logic, Pydantic models, VCS adapters (Fossil, Git, Jujutsu), and
+  prompt templates.
+- **`mcp` / `mcp-server`**: MCP servers used by Scrummaster's VCS-abstraction
   and tooling integrations.
+- **`vendor/acid-cli`**: A vendored, retargeted fork of `acai-sh/cli`
+  providing the `acid` CLI — ACID tracking against local Fossil tickets, with
+  one-way export to Trello. `acid push` recognizes both its own
+  `features/*.feature.yaml` specs and the `scrummaster/epics/<epic_id>/stories/<story_id>/spec.md`
+  files `/scrummaster-newstory` generates, so it can (re-)sync a story's ACIDs
+  into Fossil tickets directly, as an alternative to the `fossil ticket add`
+  the skill itself runs when creating a story.
 
 For tool-native command syntax and the artifacts each client consumes, see
 `docs/skill-command-syntax.md`.
@@ -38,7 +54,7 @@ For tool-native command syntax and the artifacts each client consumes, see
 
 ## 🛠 Installation Guide
 
-Conductor is packaged as a standard agent plugin, compatible across modern AI
+Scrummaster is packaged as a standard agent plugin, compatible across modern AI
 coding agents. Choose the installation method for your environment below.
 
 ### 1. Antigravity
@@ -48,7 +64,7 @@ coding agents. Choose the installation method for your environment below.
 Install directly from GitHub in a single command:
 
 ```bash
-agy plugins install https://github.com/gemini-cli-extensions/conductor
+agy plugins install https://github.com/harris-azmon/conductor
 ```
 
 #### B. Developer Installation (Live-Sync Global Link)
@@ -67,16 +83,16 @@ link it:
 2. Link globally for Antigravity:
 
     ```bash
-    mkdir -p ~/.gemini/config/plugins/ && ln -sfn "$(pwd)" ~/.gemini/config/plugins/conductor
+    mkdir -p ~/.gemini/config/plugins/ && ln -sfn "$(pwd)" ~/.gemini/config/plugins/scrummaster
     ```
 
 *Why this method?* Creating a symlink acts as a live development link. Any edits
-you make in your local Git branch are instantly loaded in real-time without
-reinstalling!
+you make in your local Fossil checkout are instantly loaded in real-time
+without reinstalling!
 
 #### C. Workspace-Level Isolation
 
-If you want to isolate Conductor strictly inside a specific Git project:
+If you want to isolate Scrummaster strictly inside a specific project:
 
 1. Create the local plugins directory in your target project's root:
 
@@ -84,10 +100,10 @@ If you want to isolate Conductor strictly inside a specific Git project:
     mkdir -p .agents/plugins/
     ```
 
-2. Link Conductor to your local project:
+2. Link Scrummaster to your local project:
 
     ```bash
-    ln -sfn /absolute/path/to/cloned/conductor .agents/plugins/conductor
+    ln -sfn /absolute/path/to/cloned/conductor .agents/plugins/scrummaster
     ```
 
 ---
@@ -96,32 +112,24 @@ If you want to isolate Conductor strictly inside a specific Git project:
 
 #### End-User Installation
 
-Register the marketplace repository and install the Conductor plugin directly in
-your Claude Code session:
+Register the marketplace repository and install the Scrummaster plugin
+directly in your Claude Code session:
 
 ```bash
-/plugin marketplace add gemini-cli-extensions/conductor
-/plugin install conductor
+/plugin marketplace add harris-azmon/conductor
+/plugin install scrummaster
 ```
 
 ---
 
-### 3. VS Code
-
-Download the `conductor.vsix` from the
-[Releases](https://github.com/harris-azmon/conductor/releases) page and
-install it in VS Code.
-
----
-
-### 4. Agent Skills (Claude CLI / OpenCode / Codex)
+### 3. Agent Skills (Claude CLI / OpenCode / Codex)
 
 For CLIs supporting the [Agent Skills specification](https://agentskills.io),
-you can install Conductor as a portable skill.
+you can install Scrummaster as a portable skill.
 
 **Option 1: Point to local folder**
-Point your CLI to the `skills/conductor-setup/` (and sibling `skills/conductor-*`)
-directories in this repository.
+Point your CLI to the `skills/scrummaster-setup/` (and sibling
+`skills/scrummaster-*`) directories in this repository.
 
 **Option 2: Use install script**
 
@@ -139,14 +147,22 @@ You can also use flags:
 ./skill/scripts/install.sh --list
 ```
 
-The skill is installed with symlinks to this repository, so running `git pull`
-will automatically update the skill.
+The skill is installed with symlinks to this repository, so pulling the
+latest Fossil checkin will automatically update the skill.
+
+> **OpenCode note:** OpenCode is Scrummaster's primary CLI target and already
+> works via the generic Agent Skills path above. A dedicated
+> [`scrummaster-opencode`](scrummaster-opencode/) adapter package is also
+> available — it adds two native tools (`scrummaster_status`,
+> `scrummaster_context`) backed by the local Fossil ticket table, plus an
+> installer (`npx scrummaster-opencode-install`) that puts Scrummaster's
+> slash commands directly under `.opencode/commands/`.
 
 ---
 
-### 5. Alternative Installation Methods
+### 4. Alternative Installation Methods
 
-Conductor's Python and Node components are also published through general
+Scrummaster's Python and Node components are also published through general
 package managers:
 
 ```bash
@@ -160,27 +176,27 @@ curl -fsSL install.cat/harris-azmon/conductor | sh
 irm install.cat/harris-azmon/conductor | iex
 
 # Homebrew (coming soon)
-brew install harris-azmon/tap/conductor
+brew install harris-azmon/tap/scrummaster
 
 # pip
-pip install conductor-core conductor-gemini
+pip install scrummaster-core
 
 # npm
-npm install -g @conductor/cli
+npm install -g @scrummaster/acid-cli
 ```
 
 ---
 
 ## 🔄 Uninstallation
 
-To safely remove Conductor from your environment:
+To safely remove Scrummaster from your environment:
 
 - **Antigravity:**
-  - **CLI Installation:** Run `agy plugins uninstall conductor`
-  - **Global Link:** Run `rm -f ~/.gemini/config/plugins/conductor`
-  - **Workspace Link:** Run `rm -f .agents/plugins/conductor`
-- **Claude Code:** Run `/plugin remove conductor` and `/plugin marketplace
-    remove gemini-cli-extensions/conductor`
+  - **CLI Installation:** Run `agy plugins uninstall scrummaster`
+  - **Global Link:** Run `rm -f ~/.gemini/config/plugins/scrummaster`
+  - **Workspace Link:** Run `rm -f .agents/plugins/scrummaster`
+- **Claude Code:** Run `/plugin remove scrummaster` and `/plugin marketplace
+    remove harris-azmon/conductor`
 
 ---
 
@@ -196,26 +212,30 @@ To safely remove Conductor from your environment:
     and workflow preferences that become a shared foundation for your team.
 - **Build on existing projects**: Intelligent initialization for both new
     (Greenfield) and existing (Brownfield) projects.
-- **Smart revert**: A git-aware revert command that understands logical units
-    of work (tracks, phases, tasks) rather than just commit hashes.
+- **Traceable requirements**: Every acceptance criterion gets a stable ACID,
+    mapped 1:1 to a Fossil ticket, so "done" means the ticket says so — not
+    just a markdown checkbox.
+- **Smart revert**: A Fossil-aware revert command that understands logical
+    units of work (epics, stories, phases, tasks) rather than just checkin
+    hashes.
 
 ---
 
 ## 🎨 Adaptive User Experience (UX Layer)
 
-Conductor natively adapts its user interface to match the specific visual
+Scrummaster natively adapts its user interface to match the specific visual
 capabilities of your active developer environment (IDE chat box, terminal
 console, or web editor).
 
 This is powered by the integrated **View Layer UX Adapter**:
 
 - **Interactive GUI Modals:** If your host editor supports visual interactive
-    dialog elements, Conductor will automatically capture selections, decision
-    interviews, and track options as native graphical modal dialog windows.
+    dialog elements, Scrummaster will automatically capture selections, decision
+    interviews, and story options as native graphical modal dialog windows.
   - `rules/`: Custom adapter rules tailored for visual IDE environments
         (like Antigravity).
 - **Graceful CLI Fallback:** If you are operating in a plain text terminal
-    console (such as Claude Code), Conductor automatically detects the console
+    console (such as Claude Code), Scrummaster automatically detects the console
     environment and adapts all interactive steps into clean, structured
     text-based choice menus with bracketed numbers (e.g., `[1] Option A, [2]
     Option B`).
@@ -228,10 +248,10 @@ of your chosen workflow environment.
 
 ## 📖 Usage & Lifecycle
 
-Conductor manages the entire lifecycle of your development tasks through
+Scrummaster manages the entire lifecycle of your development tasks through
 namespace-grouped commands.
 
-> [!NOTE] **Note on Token Consumption:** Conductor's spec-driven approach
+> [!NOTE] **Note on Token Consumption:** Scrummaster's spec-driven approach
 > involves reading and analyzing your project's context, specifications, and
 > plans. This can lead to increased token consumption, especially in larger
 > projects or during extensive planning and implementation phases. You can check
@@ -240,9 +260,9 @@ namespace-grouped commands.
 
 ### 1. Set Up the Project (Run Once)
 
-When you run `/conductor:conductor-setup`, Conductor helps you define the core
-components of your project context. This context is then used for building new
-components or features by you or anyone on your team.
+When you run `/scrummaster:scrummaster-setup`, Scrummaster helps you define
+the core components of your project context. This context is then used for
+building new components or features by you or anyone on your team.
 
 - **Product**: Define project context (e.g. users, product goals, high-level
     features).
@@ -255,55 +275,59 @@ components or features by you or anyone on your team.
 
 **Generated Artifacts:**
 
-- `conductor/product.md`
-- `conductor/product-guidelines.md`
-- `conductor/tech-stack.md`
-- `conductor/workflow.md`
-- `conductor/code_styleguides/`
-- `conductor/tracks.md`
+- `scrummaster/product.md`
+- `scrummaster/product-guidelines.md`
+- `scrummaster/tech-stack.md`
+- `scrummaster/workflow.md`
+- `scrummaster/code_styleguides/`
+- `scrummaster/epics.md`
 
 ```bash
-/conductor:conductor-setup
+/scrummaster:scrummaster-setup
 ```
 
-See `docs/setup-newtrack.md` for a cross-adapter setup/newTrack UX guide.
+See `docs/setup-newtrack.md` for a cross-adapter setup/new-story UX guide.
 
-### 2. Start a New Track (Feature or Bug)
+### 2. Start a New Epic and Story (Feature or Bug)
 
-When you’re ready to take on a new feature or bug fix, run
-`/conductor:conductor-new-track`. This initializes a **track** — a high-level
-unit of work. Conductor helps you generate two critical artifacts:
+For a broader area of work, run `/scrummaster:scrummaster-newepic` first to
+create an **epic**. When you're ready to take on a specific feature or bug fix
+within it, run `/scrummaster:scrummaster-newstory`. This initializes a
+**story** — a high-level unit of work, with every acceptance criterion given a
+stable **ACID**. Scrummaster helps you generate two critical artifacts:
 
-- **Specs**: The detailed requirements for the specific job. What are we
-    building and why?
+- **Specs**: The detailed requirements for the specific job, with ACIDs.
+    What are we building and why?
 - **Plan**: An actionable to-do list containing phases, tasks, and sub-tasks.
 
 **Generated Artifacts:**
 
-- `conductor/tracks/<track_id>/spec.md`
-- `conductor/tracks/<track_id>/plan.md`
-- `conductor/tracks/<track_id>/metadata.json`
+- `scrummaster/epics/<epic_id>/stories/<story_id>/spec.md`
+- `scrummaster/epics/<epic_id>/stories/<story_id>/plan.md`
+- `scrummaster/epics/<epic_id>/stories/<story_id>/metadata.json`
+- A Fossil ticket per ACID
 
 ```bash
-/conductor:conductor-new-track
+/scrummaster:scrummaster-newepic
+/scrummaster:scrummaster-newstory
 # OR with a description
-/conductor:conductor-new-track "Add a dark mode toggle to the settings page"
+/scrummaster:scrummaster-newstory "Add a dark mode toggle to the settings page"
 ```
 
-### 3. Implement the Track
+### 3. Implement the Story
 
-Once you approve the plan, run `/conductor:conductor-implement`. Your coding
-agent then works through the `plan.md` file, checking off tasks as it completes
-them.
+Once you approve the plan, run `/scrummaster:scrummaster-implement`. Your
+coding agent then works through the `plan.md` file, checking off tasks as it
+completes them and updating each ACID's Fossil ticket.
 
 **Updated Artifacts:**
 
-- `conductor/tracks.md` (Status updates)
-- `conductor/tracks/<track_id>/plan.md` (Status updates)
+- `scrummaster/epics.md` (Status updates)
+- `scrummaster/epics/<epic_id>/stories/<story_id>/plan.md` (Status updates)
 - Project context files (Synchronized on completion)
 
 ```bash
-/conductor:conductor-implement
+/scrummaster:scrummaster-implement
 ```
 
 During implementation, you can also monitor, revert, or review work using the
@@ -312,19 +336,19 @@ following commands:
 - **Check status**: Get a high-level overview of your project's progress.
 
     ```bash
-    /conductor:conductor-status
+    /scrummaster:scrummaster-status
     ```
 
 - **Revert work**: Safely undo a feature, phase, or a specific task.
 
     ```bash
-    /conductor:conductor-revert
+    /scrummaster:scrummaster-revert
     ```
 
 - **Review work**: Review completed work against guidelines and the plan.
 
     ```bash
-    /conductor:conductor-review
+    /scrummaster:scrummaster-review
     ```
 
 ## Context Hygiene
@@ -340,51 +364,53 @@ python scripts/context_report.py
 
 ## 📋 Commands Reference
 
-| Command                          | Description                                                                             | Generated Artifacts |
-| :------------------------------- | :-------------------------------------------------------------------------------------- | :------------------ |
-| `/conductor:conductor-setup`     | Scaffolds the project and sets up the Conductor environment. Run this once per project. | `conductor/product.md`<br>`conductor/product-guidelines.md`<br>`conductor/tech-stack.md`<br>`conductor/workflow.md`<br>`conductor/tracks.md` |
-| `/conductor:conductor-new-track` | Starts a new feature or bug track. Generates `spec.md` and `plan.md`.                   | `conductor/tracks/<id>/spec.md`<br>`conductor/tracks/<id>/plan.md`<br>`conductor/tracks.md` |
-| `/conductor:conductor-implement` | Executes the tasks defined in the current track's plan.                                 | `conductor/tracks.md`<br>`conductor/tracks/<id>/plan.md` |
-| `/conductor:conductor-status`    | Displays the current progress of the tracks file and active tracks.                     | Reads `conductor/tracks.md` |
-| `/conductor:conductor-revert`    | Reverts a track, phase, or task by analyzing git history.                               | Reverts git history |
-| `/conductor:conductor-review`    | Reviews completed work against guidelines and the plan.                                 | Reads `plan.md`, `product-guidelines.md` |
+| Command                              | Description                                                                                | Generated Artifacts |
+| :------------------------------------ | :------------------------------------------------------------------------------------------ | :------------------ |
+| `/scrummaster:scrummaster-setup`     | Scaffolds the project and sets up the Scrummaster environment. Run this once per project.   | `scrummaster/product.md`<br>`scrummaster/product-guidelines.md`<br>`scrummaster/tech-stack.md`<br>`scrummaster/workflow.md`<br>`scrummaster/epics.md` |
+| `/scrummaster:scrummaster-newepic`   | Starts a new epic to group related stories.                                                 | `scrummaster/epics/<id>/epic.md`<br>`scrummaster/epics.md` |
+| `/scrummaster:scrummaster-newstory`  | Starts a new feature or bug story within an epic. Generates `spec.md` (with ACIDs) and `plan.md`. | `scrummaster/epics/<eid>/stories/<sid>/spec.md`<br>`scrummaster/epics/<eid>/stories/<sid>/plan.md`<br>`scrummaster/epics.md` |
+| `/scrummaster:scrummaster-implement` | Executes the tasks defined in the current story's plan.                                     | `scrummaster/epics.md`<br>`scrummaster/epics/<eid>/stories/<sid>/plan.md` |
+| `/scrummaster:scrummaster-status`    | Displays the current progress of the epics/stories and Fossil ticket state.                 | Reads `scrummaster/epics.md` |
+| `/scrummaster:scrummaster-revert`    | Reverts a story, phase, or task by analyzing Fossil history.                                | Reverts Fossil history |
+| `/scrummaster:scrummaster-review`    | Reviews completed work against guidelines and the plan.                                     | Reads `plan.md`, `product-guidelines.md` |
 
 ---
 
 ## 💡 Best Practices for Task Corrections
 
-When a task or phase in your Conductor project wasn't completed correctly, you
-have three native recovery flows:
+When a task or phase in your Scrummaster project wasn't completed correctly,
+you have three native recovery flows:
 
 1. **Agile In-Flight Corrections**: If you notice an implementation gap while
     the agent is actively coding, specify the fix directly in the chat. The
     agent will natively adapt its coding loop and verify the fix before
     finalizing the task.
-2. **Review Corrections (`/conductor:conductor-review`)**: If issues are caught
-    after a task/phase is marked completed, run the review command. The review
-    agent will audit changes, verify style guides, execute tests, and append a
-    `Review Fixes` tracking phase to `plan.md` to resolve them.
-3. **Safe State Reversions (`/conductor:conductor-revert`)**: If a task
+2. **Review Corrections (`/scrummaster:scrummaster-review`)**: If issues are
+    caught after a task/phase is marked completed, run the review command. The
+    review agent will audit changes, verify style guides, execute tests, and
+    append a `Review Fixes` tracking phase to `plan.md` to resolve them.
+3. **Safe State Reversions (`/scrummaster:scrummaster-revert`)**: If a task
     implementation is fundamentally flawed and needs a complete reset, run the
-    revert command. This rolls back specific Git commits safely and resets the
-    task state back to pending `[ ]` so you can prompt a fresh approach.
+    revert command. This rolls back specific Fossil checkins safely (via an
+    inverse patch — Fossil has no direct `git revert` equivalent) and resets
+    the task state back to pending `[ ]` so you can prompt a fresh approach.
 
 ---
 
 ## 🚂 Getting Started (Natural Language Triggering)
 
-Once Conductor is installed in your environment, you don't need to memorize
-slash commands. You can interact with Conductor natively using natural language.
-Your active agent will dynamically recognize your intent and execute the
-corresponding Conductor protocol in the background:
+Once Scrummaster is installed in your environment, you don't need to memorize
+slash commands. You can interact with Scrummaster natively using natural
+language. Your active agent will dynamically recognize your intent and execute
+the corresponding Scrummaster protocol in the background:
 
-- **To Scaffold a Project**: > *"Let's create a new Conductor project"* or
-    *"Run setup for Conductor"*
-- **To Plan a Feature**: > *"Let's start a new track to add a login screen"*
-    or *"Create a plan for the dark mode track"*
+- **To Scaffold a Project**: > *"Let's create a new Scrummaster project"* or
+    *"Run setup for Scrummaster"*
+- **To Plan a Feature**: > *"Let's start a new story to add a login screen"*
+    or *"Create a plan for the dark mode story"*
 - **To Execute the Plan**: > *"Start implementing the active plan"* or
     *"Proceed with the implementation"*
-- **To Check Progress**: > *"How is our track progress going?"* or *"Show the
+- **To Check Progress**: > *"How is our story progress going?"* or *"Show the
     current project status"*
 - **To Revert or Fix a Task**: > *"Revert the last completed task"* or *"Let's
     review the completed phase"*
@@ -395,9 +421,11 @@ corresponding Conductor protocol in the background:
 
 - `/skills`: The protocol logic (`SKILL.md`) for each command.
 - `/rules`: Platform-specific operational rules files.
-- `/conductor-core`, `/conductor-gemini`, `/conductor-vscode`: Platform
-    adapter packages built on the core library.
-- `/mcp`, `/mcp-server`: MCP servers used by Conductor's tooling integrations.
+- `/scrummaster-core`: The platform-agnostic core library (VCS adapters,
+    models, prompt templates) built on by the other packages.
+- `/mcp`, `/mcp-server`: MCP servers used by Scrummaster's tooling
+    integrations.
+- `/vendor/acid-cli`: The vendored, fossil-retargeted `acid` CLI.
 
 ---
 
@@ -406,16 +434,14 @@ corresponding Conductor protocol in the background:
 ### Prerequisites
 
 - Python 3.9+
-- Node.js 16+ (for VS Code extension)
+- Node.js 16+
+- [Fossil SCM](https://fossil-scm.org/) 2.x
 
 ### Building Artifacts
 
 ```bash
-# Build conductor-core
+# Build scrummaster-core
 ./scripts/build_core.sh
-
-# Build VS Code extension
-./scripts/build_vsix.sh
 ```
 
 For release packaging and GitHub Releases flow, see `docs/release.md`.
@@ -424,10 +450,10 @@ For release packaging and GitHub Releases flow, see `docs/release.md`.
 
 ```bash
 # Core tests
-cd conductor-core && PYTHONPATH=src pytest
+cd scrummaster-core && PYTHONPATH=src pytest
 
-# Gemini adapter tests
-cd conductor-gemini && PYTHONPATH=src:../conductor-core/src pytest
+# acid CLI tests
+cd vendor/acid-cli && bun test
 ```
 
 ### Synchronization and Validation
@@ -448,17 +474,16 @@ Verify generated skill artifacts match the manifest and templates:
 python3 scripts/check_skills_sync.py
 ```
 
-Validate all platform artifacts (including VSIX when built):
+Validate all platform artifacts:
 
 ```bash
-python3 scripts/validate_artifacts.py --require-vsix
+python3 scripts/validate_artifacts.py
 ```
 
 If validation fails:
 
 - Regenerate artifacts with `python3 scripts/sync_skills.py`.
 - Resync platform files with `python3 scripts/validate_platforms.py --sync`.
-- Rebuild the VSIX (`./scripts/build_vsix.sh`) before re-running validation.
 
 See `docs/validation.md` for a deeper troubleshooting checklist.
 
@@ -479,9 +504,13 @@ python3 scripts/render_command_matrix.py
     Guidelines for managing plugins in Claude Code.
 - [GitHub Issues](https://github.com/harris-azmon/conductor/issues):
     Report bugs or request features.
-- The team gratefully acknowledges Keith Ballinger's original
-    [.conductor](https://github.com/keithballinger/.conductor) project as the
-    groundwork for this repository.
+- Scrummaster is a fork of the [Conductor](https://github.com/gemini-cli-extensions/conductor)
+    plugin, replacing git with Fossil SCM, tracks with epics/stories, and
+    adopting the ACID (Acceptance Criteria ID) methodology from
+    [acai-sh/cli](https://github.com/acai-sh/cli) (vendored under
+    `vendor/acid-cli/`). The team gratefully acknowledges Conductor and Keith
+    Ballinger's original [.conductor](https://github.com/keithballinger/.conductor)
+    project as the groundwork for this repository.
 
 ---
 

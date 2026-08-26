@@ -5,7 +5,7 @@ import { getVcs, detectVcs, initVcs } from "./vcs/index.js";
 import { CommitParams, VcsType } from "./vcs/types.js";
 
 const server = new McpServer({
-  name: "conductor-vcs",
+  name: "scrummaster-vcs",
   version: "1.0.0",
 });
 
@@ -23,7 +23,7 @@ server.tool(
   "vcs_init_repository",
   {
     repo_path: z.string().describe("Path to initialize the repository"),
-    vcs_type: z.enum(["git", "jj"]).describe("VCS type to initialize"),
+    vcs_type: z.enum(["fossil", "git", "jj"]).describe("VCS type to initialize"),
   },
   async ({ repo_path, vcs_type }) => {
     try {
@@ -267,7 +267,7 @@ server.tool(
 async function main() {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("Conductor VCS MCP Server running on stdio");
+  console.error("Scrummaster VCS MCP Server running on stdio");
 }
 
 main().catch((error) => {

@@ -1,0 +1,87 @@
+feature:
+    name: push
+    product: cli
+    version: 1.0.0
+    description: |
+        The `acai push` command scans the local repo for specs and ACID references, builds one payload per product,
+        and syncs that branch-derived truth to the API.
+
+components:
+    MAIN:
+        description: Primary command behavior
+        requirements:
+            1: Exposes `acai push`
+            2: Accepts one or more optional feature-name arguments to limit scanning to those features
+            3: Accepts `--all` to scan all eligible spec and source files from repo root
+            4: Accepts optional `--product <product-name>`
+            5: Accepts optional `--target` selector for naming or linking implementations
+            5-note: On the fossil backend `--target`/`--parent` still parse and validate (see MAIN.6) but have no effect — Cathedral-style trunk-only development has no linked/child-implementation concept to name or inherit into. Kept for compatibility with `--target`/`--parent` invocations in existing scripts.
+            6: Accepts optional `--parent` selector for establishing inheritance when a new implementation is created
+            7:
+                requirement: Reads the current repo remote and branch name from git
+                deprecated: true
+            7-note: The fossil backend reads the current Fossil checkout's project-name (as product) and commit hash via `fossil info` instead — see `readFossilPushContext` in `core/fossil.ts`. Branch name is always `trunk`.
+            8: Scans local spec files and code references from repo root
+            9: Groups outgoing payloads by product because the backend accepts one product per push call
+
+    SCAN:
+        description: Spec and ref collection
+        requirements:
+            1: Parses feature specs from local files
+            2: Extracts full ACID references from code and tests
+            2-1: Records each discovered code reference with a repo-relative path and the line number of the matched ACID occurrence
+            3: Associates each discovered spec with its path and last modified commit
+            4: Omits products that produced neither specs nor refs for the current scan
+            5: Supports `deprecated true` at the component level in feature specs
+            5-note: This is a shorthand that applies `deprecated true` to every ACID within that component when building the push payload
+            5-1: Individual ACID deprecation on the requirement itself takes precedence when both are present
+            6: Also parses ACID requirements directly from `scrummaster/epics/<epic_id>/stories/<story_id>/spec.md` files, independent of and alongside `.feature.yaml` specs
+            6-note: "Scrummaster stories never generate `.feature.yaml` files (see `commands/scrummaster-newstory.md`), so before this requirement `acid push` could not create or update tickets for a Scrummaster project at all - it silently found zero specs. Parsing is line-based, not markdown-AST-based - `## COMPONENT` headings are for author readability only and are not required for correctness, since each bullet embeds its full ACID string. See `parseScrummasterSpecDocument` in `core/push.ts`."
+            6-1: "A spec.md bullet in the form of a backtick-quoted ACID followed by an em-dash or plain hyphen and the requirement text becomes one requirement; a trailing `[deprecated]` marker, optionally followed by `: <note>` before the closing bracket, marks it deprecated with an optional note."
+            6-2: "The epic_id parsed from the spec.md path (`scrummaster/epics/<epic_id>/...`) is recorded on the fossil ticket the same way the `/scrummaster-newstory` skill's own `fossil ticket add` call does, so tickets created via either path roll up under the same epic."
+
+    API:
+        description: Interaction with the push backend
+        requirements:
+            1:
+                requirement: Sends one `POST /api/v1/push` request per product discovered during the scan
+                deprecated: true
+            1-note: The fossil backend creates or updates one fossil ticket per ACID via `fossil ticket add`/`fossil ticket change` (one subprocess call per ACID) instead of one HTTP request per product — see `createFossilClient`'s `runPush`.
+            2:
+                requirement: Namespaced `--target product/impl` and `--parent product/impl` values are split by product before the API call
+                deprecated: true
+            2-note: See MAIN.5-note — `--target`/`--parent` are parsed and validated but `runPush` never reads them, so there is nothing left to split by product.
+            3: If feature-name arguments are provided, only matching specs and refs are included in each per-product payload
+            4: Failures for one product do not silently mask the result for another product
+            5:
+                requirement: When a refs-only push creates or links an implementation, the command sends `--product` as `product_name`
+                deprecated: true
+            5-note: See SAFETY.5-note — the fossil backend has no linked/child-implementation concept, so a refs-only push never creates or links anything; it only creates or updates tickets for the ACIDs discovered by the scan.
+            6: References without a matching local spec are still included in the push payload instead of being dropped
+
+    OUTPUT:
+        description: Human and machine readable results
+        requirements:
+            1: The default text output presents one result entry per product included in the push result
+            1-note: Multiple push requests that resolve to the same product are combined into one product result
+            2: Each result block includes the resolved implementation name when available
+            3: Each result block includes specs created and specs updated counts
+            3-1: Each result block includes the number of refs pushed for that product
+            4: Warnings returned by the API are surfaced to the user
+            5: Supports `--json` output for machine consumption
+
+constraints:
+    SAFETY:
+        requirements:
+            1: "`acai push` never scans or sends states"
+            2: Each outgoing API payload uses the product name parsed from the included specs, or explicit `--product` when provided for a refs-only payload
+            3: The command exits non-zero when any per-product push fails
+            4: When a push request contains refs but no specs, the command never guesses a product from refs alone and may omit `product_name`
+            5: A refs-only push still requires `--target` and `--parent` together, never just one, even though neither has any effect on the fossil backend
+            5-note: The `buildPushPayloads` function still enforces this pairing as a usage error ("Refs-only pushes require --product, --target, and --parent together.") purely for compatibility with existing invocations — see MAIN.5-note and API.5-note for why the fossil backend itself ignores both values once validation passes.
+
+    UX:
+        requirements:
+            1: The command works in non-interactive environments such as CI and fossil hooks
+            2: The command produces deterministic per-product grouping from the same repo contents
+            3: Users should keep feature names globally unique when they want refs to remain distinct across products on the same branch

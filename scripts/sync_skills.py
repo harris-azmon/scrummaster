@@ -16,7 +16,7 @@ from scripts.skills_manifest import (  # noqa: E402
 )
 from scripts.skills_validator import validate_manifest  # noqa: E402
 
-TEMPLATES_DIR = ROOT / "conductor-core" / "src" / "conductor_core" / "templates"
+TEMPLATES_DIR = ROOT / "scrummaster-core" / "src" / "scrummaster_core" / "templates"
 MANIFEST_PATH = ROOT / "skills" / "manifest.json"
 SCHEMA_PATH = ROOT / "skills" / "manifest.schema.json"
 SKILLS_DIR = ROOT / "skills"
@@ -34,7 +34,6 @@ OPENCODE_DIR = Path.home() / ".opencode" / "skills"
 COPILOT_DIR = Path.home() / ".config" / "github-copilot"
 AIX_DIR = Path.home() / ".config" / "aix"
 SKILLSHARE_DIR = Path.home() / ".config" / "skillshare" / "skills"
-VSCODE_SKILLS_DIR = ROOT / "conductor-vscode" / "skills"
 GEMINI_EXTENSION_PATH = ROOT / "gemini-extension.json"
 QWEN_EXTENSION_PATH = ROOT / "qwen-extension.json"
 
@@ -43,40 +42,9 @@ def _clean_antigravity_global(target_base_dir: Path, skills: Iterable[dict]) -> 
     allowed = {f"{skill['name']}.md" for skill in skills}
     if not target_base_dir.exists():
         return
-    for workflow in target_base_dir.glob("conductor*.md"):
+    for workflow in target_base_dir.glob("scrummaster*.md"):
         if workflow.name not in allowed:
             workflow.unlink()
-
-
-def update_vscode_package_json(skills: Iterable[dict]) -> None:
-    vscode_package_json = ROOT / "conductor-vscode" / "package.json"
-    if not vscode_package_json.exists():
-        return
-
-    data = json.loads(vscode_package_json.read_text(encoding="utf-8"))
-
-    # Ensure contributes.commands exists
-    if "contributes" not in data:
-        data["contributes"] = {}
-    if "commands" not in data["contributes"]:
-        data["contributes"]["commands"] = []
-
-    # Update commands
-    existing_commands = {cmd["command"]: cmd for cmd in data["contributes"]["commands"]}
-    for skill in skills:
-        if not skill.get("enabled", {}).get("vscode", False):
-            continue
-
-        cmd_id = f"conductor.{skill['id']}"
-        existing_commands[cmd_id] = {
-            "command": cmd_id,
-            "title": f"Conductor: {skill['id'].replace('_', ' ').title()}",
-            "category": "Conductor",
-        }
-
-    data["contributes"]["commands"] = sorted(existing_commands.values(), key=lambda x: x["command"])
-
-    vscode_package_json.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
 
 
 def _perform_sync(target_base_dir: Path, skills: Iterable[dict], *, flat: bool = False) -> None:
@@ -115,7 +83,7 @@ def _perform_antigravity_workspace_sync(target_base_dir: Path, skills: Iterable[
 
 def _perform_consolidated_sync(target_file: Path, skills: Iterable[dict], templates_dir: Path) -> None:
     target_file.parent.mkdir(parents=True, exist_ok=True)
-    all_instructions = ["# Conductor Protocol", ""]
+    all_instructions = ["# Scrummaster Protocol", ""]
     for skill in skills:
         template_file = templates_dir / f"{skill['template']}.j2"
         if template_file.exists():
@@ -132,17 +100,17 @@ def _write_global_workflow_index(target_base_dir: Path, skills: Iterable[dict]) 
     index_path = target_base_dir / "global-workflow.md"
     lines = [
         "---",
-        "description: Conductor workflow index",
+        "description: Scrummaster workflow index",
         "---",
         "",
-        "Available Conductor workflows:",
+        "Available Scrummaster workflows:",
         "",
     ]
     lines.extend([f"- `/{skill['name']}`" for skill in skills])
     lines.extend(
         [
             "",
-            "Use any of the commands above (e.g., `/conductor-setup`).",
+            "Use any of the commands above (e.g., `/scrummaster-setup`).",
         ]
     )
     index_path.write_text("\n".join(lines), encoding="utf-8")
@@ -168,8 +136,8 @@ def sync_skills() -> None:
     validate_manifest(MANIFEST_PATH, SCHEMA_PATH)
     manifest = load_manifest(MANIFEST_PATH)
     skills = list(iter_skills(manifest))
-    to_repo_only = os.environ.get("CONDUCTOR_SYNC_REPO_ONLY") == "1"
-    emit_antigravity_skills = os.environ.get("CONDUCTOR_ANTIGRAVITY_SKILLS") == "1"
+    to_repo_only = os.environ.get("SCRUMMASTER_SYNC_REPO_ONLY") == "1"
+    emit_antigravity_skills = os.environ.get("SCRUMMASTER_ANTIGRAVITY_SKILLS") == "1"
 
     # Sync to standard skills directory
     _perform_sync(SKILLS_DIR, skills)
@@ -209,15 +177,11 @@ def sync_skills() -> None:
         _perform_sync(SKILLSHARE_DIR, skills)
 
         # Sync to AIX
-        _perform_consolidated_sync(AIX_DIR / "conductor.md", skills, TEMPLATES_DIR)
-
-    # Sync to VS Code Extension (Packaged)
-    _perform_sync(VSCODE_SKILLS_DIR, skills)
-    update_vscode_package_json(skills)
+        _perform_consolidated_sync(AIX_DIR / "scrummaster.md", skills, TEMPLATES_DIR)
 
     if not to_repo_only:
         # Sync to Copilot (Consolidated instructions)
-        _perform_consolidated_sync(COPILOT_DIR / "conductor.md", skills, TEMPLATES_DIR)
+        _perform_consolidated_sync(COPILOT_DIR / "scrummaster.md", skills, TEMPLATES_DIR)
 
     # Sync Gemini/Qwen extension manifests (repo-local)
     for tool_name, target_path in (

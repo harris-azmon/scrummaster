@@ -1,8 +1,8 @@
 $ErrorActionPreference = 'Stop'; # stop on all errors
 
-$packageName= 'conductor'
+$packageName= 'scrummaster'
 $toolsDir   = "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
-$url        = 'https://github.com/harris-azmon/conductor/archive/v0.2.0.zip' # download url
+$url        = 'https://github.com/harris-azmon/conductor/archive/v0.1.0.zip' # download url
 $url64      = $url # 64bit URL here or remove this variable if no 64bit version
 
 $packageArgs = @{
@@ -12,7 +12,7 @@ $packageArgs = @{
   url           = $url
   url64bit      = $url64
 
-  softwareName  = 'conductor*' #part or all of the Display Name as you see it in Programs and Features
+  softwareName  = 'scrummaster*' #part or all of the Display Name as you see it in Programs and Features
 
   checksum      = ''
   checksumType  = 'sha256' #default is md5, can also be sha1, sha256 or sha512
@@ -30,14 +30,14 @@ if (!$misepath) {
 }
 
 # Run mise install to set up the environment
-$installDir = Join-Path $toolsDir "conductor-next-0.2.0"
+$installDir = Join-Path $toolsDir "conductor-0.1.0"
 Push-Location $installDir
 try {
     mise install
-    Write-Host "Running conductor setup..."
-    python scripts/conductor_install.py --all
+    Write-Host "Running scrummaster setup..."
+    python scripts/scrummaster_install.py --all
 } finally {
     Pop-Location
 }
 
-Write-Host "Conductor has been installed. Run 'conductor:setup' to initialize your project."
+Write-Host "Scrummaster has been installed. Run 'scrummaster:setup' to initialize your project."
