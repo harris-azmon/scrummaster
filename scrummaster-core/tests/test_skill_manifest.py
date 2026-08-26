@@ -1,6 +1,6 @@
 import pytest
-from scrummaster_core.models import PlatformCapability, SkillManifest
 from pydantic import ValidationError
+from scrummaster_core.models import PlatformCapability, SkillManifest
 
 
 def test_valid_skill_manifest():

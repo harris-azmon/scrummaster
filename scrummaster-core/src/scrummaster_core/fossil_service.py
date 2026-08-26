@@ -30,7 +30,7 @@ class FossilService:
             raise FossilError(f"Not a Fossil checkout: {repo_path}\n{info.stderr}")
 
     def _run(self, args: list[str]) -> subprocess.CompletedProcess[str]:
-        return subprocess.run(  # noqa: S603
+        return subprocess.run(
             ["fossil", *args],  # noqa: S607
             cwd=self.path,
             capture_output=True,
@@ -104,7 +104,7 @@ class FossilService:
         )
         if not repo_db:
             raise FossilError("Could not determine repository file for worktree creation.")
-        subprocess.run(  # noqa: S603
+        subprocess.run(
             ["fossil", "open", repo_db, branch],  # noqa: S607
             cwd=path,
             capture_output=True,
@@ -123,8 +123,8 @@ class FossilService:
         # technote tagged with the commit hash, created via `fossil wiki
         # create` with `-t` (there is no dedicated `fossil technote`
         # subcommand). Content is piped via stdin, not a -m flag.
-        subprocess.run(  # noqa: S603, S607
-            [
+        subprocess.run(
+            [  # noqa: S607
                 "fossil",
                 "wiki",
                 "create",

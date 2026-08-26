@@ -96,8 +96,6 @@ def find_tracks(base_dir: Path) -> list[Path]:
     Returns:
         List of story directory paths
     """
-    stories = []
-
     # Check for stories in base_dir
     if (base_dir / "stories").exists():
         tracks_dir = base_dir / "stories"
@@ -107,16 +105,12 @@ def find_tracks(base_dir: Path) -> list[Path]:
         tracks_dir = base_dir
 
     # Find all directories with plan.md (indicator of a story)
-    for item in tracks_dir.iterdir():
-        if item.is_dir() and (item / "plan.md").exists():
-            stories.append(item)
+    stories = [item for item in tracks_dir.iterdir() if item.is_dir() and (item / "plan.md").exists()]
 
     # Also check archive subdirectory
     archive_dir = tracks_dir / "archive"
     if archive_dir.exists():
-        for item in archive_dir.iterdir():
-            if item.is_dir() and (item / "plan.md").exists():
-                stories.append(item)
+        stories.extend(item for item in archive_dir.iterdir() if item.is_dir() and (item / "plan.md").exists())
 
     return stories
 
@@ -149,12 +143,8 @@ def main() -> int:
     print("Auto-create .gitignore for Scrummaster Stories")
     print("=" * 60)
 
-    if args.story:
-        # Single story mode
-        stories = [args.story]
-    else:
-        # Find all stories
-        stories = find_tracks(args.dir)
+    # Single story mode if given, otherwise find all stories
+    stories = [args.story] if args.story else find_tracks(args.dir)
 
     print(f"Stories directory: {args.dir}")
     print(f"Found {len(stories)} stories")

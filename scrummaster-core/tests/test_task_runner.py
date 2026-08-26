@@ -3,12 +3,12 @@ import subprocess
 from pathlib import Path
 
 import pytest
+from git import Repo
 from scrummaster_core.fossil_service import FossilService
 from scrummaster_core.git_service import GitService
 from scrummaster_core.project_manager import ProjectManager
 from scrummaster_core.task_runner import TaskRunner
 from scrummaster_core.vcs_adapters import JujutsuService
-from git import Repo
 
 FOSSIL_PATH = shutil.which("fossil")
 
@@ -90,12 +90,10 @@ def test_discover_vcs_adapter_selects_fossil_when_checkout_present(tmp_path):
 
     pm = ProjectManager(tmp_path)
     pm.initialize_project("Test project")
-    subprocess.run(  # noqa: S603
+    subprocess.run(
         [FOSSIL_PATH, "init", "--admin-user", "test", str(tmp_path / "test.fossil")], cwd=tmp_path, check=True
     )
-    subprocess.run(  # noqa: S603
-        [FOSSIL_PATH, "open", str(tmp_path / "test.fossil"), "--keep"], cwd=tmp_path, check=True
-    )
+    subprocess.run([FOSSIL_PATH, "open", str(tmp_path / "test.fossil"), "--keep"], cwd=tmp_path, check=True)
 
     runner = TaskRunner(pm)
 

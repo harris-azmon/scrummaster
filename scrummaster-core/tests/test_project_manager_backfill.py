@@ -112,5 +112,6 @@ def test_update_story_metadata(pm, tmp_path):
     story_id = pm.create_story("Metadata Update")
     updated = pm.update_story_metadata(story_id, {"vcs": {"enabled": True}})
     assert updated["vcs"]["enabled"] is True
-    metadata = json.loads((tmp_path / "scrummaster" / "stories" / story_id / "metadata.json").read_text(encoding="utf-8"))
+    metadata_path = tmp_path / "scrummaster" / "stories" / story_id / "metadata.json"
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
     assert metadata["vcs"]["enabled"] is True

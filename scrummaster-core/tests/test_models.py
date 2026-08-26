@@ -1,4 +1,4 @@
-from scrummaster_core.models import Phase, Plan, Task, TaskStatus, Story, StoryStatus
+from scrummaster_core.models import Phase, Plan, Story, StoryStatus, Task, TaskStatus
 
 
 def test_task_model():

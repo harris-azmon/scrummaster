@@ -1,5 +1,5 @@
 import pytest
-from scrummaster_core.config import ScrummasterConfig, ConfigManager
+from scrummaster_core.config import ConfigManager, ScrummasterConfig
 
 
 def test_load_config_creates_default_when_missing(tmp_path):

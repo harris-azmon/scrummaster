@@ -158,7 +158,7 @@ def _summarize(ok: int, warn: int, fail: int) -> None:
     print(f"SUMMARY  ok={ok} warn={warn} fail={fail}")
 
 
-def main() -> int:  # noqa: C901, PLR0912
+def main() -> int:
     parser = argparse.ArgumentParser(description="Install Scrummaster artifacts locally.")
     parser.add_argument("--verify", action="store_true", help="Run validation checks only")
     parser.add_argument("--dry-run", action="store_true", help="Print planned actions without changes")

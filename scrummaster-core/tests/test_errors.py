@@ -1,4 +1,4 @@
-from scrummaster_core.errors import ScrummasterError, ErrorCategory, ValidationError
+from scrummaster_core.errors import ErrorCategory, ScrummasterError, ValidationError
 
 
 def test_scrummaster_error_to_dict():

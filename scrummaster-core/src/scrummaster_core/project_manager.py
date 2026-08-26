@@ -195,7 +195,10 @@ class ProjectManager:
         stories: list[tuple[str, str, str]] = []
         # Flexible pattern for legacy (## [ ] Story:) and modern (- [ ] **Story:) formats
         # Link line format: *Link: [./scrummaster/stories/story_id/](./scrummaster/stories/story_id/)*
-        pattern = r"(?:##|[-])\s*\[\s*([ xX~]?)\s*\]\s*(?:\*\*)?Story:\s*(.*?)\r?\n\*Link:\s*\[.*?/stories/(.*?)/\].*?\*"
+        pattern = (
+            r"(?:##|[-])\s*\[\s*([ xX~]?)\s*\]\s*(?:\*\*)?Story:\s*(.*?)"
+            r"\r?\n\*Link:\s*\[.*?/stories/(.*?)/\].*?\*"
+        )
         for match in re.finditer(pattern, content):
             status_char, desc, story_id = match.groups()
             stories.append((story_id.strip(), desc.strip().strip("*"), status_char.strip()))

@@ -48,7 +48,7 @@ EPIC_ID = "auth_20260101"
 STORY_ID = "login_flow_20260101"
 
 
-class SmokeTestFailure(Exception):
+class SmokeTestFailureError(Exception):
     pass
 
 
@@ -65,9 +65,10 @@ def run(
         input=input_text,
         capture_output=True,
         text=True,
+        check=False,
     )
     if result.returncode != 0:
-        raise SmokeTestFailure(
+        raise SmokeTestFailureError(
             f"Command failed ({result.returncode}): {' '.join(cmd)}\n"
             f"cwd: {cwd}\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
         )
@@ -80,7 +81,7 @@ def step(name: str) -> None:
 
 def check(condition: bool, message: str) -> None:
     if not condition:
-        raise SmokeTestFailure(message)
+        raise SmokeTestFailureError(message)
 
 
 def acid_json(args: list[str], cwd: Path, env: dict[str, str]) -> dict:
@@ -160,49 +161,70 @@ def main() -> int:
         # not through acid-cli).
         run(
             [
-                "fossil", "ticket", "add", "type", "Story",
-                "epic_id", EPIC_ID, "story_id", STORY_ID, "acid", acid_1,
-                "status", "Open", "title", "a user can authenticate with email + password",
+                "fossil",
+                "ticket",
+                "add",
+                "type",
+                "Story",
+                "epic_id",
+                EPIC_ID,
+                "story_id",
+                STORY_ID,
+                "acid",
+                acid_1,
+                "status",
+                "Open",
+                "title",
+                "a user can authenticate with email + password",
             ],
-            checkout, env,
+            checkout,
+            env,
         )
         run(
             [
-                "fossil", "ticket", "add", "type", "Story",
-                "epic_id", EPIC_ID, "story_id", STORY_ID, "acid", acid_2,
-                "status", "Open", "title", "legacy magic link", "deprecated", "1",
+                "fossil",
+                "ticket",
+                "add",
+                "type",
+                "Story",
+                "epic_id",
+                EPIC_ID,
+                "story_id",
+                STORY_ID,
+                "acid",
+                acid_2,
+                "status",
+                "Open",
+                "title",
+                "legacy magic link",
+                "deprecated",
+                "1",
             ],
-            checkout, env,
+            checkout,
+            env,
         )
         epics_md.write_text(
-            epics_md.read_text()
-            + f"\n\n## [ ] Story: Login Flow\n"
+            epics_md.read_text() + f"\n\n## [ ] Story: Login Flow\n"
             f"*Link: [scrummaster/epics/{EPIC_ID}/stories/{STORY_ID}/]"
             f"(scrummaster/epics/{EPIC_ID}/stories/{STORY_ID}/)*\n"
         )
 
         step("cross-check: acid features / acid feature see the skill's raw-fossil tickets")
-        features = acid_json(
-            ["features", "--product", PRODUCT_NAME, "--impl", "trunk"], checkout, env
-        )
+        features = acid_json(["features", "--product", PRODUCT_NAME, "--impl", "trunk"], checkout, env)
         feature_names = [f["feature_name"] for f in features["data"]["features"]]
         check(
             STORY_ID in feature_names,
             f"acid features did not see story {STORY_ID!r} created via raw fossil ticket add: {feature_names}",
         )
 
-        feature_ctx = acid_json(
-            ["feature", STORY_ID, "--product", PRODUCT_NAME, "--impl", "trunk"], checkout, env
-        )
+        feature_ctx = acid_json(["feature", STORY_ID, "--product", PRODUCT_NAME, "--impl", "trunk"], checkout, env)
         acids_by_id = {entry["acid"]: entry for entry in feature_ctx["data"]["acids"]}
         check(acid_1 in acids_by_id, f"acid feature did not see {acid_1}")
         check(acid_2 in acids_by_id, f"acid feature did not see {acid_2}")
 
         step("cross-check: acid push --all discovers scrummaster/epics/*/stories/*/spec.md")
         push_result = acid_json(["push", "--all"], checkout, env)
-        story_result = next(
-            (r for r in push_result["results"] if r["productName"] == PRODUCT_NAME), None
-        )
+        story_result = next((r for r in push_result["results"] if r["productName"] == PRODUCT_NAME), None)
         check(
             story_result is not None,
             f"acid push --all found nothing for product {PRODUCT_NAME!r}: {push_result}",
@@ -214,23 +236,28 @@ def main() -> int:
 
         step("/scrummaster-implement (simulated): close one ACID ticket directly via fossil")
         sql = run(
-            ["fossil", "sql", "--readonly"], checkout, env,
+            ["fossil", "sql", "--readonly"],
+            checkout,
+            env,
             input_text=f".mode json\nSELECT tkt_uuid FROM ticket WHERE acid='{acid_1}';",
         )
         ticket_uuid = json.loads(sql.stdout)[0]["tkt_uuid"]
         run(["fossil", "ticket", "change", ticket_uuid, "status", "Closed"], checkout, env)
 
-        step("cross-check: acid feature reflects the ticket closed via raw fossil, same as /scrummaster-status's own fossil sql would")
+        step(
+            "cross-check: acid feature reflects the ticket closed via raw fossil, "
+            "same as /scrummaster-status's own fossil sql would"
+        )
         status_sql = run(
-            ["fossil", "sql", "--readonly"], checkout, env,
+            ["fossil", "sql", "--readonly"],
+            checkout,
+            env,
             input_text=f".mode json\nSELECT acid, status FROM ticket WHERE story_id='{STORY_ID}';",
         )
         fossil_status_by_acid = {row["acid"]: row["status"] for row in json.loads(status_sql.stdout)}
         check(fossil_status_by_acid[acid_1] == "Closed", "raw fossil ticket close did not take effect")
 
-        feature_after = acid_json(
-            ["feature", STORY_ID, "--product", PRODUCT_NAME, "--impl", "trunk"], checkout, env
-        )
+        feature_after = acid_json(["feature", STORY_ID, "--product", PRODUCT_NAME, "--impl", "trunk"], checkout, env)
         acids_after = {entry["acid"]: entry for entry in feature_after["data"]["acids"]}
         check(
             acids_after[acid_1]["state"]["status"] == "completed",
@@ -238,12 +265,8 @@ def main() -> int:
             f"(the /scrummaster-implement path, not acid set-status): got {acids_after[acid_1]['state']}",
         )
 
-        features_after = acid_json(
-            ["features", "--product", PRODUCT_NAME, "--impl", "trunk"], checkout, env
-        )
-        story_summary = next(
-            f for f in features_after["data"]["features"] if f["feature_name"] == STORY_ID
-        )
+        features_after = acid_json(["features", "--product", PRODUCT_NAME, "--impl", "trunk"], checkout, env)
+        story_summary = next(f for f in features_after["data"]["features"] if f["feature_name"] == STORY_ID)
         check(
             story_summary["completed_count"] == 1,
             f"acid features completed_count did not match acid feature's per-ACID state: {story_summary}",
@@ -258,6 +281,6 @@ def main() -> int:
 if __name__ == "__main__":
     try:
         sys.exit(main())
-    except SmokeTestFailure as error:
+    except SmokeTestFailureError as error:
         print(f"\n❌ e2e smoke test failed: {error}", file=sys.stderr)
         sys.exit(1)

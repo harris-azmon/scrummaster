@@ -15,7 +15,7 @@ def tr(tmp_path):
 
 def test_get_story_to_implement_no_stories_file(tr, tmp_path):
     (tmp_path / "scrummaster" / "stories.md").unlink()
-    with pytest.raises(FileNotFoundError, match="stories.md not found"):
+    with pytest.raises(FileNotFoundError, match=r"stories\.md not found"):
         tr.get_story_to_implement()
 
 
@@ -37,7 +37,7 @@ def test_update_story_status_not_found(tr):
 
 
 def test_update_task_status_missing_plan(tr):
-    with pytest.raises(FileNotFoundError, match="plan.md not found"):
+    with pytest.raises(FileNotFoundError, match=r"plan\.md not found"):
         tr.update_task_status("any_id", "task", "x")
 
 
@@ -58,12 +58,12 @@ def test_checkpoint_phase_not_found(tr, tmp_path):
 
 
 def test_checkpoint_phase_missing_plan(tr):
-    with pytest.raises(FileNotFoundError, match="plan.md not found"):
+    with pytest.raises(FileNotFoundError, match=r"plan\.md not found"):
         tr.checkpoint_phase("any_id", "Phase 1", "1234567")
 
 
 def test_archive_story_not_found(tr):
-    with pytest.raises(FileNotFoundError, match="Story directory .* not found"):
+    with pytest.raises(FileNotFoundError, match=r"Story directory .* not found"):
         tr.archive_story("missing_id")
 
 

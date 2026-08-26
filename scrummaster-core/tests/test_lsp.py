@@ -1,5 +1,5 @@
-from scrummaster_core.lsp import completions
 from lsprotocol.types import CompletionParams, Position, TextDocumentIdentifier
+from scrummaster_core.lsp import completions
 
 
 def test_lsp_completions_exists():

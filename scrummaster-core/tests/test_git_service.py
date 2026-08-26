@@ -2,8 +2,8 @@ import shutil
 import subprocess
 
 import pytest
-from scrummaster_core.git_service import GitService
 from git.exc import InvalidGitRepositoryError
+from scrummaster_core.git_service import GitService
 
 GIT_PATH = shutil.which("git")
 

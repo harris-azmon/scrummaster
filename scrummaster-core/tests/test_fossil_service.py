@@ -15,11 +15,9 @@ def temp_repo(tmp_path):
     repo_dir = tmp_path / "repo"
     repo_dir.mkdir()
     repo_file = repo_dir / "test.fossil"
-    subprocess.run(  # noqa: S603
-        [FOSSIL_PATH, "init", "--admin-user", "test", str(repo_file)], cwd=repo_dir, check=True
-    )
-    subprocess.run([FOSSIL_PATH, "open", str(repo_file)], cwd=repo_dir, check=True)  # noqa: S603
-    subprocess.run([FOSSIL_PATH, "user", "default", "test"], cwd=repo_dir, check=True)  # noqa: S603
+    subprocess.run([FOSSIL_PATH, "init", "--admin-user", "test", str(repo_file)], cwd=repo_dir, check=True)
+    subprocess.run([FOSSIL_PATH, "open", str(repo_file)], cwd=repo_dir, check=True)
+    subprocess.run([FOSSIL_PATH, "user", "default", "test"], cwd=repo_dir, check=True)
     return repo_dir
 
 
@@ -134,7 +132,7 @@ def test_fossil_service_add_note(temp_repo):
     sha = service.commit("feat: Main commit")
 
     service.add_note(sha, "This is a detailed note about the commit.")
-    export = subprocess.run(  # noqa: S603
+    export = subprocess.run(
         [FOSSIL_PATH, "wiki", "export", "-t", f"checkin:{sha}", "-"],
         cwd=temp_repo,
         capture_output=True,
