@@ -1,0 +1,8 @@
+{
+ "story_id": "scrum_20260826",
+ "type": "feature",
+ "status": "new",
+ "created_at": "2026-08-26T00:00:00Z",
+ "updated_at": "2026-08-26T00:00:00Z",
+ "description": "Build the Scrummaster protocol scaffolding for this project - generate the first story artifact entry, create stories.md, generate spec.md and plan.md, create story directory with metadata.json, and write index.md in the story directory."
+}
