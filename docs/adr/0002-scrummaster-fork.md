@@ -1,10 +1,12 @@
 # ADR 0002: Fork Conductor into Scrummaster (Fossil-native, ACID-driven)
 
 ## Status
+
 Accepted (the OpenCode-adapter deferral below is addressed by
 [ADR 0003](0003-scrummaster-opencode-adapter.md))
 
 ## Context
+
 Conductor (see [ADR 0001](0001-monorepo-architecture.md)) used git as its
 sole VCS, a flat `tracks/` data model, and shipped per-platform adapter
 packages (`conductor-gemini`, `conductor-vscode`) alongside the shared core
@@ -36,6 +38,7 @@ excluded from this fork and remains unrenamed, still describing the
 Conductor/git/tracks model, as a deliberate scope boundary.
 
 ## Decision
+
 Adopt the above as Scrummaster's architecture: Fossil-native VCS abstraction
 (`scrummaster-core`'s `FossilService`, `mcp`'s `FossilVcs`), epics/stories/ACID
 as the data model, and a narrower package set (`scrummaster-core`, `mcp`,
@@ -43,6 +46,7 @@ as the data model, and a narrower package set (`scrummaster-core`, `mcp`,
 layout.
 
 ## Consequences
+
 - Pros: A single, coherent identity-and-traceability model (ACID -> Fossil
   ticket) replaces ad hoc markdown checkboxes as the definition of "done";
   Fossil's built-in tickets/wiki/technotes remove the need for bespoke

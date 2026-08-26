@@ -93,8 +93,8 @@ class Scrummaster < Formula
 end
 ```
 
-3. Run audit: `brew audit --new-formula Formula/scrummaster.rb`
-4. Submit pull request
+1. Run audit: `brew audit --new-formula Formula/scrummaster.rb`
+2. Submit pull request
 
 ### 5. Chocolatey Package
 

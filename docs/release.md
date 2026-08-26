@@ -5,14 +5,18 @@ This repository publishes releases via **GitHub Releases**. That is the canonica
 ## Recommended Release Flow
 
 1. Ensure artifacts are current:
+
    ```bash
    python scripts/sync_skills.py
    python scripts/validate_artifacts.py
    ```
+
 2. Build the core package (if not already built):
+
    ```bash
    ./scripts/build_core.sh
    ```
+
 3. Create a GitHub Release:
    - Use the existing release automation (`release-please`) or create a tag manually.
    - The workflows will upload `scrummaster-release.tar.gz` and the `scrummaster-core` distribution files to the release.

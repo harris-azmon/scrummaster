@@ -12,6 +12,7 @@ engine_compatibility: >=0.2.0
 Context-driven development methodology. Understands projects set up with Scrummaster (via Gemini CLI or Claude Code). Use when working with scrummaster/ directories, stories, specs, plans, or when user mentions context-driven development.
 
 ## Triggers
+
 This skill is activated by the following phrases:
 
 - "$scrummaster-info"
@@ -22,8 +23,8 @@ This skill is activated by the following phrases:
 
 - "@scrummaster /info"
 
-
 ## Usage
+
 To use this skill, simply type one of the triggers or ask the agent to "scrummaster".
 
 ## Platform-Specific Commands
@@ -46,6 +47,4 @@ To use this skill, simply type one of the triggers or ask the agent to "scrummas
 
 - **Skillshare:** `/scrummaster-info`
 
-
 ## Capabilities Required
-

@@ -22,7 +22,7 @@ When initialized, Scrummaster creates this structure in the project. Fossil
 tickets/wiki/technotes are the source of truth; this directory is a synced,
 human-readable mirror of that state:
 
-```
+```text
 scrummaster/
 ├── product.md              # Product vision and goals (mirrors wiki page Product)
 ├── product-guidelines.md   # UX/brand guidelines

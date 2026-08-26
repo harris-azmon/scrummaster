@@ -1,9 +1,11 @@
 # ADR 0003: Add a dedicated `scrummaster-opencode` adapter package
 
 ## Status
+
 Accepted
 
 ## Context
+
 [ADR 0002](0002-scrummaster-fork.md) deferred a dedicated OpenCode adapter
 package: OpenCode was already able to discover Scrummaster generically via
 the shared `SKILL.md` Agent Skills path, so no adapter shipped in that pass.
@@ -29,6 +31,7 @@ Two problems surfaced once this was picked back up:
    (`.opencode/commands/*.md`) independent of Agent Skills.
 
 ## Decision
+
 1. Fix the verified-wrong OpenCode paths in `skill/scripts/install.sh`
    (including its unrelated but blocking repo-detection bug) and
    `skills/manifest.json` (regenerating `docs/skill-command-syntax.md` from
@@ -54,6 +57,7 @@ Two problems surfaced once this was picked back up:
    `.github/workflows/ci.yml`.
 
 ## Consequences
+
 - Pros: OpenCode users get structured, agent-callable status/context data
   instead of the agent composing its own `fossil sql` calls from prose
   instructions; slash commands are guaranteed present rather than dependent

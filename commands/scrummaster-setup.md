@@ -53,6 +53,7 @@ Copy relevant code styleguides from `templates/code_styleguides/` based on tech 
 ## 7. Initialize Epics Index
 
 Create `scrummaster/epics.md`:
+
 ```markdown
 # Project Epics
 
@@ -60,6 +61,7 @@ This file indexes all epics. Each epic groups related stories; each story has it
 
 ---
 ```
+
 ```bash
 fossil wiki create Epics scrummaster/epics.md
 ```

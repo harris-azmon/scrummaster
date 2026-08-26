@@ -10,6 +10,7 @@ Create a new epic for: $ARGUMENTS
 ## 1. Verify Setup
 
 Check these files exist:
+
 - `scrummaster/product.md`
 - `scrummaster/tech-stack.md`
 - `scrummaster/workflow.md`
@@ -36,6 +37,7 @@ Present for approval, revise if needed.
 ## 5. Update Epics Index
 
 Append to `scrummaster/epics.md`:
+
 ```markdown
 
 ---
@@ -43,6 +45,7 @@ Append to `scrummaster/epics.md`:
 ## [ ] Epic: [Description]
 *Link: [scrummaster/epics/<epic_id>/](scrummaster/epics/<epic_id>/)*
 ```
+
 Re-sync the wiki mirror: `fossil wiki commit Epics scrummaster/epics.md`.
 
 ## 6. Announce

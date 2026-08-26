@@ -12,6 +12,7 @@ engine_compatibility: >=0.2.0
 Executes the tasks defined in the specified story's plan. Use this to start or continue working on a feature, bug fix, or chore.
 
 ## Triggers
+
 This skill is activated by the following phrases:
 
 - "$scrummaster-implement"
@@ -22,8 +23,8 @@ This skill is activated by the following phrases:
 
 - "@scrummaster /implement"
 
-
 ## Usage
+
 To use this skill, simply type one of the triggers or ask the agent to "implement".
 
 ## Platform-Specific Commands
@@ -46,6 +47,4 @@ To use this skill, simply type one of the triggers or ask the agent to "implemen
 
 - **Skillshare:** `/scrummaster-implement`
 
-
 ## Capabilities Required
-

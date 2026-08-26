@@ -26,6 +26,7 @@ Measure twice, code once.
 ## Overview
 
 Scrummaster enables context-driven development by:
+
 1. Establishing project context (product vision, tech stack, workflow)
 2. Organizing work into "epics" containing "stories" (features, bugs, improvements)
 3. Creating ACID-numbered specs and phased implementation plans
@@ -37,6 +38,7 @@ tickets, wiki, and technotes are the source of truth for project state; the
 `scrummaster/` directory is a synced, human-readable mirror of that state.
 
 **Interoperability:** This skill understands scrummaster projects created by either:
+
 - Gemini CLI extension (`/scrummaster:setup`, `/scrummaster:newstory`, etc.)
 - Claude Code commands (`/scrummaster-setup`, `/scrummaster-newstory`, etc.)
 
@@ -45,6 +47,7 @@ Both tools use the same `scrummaster/` directory structure.
 ## When to Use This Skill
 
 Automatically engage when:
+
 - Project has a `scrummaster/` directory
 - User mentions specs, plans, epics, stories, ACIDs, or context-driven development
 - User asks about project status or implementation progress
@@ -68,7 +71,7 @@ Users can invoke these commands directly:
 
 When you see this structure, the project uses Scrummaster:
 
-```
+```text
 scrummaster/
 ├── product.md              # Product vision, users, goals (mirrors wiki page Product)
 ├── product-guidelines.md   # Brand/style guidelines (optional)
@@ -93,6 +96,7 @@ authoritative record of completion.
 ## Status Markers
 
 Throughout scrummaster files:
+
 - `[ ]` - Pending/New
 - `[~]` - In Progress
 - `[x]` - Completed (often followed by a commit hash)
@@ -146,6 +150,7 @@ When you see `scrummaster/epics.md` with content like:
 ```
 
 You know:
+
 - This is a Scrummaster project
 - There's an epic "User Accounts" with an in-progress story for authentication
 - Spec and plan are in `scrummaster/epics/accounts_20260825/stories/auth_20260825/`

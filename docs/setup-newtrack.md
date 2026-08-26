@@ -20,12 +20,14 @@ Scrummaster detects existing code, scans relevant files, and documents the exist
 ## New Epic and New Story
 
 Example:
+
 ```bash
 /scrummaster:newepic "Billing"
 /scrummaster:newstory "Add billing dashboard"
 ```
 
 Expected artifacts:
+
 - `scrummaster/epics/<epic_id>/stories/<story_id>/spec.md`
 - `scrummaster/epics/<epic_id>/stories/<story_id>/plan.md`
 - `scrummaster/epics/<epic_id>/stories/<story_id>/metadata.json`

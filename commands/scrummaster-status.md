@@ -20,6 +20,7 @@ If `scrummaster/epics.md` doesn't exist, tell user to run `/scrummaster-setup` f
 ## 3. Calculate Progress
 
 For each story:
+
 - Count total tasks (lines with `- [ ]`, `- [~]`, `- [x]`)
 - Count completed `[x]`
 - Count in-progress `[~]`
@@ -31,7 +32,7 @@ For each story:
 
 Format the output like this:
 
-```
+```text
 ## Scrummaster Status
 
 **Active Story:** [story name] ([completed]/[total] tasks - [percent]%, [acids_closed]/[acids_total] ACIDs)
@@ -56,6 +57,7 @@ Format the output like this:
 ## 5. Suggestions
 
 Based on status:
+
 - If no stories: "Run `/scrummaster-newstory` to create your first story"
 - If no epics: "Run `/scrummaster-newepic` to create your first epic"
 - If story in progress: "Run `/scrummaster-implement` to continue"

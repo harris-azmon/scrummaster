@@ -12,6 +12,7 @@ engine_compatibility: >=0.2.0
 Scaffolds the project and sets up the Scrummaster environment. Use this whenever a project needs to be initialized or if the Scrummaster configuration is missing.
 
 ## Triggers
+
 This skill is activated by the following phrases:
 
 - "$scrummaster-setup"
@@ -22,8 +23,8 @@ This skill is activated by the following phrases:
 
 - "@scrummaster /setup"
 
-
 ## Usage
+
 To use this skill, simply type one of the triggers or ask the agent to "setup".
 
 ## Platform-Specific Commands
@@ -46,6 +47,4 @@ To use this skill, simply type one of the triggers or ask the agent to "setup".
 
 - **Skillshare:** `/scrummaster-setup`
 
-
 ## Capabilities Required
-

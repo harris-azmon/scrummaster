@@ -12,6 +12,7 @@ engine_compatibility: >=0.2.0
 Reverts previous work (stories, phases, or tasks) by identifying associated commits and performing fossil-aware reverts (forward inverse-patch commits).
 
 ## Triggers
+
 This skill is activated by the following phrases:
 
 - "$scrummaster-revert"
@@ -22,8 +23,8 @@ This skill is activated by the following phrases:
 
 - "@scrummaster /revert"
 
-
 ## Usage
+
 To use this skill, simply type one of the triggers or ask the agent to "revert".
 
 ## Platform-Specific Commands
@@ -46,6 +47,4 @@ To use this skill, simply type one of the triggers or ask the agent to "revert".
 
 - **Skillshare:** `/scrummaster-revert`
 
-
 ## Capabilities Required
-

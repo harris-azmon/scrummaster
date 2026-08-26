@@ -18,13 +18,14 @@ If `scrummaster/epics.md` doesn't exist, tell user to run `/scrummaster-setup` f
 ## 2. Identify Target
 
 **If `$ARGUMENTS` provided:**
+
 - Parse to identify story, phase, or task name
 - Find it in `scrummaster/epics.md` or relevant `plan.md`
 
 **If no arguments:**
 Show menu of recent revertible items:
 
-```
+```text
 ## What would you like to revert?
 
 ### In Progress Items
@@ -54,7 +55,7 @@ For the selected item:
 
 ## 4. Present Revert Plan
 
-```
+```text
 ## Revert Plan
 
 **Target:** [Task/Phase/Story] - "[Description]"
@@ -77,6 +78,7 @@ Wait for explicit user confirmation.
 For each commit, newest to oldest (`fossil patch` is a distinct binary format
 for uncommitted changes and can't be used here — apply the unified diff with
 the standard `patch` tool instead):
+
 ```bash
 fossil diff --from <hash> --to <parent_of_hash> > /tmp/revert.patch
 patch -p0 < /tmp/revert.patch
@@ -84,11 +86,13 @@ fossil commit -m "revert: <original message>"
 ```
 
 Then reopen affected tickets:
+
 ```bash
 fossil ticket change <ticket_id> status Open
 ```
 
 **If a patch fails to apply cleanly:**
+
 1. Stop and inform user
 2. Show conflicting files
 3. Guide through manual resolution, then `fossil commit` once resolved
@@ -96,6 +100,7 @@ fossil ticket change <ticket_id> status Open
 ## 6. Update Plan State
 
 After successful revert:
+
 - Change `[x]` back to `[ ]` for reverted tasks
 - Change `[~]` back to `[ ]` if reverting in-progress items
 - Remove commit hashes from reverted task lines

@@ -10,6 +10,7 @@ Create a new story for: $ARGUMENTS
 ## 1. Verify Setup
 
 Check these files exist:
+
 - `scrummaster/product.md`
 - `scrummaster/tech-stack.md`
 - `scrummaster/workflow.md`
@@ -62,6 +63,7 @@ Present for approval, revise if needed.
 Read `scrummaster/workflow.md` for task structure (TDD, commit strategy).
 
 Generate `plan.md` with phases, tasks, subtasks, each task tagged with the ACID(s) it satisfies:
+
 ```markdown
 # Implementation Plan
 
@@ -97,11 +99,13 @@ thing by parsing `spec.md` directly and is idempotent — safe to re-run any tim
 ## 8. Update Epics Index
 
 Append the story under its epic's heading in `scrummaster/epics.md`:
+
 ```markdown
 
 ## [ ] Story: [Description]
 *Link: [scrummaster/epics/<epic_id>/stories/<story_id>/](scrummaster/epics/<epic_id>/stories/<story_id>/)*
 ```
+
 Re-sync the wiki mirror: `fossil wiki commit Epics scrummaster/epics.md`.
 
 ## 9. Announce

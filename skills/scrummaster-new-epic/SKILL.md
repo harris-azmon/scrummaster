@@ -12,6 +12,7 @@ engine_compatibility: >=0.2.0
 Creates a new epic to group related stories. Use this whenever the user wants to plan a broader area of work before breaking it into individual stories, or when scrummaster-new-story finds no existing epic to attach a story to.
 
 ## Triggers
+
 This skill is activated by the following phrases:
 
 - "$scrummaster-newepic"
@@ -22,8 +23,8 @@ This skill is activated by the following phrases:
 
 - "@scrummaster /newepic"
 
-
 ## Usage
+
 To use this skill, simply type one of the triggers or ask the agent to "new_epic".
 
 ## Platform-Specific Commands
@@ -46,6 +47,4 @@ To use this skill, simply type one of the triggers or ask the agent to "new_epic
 
 - **Skillshare:** `/scrummaster-newepic`
 
-
 ## Capabilities Required
-

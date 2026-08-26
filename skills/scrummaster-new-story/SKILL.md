@@ -12,6 +12,7 @@ engine_compatibility: >=0.2.0
 Plans a new story (feature or bug fix), generates spec/plan documents, and updates the registry.
 
 ## Triggers
+
 This skill is activated by the following phrases:
 
 - "$scrummaster-new-story"
@@ -22,8 +23,8 @@ This skill is activated by the following phrases:
 
 - "@scrummaster /new-story"
 
-
 ## Usage
+
 To use this skill, simply type one of the triggers or ask the agent to "new_story".
 
 ## Platform-Specific Commands
@@ -46,6 +47,4 @@ To use this skill, simply type one of the triggers or ask the agent to "new_stor
 
 - **Skillshare:** `/scrummaster-new-story`
 
-
 ## Capabilities Required
-

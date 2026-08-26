@@ -25,7 +25,7 @@ synced views. See `skills/scrummaster/references/workflows.md` for the full
 data model and `templates/vcs_workflows/fossil.md` for the fossil command
 mapping.
 
---------------------------------------------------------------------------------
+---
 
 ## Architecture
 
@@ -50,7 +50,7 @@ This repository is organized as a modular monorepo:
 For tool-native command syntax and the artifacts each client consumes, see
 `docs/skill-command-syntax.md`.
 
---------------------------------------------------------------------------------
+---
 
 ## 🛠 Installation Guide
 
@@ -73,14 +73,14 @@ If you are a developer or contributor who wants to fork the repository, write
 custom skills, or modify rule configurations, clone the repository locally and
 link it:
 
-1.  Clone the repository:
+1. Clone the repository:
 
     ```bash
     git clone https://github.com/harris-azmon/conductor.git
     cd conductor
     ```
 
-2.  Link globally for Antigravity:
+2. Link globally for Antigravity:
 
     ```bash
     mkdir -p ~/.gemini/config/plugins/ && ln -sfn "$(pwd)" ~/.gemini/config/plugins/scrummaster
@@ -94,19 +94,19 @@ without reinstalling!
 
 If you want to isolate Scrummaster strictly inside a specific project:
 
-1.  Create the local plugins directory in your target project's root:
+1. Create the local plugins directory in your target project's root:
 
     ```bash
     mkdir -p .agents/plugins/
     ```
 
-2.  Link Scrummaster to your local project:
+2. Link Scrummaster to your local project:
 
     ```bash
     ln -sfn /absolute/path/to/cloned/conductor .agents/plugins/scrummaster
     ```
 
---------------------------------------------------------------------------------
+---
 
 ### 2. Claude Code
 
@@ -120,7 +120,7 @@ directly in your Claude Code session:
 /plugin install scrummaster
 ```
 
---------------------------------------------------------------------------------
+---
 
 ### 3. Agent Skills (Claude CLI / OpenCode / Codex)
 
@@ -158,7 +158,7 @@ latest Fossil checkin will automatically update the skill.
 > installer (`npx scrummaster-opencode-install`) that puts Scrummaster's
 > slash commands directly under `.opencode/commands/`.
 
---------------------------------------------------------------------------------
+---
 
 ### 4. Alternative Installation Methods
 
@@ -185,41 +185,41 @@ pip install scrummaster-core
 npm install -g @scrummaster/acid-cli
 ```
 
---------------------------------------------------------------------------------
+---
 
 ## 🔄 Uninstallation
 
 To safely remove Scrummaster from your environment:
 
-*   **Antigravity:**
-    *   **CLI Installation:** Run `agy plugins uninstall scrummaster`
-    *   **Global Link:** Run `rm -f ~/.gemini/config/plugins/scrummaster`
-    *   **Workspace Link:** Run `rm -f .agents/plugins/scrummaster`
-*   **Claude Code:** Run `/plugin remove scrummaster` and `/plugin marketplace
+- **Antigravity:**
+  - **CLI Installation:** Run `agy plugins uninstall scrummaster`
+  - **Global Link:** Run `rm -f ~/.gemini/config/plugins/scrummaster`
+  - **Workspace Link:** Run `rm -f .agents/plugins/scrummaster`
+- **Claude Code:** Run `/plugin remove scrummaster` and `/plugin marketplace
     remove harris-azmon/conductor`
 
---------------------------------------------------------------------------------
+---
 
 ## 🚀 Features
 
--   **Plan before you build**: Create specs and plans that guide the agent for
+- **Plan before you build**: Create specs and plans that guide the agent for
     new and existing codebases.
--   **Maintain context**: Ensure AI follows style guides, tech stack choices,
+- **Maintain context**: Ensure AI follows style guides, tech stack choices,
     and product goals.
--   **Iterate safely**: Review plans before code is written, keeping you firmly
+- **Iterate safely**: Review plans before code is written, keeping you firmly
     in the loop.
--   **Work as a team**: Set project-level context for your product, tech stack,
+- **Work as a team**: Set project-level context for your product, tech stack,
     and workflow preferences that become a shared foundation for your team.
--   **Build on existing projects**: Intelligent initialization for both new
+- **Build on existing projects**: Intelligent initialization for both new
     (Greenfield) and existing (Brownfield) projects.
--   **Traceable requirements**: Every acceptance criterion gets a stable ACID,
+- **Traceable requirements**: Every acceptance criterion gets a stable ACID,
     mapped 1:1 to a Fossil ticket, so "done" means the ticket says so — not
     just a markdown checkbox.
--   **Smart revert**: A Fossil-aware revert command that understands logical
+- **Smart revert**: A Fossil-aware revert command that understands logical
     units of work (epics, stories, phases, tasks) rather than just checkin
     hashes.
 
---------------------------------------------------------------------------------
+---
 
 ## 🎨 Adaptive User Experience (UX Layer)
 
@@ -229,12 +229,12 @@ console, or web editor).
 
 This is powered by the integrated **View Layer UX Adapter**:
 
-*   **Interactive GUI Modals:** If your host editor supports visual interactive
+- **Interactive GUI Modals:** If your host editor supports visual interactive
     dialog elements, Scrummaster will automatically capture selections, decision
     interviews, and story options as native graphical modal dialog windows.
-    *   `rules/`: Custom adapter rules tailored for visual IDE environments
+  - `rules/`: Custom adapter rules tailored for visual IDE environments
         (like Antigravity).
-*   **Graceful CLI Fallback:** If you are operating in a plain text terminal
+- **Graceful CLI Fallback:** If you are operating in a plain text terminal
     console (such as Claude Code), Scrummaster automatically detects the console
     environment and adapts all interactive steps into clean, structured
     text-based choice menus with bracketed numbers (e.g., `[1] Option A, [2]
@@ -244,7 +244,7 @@ This dynamic, semantic adaptation occurs natively behind the scenes with **zero
 configuration required**, ensuring the optimal developer experience regardless
 of your chosen workflow environment.
 
---------------------------------------------------------------------------------
+---
 
 ## 📖 Usage & Lifecycle
 
@@ -264,23 +264,23 @@ When you run `/scrummaster:scrummaster-setup`, Scrummaster helps you define
 the core components of your project context. This context is then used for
 building new components or features by you or anyone on your team.
 
--   **Product**: Define project context (e.g. users, product goals, high-level
+- **Product**: Define project context (e.g. users, product goals, high-level
     features).
--   **Product guidelines**: Define standards (e.g. prose style, brand messaging,
+- **Product guidelines**: Define standards (e.g. prose style, brand messaging,
     visual identity).
--   **Tech stack**: Configure technical preferences (e.g. language, database,
+- **Tech stack**: Configure technical preferences (e.g. language, database,
     frameworks).
--   **Workflow**: Set team preferences (e.g. TDD, commit strategy). Uses
+- **Workflow**: Set team preferences (e.g. TDD, commit strategy). Uses
     `workflow.md` as a customizable template.
 
 **Generated Artifacts:**
 
--   `scrummaster/product.md`
--   `scrummaster/product-guidelines.md`
--   `scrummaster/tech-stack.md`
--   `scrummaster/workflow.md`
--   `scrummaster/code_styleguides/`
--   `scrummaster/epics.md`
+- `scrummaster/product.md`
+- `scrummaster/product-guidelines.md`
+- `scrummaster/tech-stack.md`
+- `scrummaster/workflow.md`
+- `scrummaster/code_styleguides/`
+- `scrummaster/epics.md`
 
 ```bash
 /scrummaster:scrummaster-setup
@@ -296,16 +296,16 @@ within it, run `/scrummaster:scrummaster-newstory`. This initializes a
 **story** — a high-level unit of work, with every acceptance criterion given a
 stable **ACID**. Scrummaster helps you generate two critical artifacts:
 
--   **Specs**: The detailed requirements for the specific job, with ACIDs.
+- **Specs**: The detailed requirements for the specific job, with ACIDs.
     What are we building and why?
--   **Plan**: An actionable to-do list containing phases, tasks, and sub-tasks.
+- **Plan**: An actionable to-do list containing phases, tasks, and sub-tasks.
 
 **Generated Artifacts:**
 
--   `scrummaster/epics/<epic_id>/stories/<story_id>/spec.md`
--   `scrummaster/epics/<epic_id>/stories/<story_id>/plan.md`
--   `scrummaster/epics/<epic_id>/stories/<story_id>/metadata.json`
--   A Fossil ticket per ACID
+- `scrummaster/epics/<epic_id>/stories/<story_id>/spec.md`
+- `scrummaster/epics/<epic_id>/stories/<story_id>/plan.md`
+- `scrummaster/epics/<epic_id>/stories/<story_id>/metadata.json`
+- A Fossil ticket per ACID
 
 ```bash
 /scrummaster:scrummaster-newepic
@@ -322,9 +322,9 @@ completes them and updating each ACID's Fossil ticket.
 
 **Updated Artifacts:**
 
--   `scrummaster/epics.md` (Status updates)
--   `scrummaster/epics/<epic_id>/stories/<story_id>/plan.md` (Status updates)
--   Project context files (Synchronized on completion)
+- `scrummaster/epics.md` (Status updates)
+- `scrummaster/epics/<epic_id>/stories/<story_id>/plan.md` (Status updates)
+- Project context files (Synchronized on completion)
 
 ```bash
 /scrummaster:scrummaster-implement
@@ -333,19 +333,19 @@ completes them and updating each ACID's Fossil ticket.
 During implementation, you can also monitor, revert, or review work using the
 following commands:
 
-*   **Check status**: Get a high-level overview of your project's progress.
+- **Check status**: Get a high-level overview of your project's progress.
 
     ```bash
     /scrummaster:scrummaster-status
     ```
 
-*   **Revert work**: Safely undo a feature, phase, or a specific task.
+- **Revert work**: Safely undo a feature, phase, or a specific task.
 
     ```bash
     /scrummaster:scrummaster-revert
     ```
 
-*   **Review work**: Review completed work against guidelines and the plan.
+- **Review work**: Review completed work against guidelines and the plan.
 
     ```bash
     /scrummaster:scrummaster-review
@@ -360,42 +360,42 @@ guidance. To report context size:
 python scripts/context_report.py
 ```
 
---------------------------------------------------------------------------------
+---
 
 ## 📋 Commands Reference
 
-Command                              | Description                                                                                | Generated Artifacts
-:------------------------------------ | :------------------------------------------------------------------------------------------ | :------------------
-`/scrummaster:scrummaster-setup`     | Scaffolds the project and sets up the Scrummaster environment. Run this once per project.   | `scrummaster/product.md`<br>`scrummaster/product-guidelines.md`<br>`scrummaster/tech-stack.md`<br>`scrummaster/workflow.md`<br>`scrummaster/epics.md`
-`/scrummaster:scrummaster-newepic`   | Starts a new epic to group related stories.                                                 | `scrummaster/epics/<id>/epic.md`<br>`scrummaster/epics.md`
-`/scrummaster:scrummaster-newstory`  | Starts a new feature or bug story within an epic. Generates `spec.md` (with ACIDs) and `plan.md`. | `scrummaster/epics/<eid>/stories/<sid>/spec.md`<br>`scrummaster/epics/<eid>/stories/<sid>/plan.md`<br>`scrummaster/epics.md`
-`/scrummaster:scrummaster-implement` | Executes the tasks defined in the current story's plan.                                     | `scrummaster/epics.md`<br>`scrummaster/epics/<eid>/stories/<sid>/plan.md`
-`/scrummaster:scrummaster-status`    | Displays the current progress of the epics/stories and Fossil ticket state.                 | Reads `scrummaster/epics.md`
-`/scrummaster:scrummaster-revert`    | Reverts a story, phase, or task by analyzing Fossil history.                                | Reverts Fossil history
-`/scrummaster:scrummaster-review`    | Reviews completed work against guidelines and the plan.                                     | Reads `plan.md`, `product-guidelines.md`
+| Command                              | Description                                                                                | Generated Artifacts |
+| :------------------------------------ | :------------------------------------------------------------------------------------------ | :------------------ |
+| `/scrummaster:scrummaster-setup`     | Scaffolds the project and sets up the Scrummaster environment. Run this once per project.   | `scrummaster/product.md`<br>`scrummaster/product-guidelines.md`<br>`scrummaster/tech-stack.md`<br>`scrummaster/workflow.md`<br>`scrummaster/epics.md` |
+| `/scrummaster:scrummaster-newepic`   | Starts a new epic to group related stories.                                                 | `scrummaster/epics/<id>/epic.md`<br>`scrummaster/epics.md` |
+| `/scrummaster:scrummaster-newstory`  | Starts a new feature or bug story within an epic. Generates `spec.md` (with ACIDs) and `plan.md`. | `scrummaster/epics/<eid>/stories/<sid>/spec.md`<br>`scrummaster/epics/<eid>/stories/<sid>/plan.md`<br>`scrummaster/epics.md` |
+| `/scrummaster:scrummaster-implement` | Executes the tasks defined in the current story's plan.                                     | `scrummaster/epics.md`<br>`scrummaster/epics/<eid>/stories/<sid>/plan.md` |
+| `/scrummaster:scrummaster-status`    | Displays the current progress of the epics/stories and Fossil ticket state.                 | Reads `scrummaster/epics.md` |
+| `/scrummaster:scrummaster-revert`    | Reverts a story, phase, or task by analyzing Fossil history.                                | Reverts Fossil history |
+| `/scrummaster:scrummaster-review`    | Reviews completed work against guidelines and the plan.                                     | Reads `plan.md`, `product-guidelines.md` |
 
---------------------------------------------------------------------------------
+---
 
 ## 💡 Best Practices for Task Corrections
 
 When a task or phase in your Scrummaster project wasn't completed correctly,
 you have three native recovery flows:
 
-1.  **Agile In-Flight Corrections**: If you notice an implementation gap while
+1. **Agile In-Flight Corrections**: If you notice an implementation gap while
     the agent is actively coding, specify the fix directly in the chat. The
     agent will natively adapt its coding loop and verify the fix before
     finalizing the task.
-2.  **Review Corrections (`/scrummaster:scrummaster-review`)**: If issues are
+2. **Review Corrections (`/scrummaster:scrummaster-review`)**: If issues are
     caught after a task/phase is marked completed, run the review command. The
     review agent will audit changes, verify style guides, execute tests, and
     append a `Review Fixes` tracking phase to `plan.md` to resolve them.
-3.  **Safe State Reversions (`/scrummaster:scrummaster-revert`)**: If a task
+3. **Safe State Reversions (`/scrummaster:scrummaster-revert`)**: If a task
     implementation is fundamentally flawed and needs a complete reset, run the
     revert command. This rolls back specific Fossil checkins safely (via an
     inverse patch — Fossil has no direct `git revert` equivalent) and resets
     the task state back to pending `[ ]` so you can prompt a fresh approach.
 
---------------------------------------------------------------------------------
+---
 
 ## 🚂 Getting Started (Natural Language Triggering)
 
@@ -404,30 +404,30 @@ slash commands. You can interact with Scrummaster natively using natural
 language. Your active agent will dynamically recognize your intent and execute
 the corresponding Scrummaster protocol in the background:
 
--   **To Scaffold a Project**: > *"Let's create a new Scrummaster project"* or
+- **To Scaffold a Project**: > *"Let's create a new Scrummaster project"* or
     *"Run setup for Scrummaster"*
--   **To Plan a Feature**: > *"Let's start a new story to add a login screen"*
+- **To Plan a Feature**: > *"Let's start a new story to add a login screen"*
     or *"Create a plan for the dark mode story"*
--   **To Execute the Plan**: > *"Start implementing the active plan"* or
+- **To Execute the Plan**: > *"Start implementing the active plan"* or
     *"Proceed with the implementation"*
--   **To Check Progress**: > *"How is our story progress going?"* or *"Show the
+- **To Check Progress**: > *"How is our story progress going?"* or *"Show the
     current project status"*
--   **To Revert or Fix a Task**: > *"Revert the last completed task"* or *"Let's
+- **To Revert or Fix a Task**: > *"Revert the last completed task"* or *"Let's
     review the completed phase"*
 
---------------------------------------------------------------------------------
+---
 
 ## 📂 Repository Structure
 
--   `/skills`: The protocol logic (`SKILL.md`) for each command.
--   `/rules`: Platform-specific operational rules files.
--   `/scrummaster-core`: The platform-agnostic core library (VCS adapters,
+- `/skills`: The protocol logic (`SKILL.md`) for each command.
+- `/rules`: Platform-specific operational rules files.
+- `/scrummaster-core`: The platform-agnostic core library (VCS adapters,
     models, prompt templates) built on by the other packages.
--   `/mcp`, `/mcp-server`: MCP servers used by Scrummaster's tooling
+- `/mcp`, `/mcp-server`: MCP servers used by Scrummaster's tooling
     integrations.
--   `/vendor/acid-cli`: The vendored, fossil-retargeted `acid` CLI.
+- `/vendor/acid-cli`: The vendored, fossil-retargeted `acid` CLI.
 
---------------------------------------------------------------------------------
+---
 
 ## Development
 
@@ -494,17 +494,17 @@ regenerate the tool matrix in `docs/skill-command-syntax.md`, run:
 python3 scripts/render_command_matrix.py
 ```
 
---------------------------------------------------------------------------------
+---
 
 ## 🎓 Resources
 
--   [Antigravity Plugins Documentation](https://antigravity.google/docs/plugins):
+- [Antigravity Plugins Documentation](https://antigravity.google/docs/plugins):
     Official guidelines for using plugins in Antigravity.
--   [Claude Code Plugins Documentation](https://code.claude.com/docs/en/discover-plugins):
+- [Claude Code Plugins Documentation](https://code.claude.com/docs/en/discover-plugins):
     Guidelines for managing plugins in Claude Code.
--   [GitHub Issues](https://github.com/harris-azmon/conductor/issues):
+- [GitHub Issues](https://github.com/harris-azmon/conductor/issues):
     Report bugs or request features.
--   Scrummaster is a fork of the [Conductor](https://github.com/gemini-cli-extensions/conductor)
+- Scrummaster is a fork of the [Conductor](https://github.com/gemini-cli-extensions/conductor)
     plugin, replacing git with Fossil SCM, tracks with epics/stories, and
     adopting the ACID (Acceptance Criteria ID) methodology from
     [acai-sh/cli](https://github.com/acai-sh/cli) (vendored under
@@ -512,8 +512,8 @@ python3 scripts/render_command_matrix.py
     Ballinger's original [.conductor](https://github.com/keithballinger/.conductor)
     project as the groundwork for this repository.
 
---------------------------------------------------------------------------------
+---
 
 ## ⚖ License
 
--   License: [Apache License 2.0](LICENSE)
+- License: [Apache License 2.0](LICENSE)

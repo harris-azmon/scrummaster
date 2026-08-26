@@ -5,6 +5,7 @@ This guide defines a minimal, repeatable context bundle for Scrummaster projects
 ## Canonical Context Bundle
 
 Include these files by default:
+
 - `scrummaster/product.md`
 - `scrummaster/product-guidelines.md` (if present)
 - `scrummaster/tech-stack.md`
@@ -19,6 +20,7 @@ Include these files by default:
 ## Default Exclusions
 
 Exclude these unless explicitly needed:
+
 - `scrummaster/epics/*/stories/archive/**`
 - `.fslckout`, `_FOSSIL_`, `.git/**`, `.hg/**`, `.svn/**`
 - `.agent/**` (generated workflows/skills)

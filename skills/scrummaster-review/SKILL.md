@@ -12,6 +12,7 @@ engine_compatibility: >=0.2.0
 Reviews the completed story work against guidelines and the plan. Acts as a Principal Software Engineer to ensure quality and compliance.
 
 ## Triggers
+
 This skill is activated by the following phrases:
 
 - "$scrummaster-review"
@@ -22,8 +23,8 @@ This skill is activated by the following phrases:
 
 - "@scrummaster /review"
 
-
 ## Usage
+
 To use this skill, simply type one of the triggers or ask the agent to "review".
 
 ## Platform-Specific Commands
@@ -46,6 +47,4 @@ To use this skill, simply type one of the triggers or ask the agent to "review".
 
 - **Skillshare:** `/scrummaster-review`
 
-
 ## Capabilities Required
-
