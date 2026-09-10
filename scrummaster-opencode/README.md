@@ -19,7 +19,7 @@ things on top of that generic path:
    OpenCode's skill auto-discovery.
 3. **Turbo Mode subagents** (`scrummaster-product-manager`,
    `scrummaster-software-architect`), installed as real files under
-   `.opencode/agent/`. When a project's `scrummaster/workflow.md` has Turbo
+   `.opencode/agents/`. When a project's `scrummaster/workflow.md` has Turbo
    Mode enabled, Scrummaster's skills spawn these subagents instead of
    stopping to ask the human user — see
    [`docs/turbo-mode.md`](../docs/turbo-mode.md) at the monorepo root.
@@ -62,7 +62,7 @@ npx scrummaster-opencode-install-agents
 ```
 
 This copies the bundled `agents/scrummaster-*.md` files into
-`.opencode/agent/` in your current directory. Source of truth for these
+`.opencode/agents/` in your current directory. Source of truth for these
 files is `agents/*.md` at the root of the monorepo, copied the same way as
 the slash commands above.
 

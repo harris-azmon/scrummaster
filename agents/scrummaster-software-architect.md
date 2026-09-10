@@ -1,5 +1,4 @@
 ---
-name: scrummaster-software-architect
 description: "Stands in for the human user on technical decisions during Turbo Mode - spec/plan technical soundness, phase verification, and implementation ambiguity."
 mode: subagent
 permission:

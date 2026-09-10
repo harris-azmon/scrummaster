@@ -45,7 +45,7 @@ file-write access; they decide, the calling skill acts.
 
 | Platform | Subagent format | Install |
 | --- | --- | --- |
-| OpenCode | `.opencode/agent/*.md` (file-based, proven convention) | `npx scrummaster-opencode-install-agents` |
+| OpenCode | `.opencode/agents/*.md` (file-based, proven convention) | `npx scrummaster-opencode-install-agents` |
 | Claude Code | `.claude/agents/*.md` (file-based, same shape minus OpenCode's `mode`/`permission` frontmatter) | copy `agents/scrummaster-*.md` into `.claude/agents/` manually for now — no dedicated installer yet |
 | Others (Gemini, Qwen, Codex, Antigravity, Copilot, Aix, Skillshare) | No proven file-based subagent convention in this ecosystem yet | Turbo Mode stays unavailable; `/scrummaster setup` won't offer the question |
 

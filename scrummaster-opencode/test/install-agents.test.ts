@@ -14,14 +14,14 @@ afterEach(async () => {
 });
 
 describe("installAgents", () => {
-	it("copies bundled agent markdown files into <project>/.opencode/agent/", async () => {
+	it("copies bundled agent markdown files into <project>/.opencode/agents/", async () => {
 		const projectRoot = await mkdtemp(join(tmpdir(), "opencode-install-agents-"));
 		cleanupDirs.push(projectRoot);
 
 		const copied = await installAgents(projectRoot);
 
 		expect(copied).toBeGreaterThan(0);
-		const installedFiles = await readdir(join(projectRoot, ".opencode", "agent"));
+		const installedFiles = await readdir(join(projectRoot, ".opencode", "agents"));
 		expect(installedFiles).toContain("scrummaster-product-manager.md");
 		expect(installedFiles).toContain("scrummaster-software-architect.md");
 		expect(installedFiles.every((name) => name.endsWith(".md"))).toBe(true);
@@ -33,19 +33,19 @@ describe("installAgents", () => {
 
 		await installAgents(projectRoot);
 		const secondRun = await installAgents(projectRoot);
-		const installedFiles = await readdir(join(projectRoot, ".opencode", "agent"));
+		const installedFiles = await readdir(join(projectRoot, ".opencode", "agents"));
 
 		expect(secondRun).toBe(installedFiles.length);
 	});
 
-	it("creates .opencode/agent/ from scratch when the project has none yet", async () => {
+	it("creates .opencode/agents/ from scratch when the project has none yet", async () => {
 		const projectRoot = await mkdtemp(join(tmpdir(), "opencode-install-agents-"));
 		cleanupDirs.push(projectRoot);
 		await writeFile(join(projectRoot, "README.md"), "hello");
 
 		await installAgents(projectRoot);
 
-		const installedFiles = await readdir(join(projectRoot, ".opencode", "agent"));
+		const installedFiles = await readdir(join(projectRoot, ".opencode", "agents"));
 		expect(installedFiles.length).toBeGreaterThan(0);
 	});
 });

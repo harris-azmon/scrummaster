@@ -1,5 +1,4 @@
 ---
-name: scrummaster-product-manager
 description: "Stands in for the human user on product/scope decisions during Turbo Mode - epic assignment, story framing, scope trade-offs, and draft-artifact sign-off."
 mode: subagent
 permission:

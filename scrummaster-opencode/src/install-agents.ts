@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Materializes this package's bundled Scrummaster Turbo Mode agent files
 // (scrummaster-product-manager, scrummaster-software-architect) into the
-// consuming project's OpenCode project-agent directory (`.opencode/agent/`),
+// consuming project's OpenCode project-agent directory (`.opencode/agents/`),
 // so they are available as spawnable subagents. Run explicitly via
 // `npx scrummaster-opencode-install-agents` - deliberately not a postinstall
 // hook, since writing into a consumer's project tree on every `npm install`
@@ -15,7 +15,7 @@ export async function installAgents(
 ): Promise<number> {
 	const packageRoot = dirname(dirname(fileURLToPath(import.meta.url)));
 	const bundledAgentsDir = join(packageRoot, "agents");
-	const targetDir = join(targetProjectRoot, ".opencode", "agent");
+	const targetDir = join(targetProjectRoot, ".opencode", "agents");
 
 	await mkdir(targetDir, { recursive: true });
 
@@ -37,7 +37,7 @@ if (invokedDirectly) {
 	installAgents()
 		.then((copied) => {
 			console.log(
-				`Installed ${copied} Scrummaster agent(s) into ${join(process.cwd(), ".opencode", "agent")}`,
+				`Installed ${copied} Scrummaster agent(s) into ${join(process.cwd(), ".opencode", "agents")}`,
 			);
 		})
 		.catch((error: unknown) => {
