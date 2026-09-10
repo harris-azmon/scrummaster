@@ -4,12 +4,11 @@ mode: subagent
 permission:
   edit: deny
   bash:
-    allow:
-      - "*test*"
-      - "*lint*"
-      - "*typecheck*"
-      - "*build*"
     "*": deny
+    "*test*": allow
+    "*lint*": allow
+    "*typecheck*": allow
+    "*build*": allow
   webfetch: deny
 ---
 
