@@ -221,6 +221,10 @@ node_modules/
 # scripts/copy-commands.mjs) - generated, source of truth is commands/*.md
 scrummaster-opencode/commands/
 
+# scrummaster-opencode's build-time copy of agents/*.md (see
+# scripts/copy-agents.mjs) - generated, source of truth is agents/*.md
+scrummaster-opencode/agents/
+
 # Tool-specific directories (should not be in remote repo)
 /.claude/
 /.gemini/

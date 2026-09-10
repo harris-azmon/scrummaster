@@ -1,5 +1,16 @@
 # Project Workflow
 
+Turbo Mode: Disabled
+
+When Turbo Mode is `Enabled`, Scrummaster skills spawn the
+`scrummaster-product-manager` or `scrummaster-software-architect` subagent
+in place of stopping to ask you a question — see `docs/turbo-mode.md` at the
+monorepo root and `skills/scrummaster/references/workflows.md`'s "Turbo
+Mode" section for exactly which questions go where. Flip this to `Enabled`
+and re-run `/scrummaster setup`, or edit it directly, to turn it on; the
+agents must already be installed for your platform (e.g.
+`npx scrummaster-opencode-install-agents` for OpenCode).
+
 ## Guiding Principles
 
 1. **The Plan is the Source of Truth:** All work must be tracked in `plan.md`
