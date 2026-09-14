@@ -218,6 +218,9 @@ To safely remove Scrummaster from your environment:
 - **Smart revert**: A Fossil-aware revert command that understands logical
     units of work (epics, stories, phases, tasks) rather than just checkin
     hashes.
+- **Turbo Mode (optional)**: Spawn a Product Manager or Software Architect
+    subagent to answer scope/technical questions instead of stopping to ask
+    you — see [`docs/turbo-mode.md`](docs/turbo-mode.md). Off by default.
 
 ---
 

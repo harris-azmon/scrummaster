@@ -16,6 +16,31 @@ By default, Scrummaster follows **Cathedral-style, trunk-oriented development**:
 work commits directly to trunk. There are no feature branches in the default
 workflow — see `templates/vcs_workflows/fossil.md` for the exact command mapping.
 
+## Turbo Mode
+
+Check `scrummaster/workflow.md` for a `Turbo Mode: Enabled` marker before
+following the workflows below. Turbo Mode is set once during
+`/scrummaster setup` and defaults to **Disabled**.
+
+- **Disabled (default):** every "ask the user" / "confirm with the user"
+  instruction in this document means what it says — stop and wait for the
+  human.
+- **Enabled:** wherever this document says to ask the user something,
+  instead spawn the matching Turbo Mode subagent with the same question and
+  context, and treat its answer exactly as you would the user's:
+  - Product/scope questions (epic assignment, "what do you want to build?",
+    draft sign-off, archive/delete/keep, revert target selection) →
+    `scrummaster-product-manager`.
+  - Technical questions (spec/plan soundness, phase verification, tech-stack
+    deviations, implementation ambiguity) → `scrummaster-software-architect`.
+
+  Both agents are defined in `agents/scrummaster-*.md` at the monorepo root
+  and installed as real subagents by each platform's installer (e.g.
+  `npx scrummaster-opencode-install-agents` for OpenCode; see
+  `docs/turbo-mode.md` for the full list). If the host agent has no
+  subagent-spawning capability, fall back to Disabled behavior and tell the
+  user why.
+
 ## Usage
 
 ```text
@@ -105,6 +130,15 @@ fossil wiki create Workflow scrummaster/workflow.md
 ```
 
 For code styleguides, copy relevant files based on tech stack from `templates/code_styleguides/`.
+
+### 7a. Ask About Turbo Mode
+
+Ask: "Enable Turbo Mode? When on, Scrummaster spawns a Product Manager or
+Software Architect subagent to answer questions instead of stopping to ask
+you. Default: no." Write the answer into the generated `workflow.md`'s
+`Turbo Mode:` marker (`Enabled` or `Disabled`, default `Disabled`). Only
+offer this if the host agent supports spawning subagents (see
+`docs/turbo-mode.md`); otherwise skip the question and leave it `Disabled`.
 
 ### 8. Initialize Epics Index
 

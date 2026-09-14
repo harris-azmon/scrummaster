@@ -17,6 +17,12 @@ things on top of that generic path:
 2. **First-class OpenCode slash commands** (`/scrummaster-setup`, etc.),
    installed as real files under `.opencode/commands/` rather than relying on
    OpenCode's skill auto-discovery.
+3. **Turbo Mode subagents** (`scrummaster-product-manager`,
+   `scrummaster-software-architect`), installed as real files under
+   `.opencode/agents/`. When a project's `scrummaster/workflow.md` has Turbo
+   Mode enabled, Scrummaster's skills spawn these subagents instead of
+   stopping to ask the human user — see
+   [`docs/turbo-mode.md`](../docs/turbo-mode.md) at the monorepo root.
 
 ## Installing the plugin
 
@@ -49,11 +55,22 @@ files is `commands/*.md` at the root of the
 `npm run build` (via the `prebuild` script) re-copies them into this package
 before publishing, so there's one place to edit them.
 
+## Installing the Turbo Mode subagents
+
+```bash
+npx scrummaster-opencode-install-agents
+```
+
+This copies the bundled `agents/scrummaster-*.md` files into
+`.opencode/agents/` in your current directory. Source of truth for these
+files is `agents/*.md` at the root of the monorepo, copied the same way as
+the slash commands above.
+
 ## Development
 
 ```bash
 npm install
-npm run build       # copies commands/, then runs tsc
+npm run build       # copies commands/ and agents/, then runs tsc
 npm run typecheck
 npm test            # vitest
 ```
